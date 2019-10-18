@@ -26,6 +26,12 @@ Lastly, the final “epic” sized feature we plan is for a user to access their lif
 
  ### What are some sample stories/scenarios? For example, as a regular user to your site, what types of things can I do? These are the ‘stories’ of your project. 
 
+ There are many scenarios a player may come across that could negatively affect their experience with our game, therefore we have begun to consider possible scenarios in an attempt to prevent a user’s negative experience. For example, a player will likely want to listen to their preferred genre of music, thus they should be allowed to join rooms that play those genres and avoid others. Another player may want the ability to play with their friends in a private room.
+
+ ### Be honest, is the amount of work required in this proposal enough for five group members
+
+ Yes.
+ We have searched deep in our hearts, and we could never lie to you oh great bobby... so yes.
 
 
 ## Students
