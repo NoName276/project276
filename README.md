@@ -26,12 +26,20 @@ Lastly, the final “epic” sized feature we plan is for a user to access their lif
 
  ### What are some sample stories/scenarios? For example, as a regular user to your site, what types of things can I do? These are the ‘stories’ of your project. 
 
- There are many scenarios a player may come across that could negatively affect their experience with our game, therefore we have begun to consider possible scenarios in an attempt to prevent a user’s negative experience. For example, a player will likely want to listen to their preferred genre of music, thus they should be allowed to join rooms that play those genres and avoid others. Another player may want the ability to play with their friends in a private room.
+ There are many scenarios a player may come across that could negatively affect their experience with our game, therefore we have begun to consider possible scenarios in an attempt to prevent a user’s negative experience. For example, a player will likely want to listen to their preferred genre of music, thus they should be allowed to join rooms that play those genres and avoid others. Another player may want the ability to play with their friends in a private room. 
+
+Along with that players can also accumulate money to unlock new designs for decorations, backgrounds, and clothes in order to customize the game to their preference. By unlocking features players can create different rooms where players can invite their friends by sharing their room ID. If a player would like to beat their high score they would be able to access it on the home screen along with their win/loss ratio, and total money accumulated. 
+
+Before the game starts players can choose their own name/username and avatar color to distinct the players. The difficulty can be chosen by the host/player of the game in the room, where they can decide the speed of the rhythm. If a player is not cooperating during the gameplay. For example, a player may be purposely bumping into other players causing them to continually drop the drinks they were carrying; therefore the host is able to “boot” players out of their room.
+
+
+
 
  ### Be honest, is the amount of work required in this proposal enough for five group members
 
  Yes.
  We have searched deep in our hearts, and we could never lie to you oh great bobby... so yes.
+
 
 
 ## Students
