@@ -1,4 +1,4 @@
-<<<<<<< HEAD
-# node-js-getting-started
+
+# Tutorial Branch
 
 Testing changes on tutorial branch 
