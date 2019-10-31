@@ -34,5 +34,3 @@ Colin Kwok
 Jarrod Vanthournout
 Jennifer Dai
 Noble Tan
-
-music data from api
