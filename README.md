@@ -26,7 +26,7 @@ Along with that players can also accumulate money to unlock new designs for deco
 Before the game starts players can choose their own name/username and avatar color to distinct the players. The difficulty can be chosen by the host/player of the game in the room, where they can decide the speed of the rhythm. If a player is not cooperating during the gameplay. For example, a player may be purposely bumping into other players causing them to continually drop the drinks they were carrying; therefore the host is able to �boot� players out of their room.
 
 ### Be honest, is the amount of work required in this proposal enough for five group members
-Yes. We have searched deep in our hearts, and we could never lie to you oh great bobby... so yes.
+Yes
 
 ### Students
 Nicole Vavrukh
