@@ -8,6 +8,7 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 app.get('/', (req, res) => res.render('pages/index'))
 app.get('/hello', (req, res) => res.send('Hello There!'))
+app.get('/test', (req, res) => res.send('test'))
 app.listen(PORT, () => console.log(`Listening on ${PORT}`))
 
 app.get('/register', async (req, res) => {  //loads registerform
