@@ -33,4 +33,10 @@ Nicole Vavrukh
 Colin Kwok
 Jarrod Vanthournout
 Jennifer Dai
+<<<<<<< HEAD
 Noble Tan
+=======
+Noble Tan
+
+change to music branch
+>>>>>>> 670fa54f7ade9461282cccee6403aa96065b2c92
