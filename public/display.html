@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Tokidex-Display</title>
+
+		<link rel="stylesheet" href="tokidex.css" />
+
+		<script type="text/javascript" src="home.js"></script> 
+	</head>
+
+	<body>
+			<header> 
+					<h1>Display Tokimon</h1>
+					<div><a href="home.html">Home</a></div>
+					<div><a href="tokidex.html">Complete Tokidex</a></div>
+					<div><a href="register.html">Register Tokimon</a></div>
+			</header>
+
+			<main>
+				<form action="/search", method="post">
+				<h1>Search for a Tokimon:</h1>
+
+				<p>Please enter the Tokimon id to access the information page for that Tokimon.</p>
+
+				<input type="number" id="searchid" name="id" value=0 min=0 required onchange="fixHWInput(this)"/>
+				<input type="submit" value="Search"/>
+
+				</form>
+			</main>
+
+
+			<footer> &nbsp; </footer>
+
+
+	</body>
+</html>

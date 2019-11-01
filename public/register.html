@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Tokidex-Register</title>
+
+		<link rel="stylesheet" href="tokidex.css" />
+
+		<script type="text/javascript" src="home.js"></script> 
+	</head>
+
+	<body>
+			<header> 
+					<h1>Register Tokimon</h1>
+					<div><a href="home.html">Home</a></div>
+					<div><a href="display.html">Display Tokimon</a></div>
+					<div><a href="tokidex.html">Complete Tokidex</a></div>
+			</header>
+
+			<main>
+				<form action='/insert' method='POST'>
+				<h1>Fill out all fields to register your new Tokimon!</h1>
+				
+				<p>Tokimon Name:<br><input type="text" id="name" name ="name" required pattern=".*\S.*" oninvalid="this.setCustomValidity('Enter your Tokimon\'s name.')" oninput="this.setCustomValidity('')"/></p>
+				<p>Height:<br><input type="number" id="height" name="height" value=0 min=0 required onchange="fixHWInput(this)"/></p>
+				<p>Weight:<br><input type="number" id="weight" name="weight" value=0 min=0 required onchange="fixHWInput(this)"/></p>
+				<p>Fly:<br><input type="number" id="fly" name="fly" value=0 min=0 max=100 required onchange="fixTypeInput(this)"/></p>
+				<p>Fight:<br><input type="number" id="fight" name="fight" value=0 min=0 max=100 required onchange="fixTypeInput(this)"/></p>
+				<p>Fire:<br><input type="number" id="fire" name="fire" value=0 min=0 max=100 required onchange="fixTypeInput(this)"/></p>
+				<p>Water:<br><input type="number" id="water" name="water" value=0 min=0 max=100 required onchange="fixTypeInput(this)"/></p>
+				<p>Electric:<br><input type="number" id="electric" name="electric" value=0 min=0 max=100 required onchange="fixTypeInput(this)"/></p>
+				<p>Ice:<br><input type="number" id="ice" name="ice" value=0 min=0 max=100 required onchange="fixTypeInput(this)"/></p>
+				<p>Trainer Name:<br><input type="text" id="trainer" name="trainer" required pattern=".*\S.*" oninvalid="this.setCustomValidity('Enter your name.')" oninput="this.setCustomValidity('')"/></p>
+				<input type="submit" value="Submit"/>
+
+				</form>
+			</main>
+
+
+			<footer> &nbsp; </footer>
+
+
+	</body>
+</html>
