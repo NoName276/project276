@@ -49,5 +49,8 @@ app.get('/:user/register', async (req, res) => {    //checks if person in databs
     }
 });
 
+app.get('/music', function (req, res) {
+    res.render('pages/music-client');
+});
 
 
