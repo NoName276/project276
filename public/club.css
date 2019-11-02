@@ -1,42 +1,43 @@
 #button1{
-		position: absolute;
-		width: 208px;
-		height: 66px;
-		left: 628px;
-		top: 762px;
-		background: #183E61;
-		mix-blend-mode: hard-light;
-		opacity: 0.7;
-		font-size: 30px;
-		box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25)
-}
-#button2{		
-		position: absolute;
-		width: 208px;
-		height: 66px;
-		left: 928px;
-		top: 762px;
-		background: #183E61;
-		mix-blend-mode: hard-light;
-		opacity: 0.7;
-		font-size: 30px;
-		box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25)
-
+	padding: 10px 24px; 
+	width: 20%;
+	height: 6%;
+	text-align: center;
+	margin-left: 30%;
 
 }
-.button{
-
-    border: 2px solid #3498db;
+#button2{
+	width: 20%;
+	height: 6%;
+	top: 76%;
+    border: 6px solid  #183E61;
     background: none;
     padding: 10px 24px;   
-    font-size: 22px;
+    font-size: 20px;
     font-family: "montserrat";
     cursor: pointer;
-    margin: 10px;
+    margin: 12px;
     transition: 0.8s;
     position: relative;
     overflow: hidden;
     color: black;
+	font-weight: bold;
+	text-align: center;
+}
+.button{
+    border: 6px solid  #183E61;
+    background: none;
+    padding: 10px 24px;   
+    font-size: 20px;
+    font-family: "montserrat";
+    cursor: pointer;
+    margin: 12px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    color: black;
+	font-weight: bold;
+	text-align: center;
   }
 .button::before{
     content: "";
@@ -57,32 +58,57 @@
     height: 180%;
 }
 
-
-.container{
-    text-align: center;
-
-}
 body {
-		background: #3B518A;
-		border-radius: 51px;
+	background: #3B518A;
+
 }
 h1{
-		position: absolute;
-		width: 1385.09px;
-		height: 297.68px;
-		left: 850px;
+	width: 100%;
+	font-family:Monofett;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 220px;
+	align-items: center;
+	text-align: center;
+	letter-spacing: -0.015em;
+	color: rgba(255, 255, 255, 0.42);
+}
+form.hide {
+    display: none;
+}
 
-		font-family: Monofett;
-		font-style: normal;
-		font-weight: normal;
-		font-size: 212.8px;
-		line-height: 241px;
-		display: flex;
-		align-items: center;
-		text-align: center;
-		letter-spacing: -0.015em;
+table, #table1, #table2{
+	position: relative;
+    text-align: center;
+	border: solid;
+    font-size: 30px;
+    font-family: "montserrat";
+    margin-left:35%; 
+    margin-right:35%;
+	color: rgba(255, 255, 255, 0.42);
+	padding: 1.5%;
+}
+#input{
+	text-align: center;
+	box-sizing: border-box;
+	
+}
+#frontbutton{
+	width: 20%;
+	height: 6%;
+	top: 66%;
+    border: 6px solid  #183E61;
+    background: none;
+    padding: 10px 24px;   
+    font-size: 20px;
+    font-family: "montserrat";
+    cursor: pointer;
+    margin: 12px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    color: black;
+	font-weight: bold;
+	text-align: center;
 
-		color: rgba(255, 255, 255, 0.42);
-
-		transform: rotate(-0.16deg);
 }
