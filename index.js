@@ -7,7 +7,6 @@ const { Pool } = require('pg');
 // var pool = new Pool({
 //   connectionString: process.env.DATABASE_URL
 // });
-
 var app = express()
 app.use(express.static(path.join(__dirname, 'public')))
 app.set('views', path.join(__dirname, 'views'))
