@@ -2,6 +2,7 @@ const express = require('express')
 const path = require('path')
 const PORT = process.env.PORT || 5000
 
+<<<<<<< HEAD
 express()
   .use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
@@ -10,4 +11,53 @@ express()
   .get('/hello', (req, res) => res.send('Hello There!'))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 //test
+=======
+var app = express()
+app.use(express.static(path.join(__dirname, 'public')))
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
+app.get('/', (req, res) => res.render('pages/index'))
+app.get('/hello', (req, res) => res.send('Hello There!'))
+app.listen(PORT, () => console.log(`Listening on ${PORT}`))
+
+app.get('/register', async (req, res) => {  //loads registerform
+    try {
+        res.render('pages/register', name);
+    } catch (err) {
+        console.error(err);
+        res.send("Error " + err);
+    }
+});
+
+app.get('/login', async (req, res) => {     //loads loginform
+    try {
+        res.render('pages/login', name);
+    } catch (err) {
+        console.error(err);
+        res.send("Error " + err);
+    }
+});
+
+app.get('/:user/login', async (req, res) => {   //puts info into databse and loads home
+        //  TODO
+    try {
+        res.render('pages/login', name);
+    } catch (err) {
+        console.error(err);
+        res.send("Error " + err);
+    }
+});
+
+app.get('/:user/register', async (req, res) => {    //checks if person in databse with same password, home if does, error if not right password
+        // TODO
+    try {
+        res.render('pages/login', name);
+    } catch (err) {
+        console.error(err);
+        res.send("Error " + err);
+    }
+});
+
+
+>>>>>>> 9b825e0a180a25a8fde9edef445c1d5982b1f700
 
