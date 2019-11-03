@@ -38,33 +38,33 @@ app.post('/deleted', (req,res) => {
 })
 
 app.post('/club/reg', (req,res) => {        // loads new reg to database +check if username already exist
-    console.log(req.body);
-    let body = req.body;
-    let userCheck = `SELECT * FROM users WHERE username = '${body.username}';`;
-    pool.query(userCheck, (error, result) => {
-        if(result.rows.length > 0) {
-            res.render('pages/club', {'props': {regFailed: true}});
-            return;
-        }
-        var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
-        console.log(getUsersQuery);
-        pool.query(getUsersQuery,(error,result)=>{
-            if (error){
-                res.send("error");
-                console.log(error);
-            }
-            // res.redirect("actual app page");
-            //TODO: decide whether user is admin
-            var getUserQuery = `SELECT * FROM users`;
-            pool.query(getUserQuery, (error, result) => {
-              if (error)
-                res.end(error);
-              var results = {'rows': result.rows };
-              res.render('pages/admin', results)
-            })
-            res.send("placeholder"); //after reg go straight to start screen
-        });
+  console.log(req.body);
+  let body = req.body;
+  let userCheck = `SELECT * FROM users WHERE username = '${body.username}';`;
+  pool.query(userCheck, (error, result) => {
+    if(result.rows.length > 0) {
+      res.render('pages/club', {'props': {regFailed: true}});
+      return;
+    }
+    var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
+    console.log(getUsersQuery);
+    pool.query(getUsersQuery,(error,result)=>{
+      if (error){
+        res.send("error");
+        console.log(error);
+      }
+      // res.redirect("actual app page");
+      //TODO: decide whether user is admin
+      var getUserQuery = `SELECT * FROM users`;
+      pool.query(getUserQuery, (error, result) => {
+        if (error)
+          res.end(error);
+        var results = {'rows': result.rows };
+        res.render('pages/admin', results)
+      })
+      res.send("placeholder"); //after reg go straight to start screen
     });
+  });
 })
 
 app.get("/club", (req, res) => {
