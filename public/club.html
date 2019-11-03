@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="club.js"></script>
+        <link href='https://fonts.googleapis.com/css?family=Monofett' rel='stylesheet'>
+        
+        <link rel="stylesheet" href="club.css">
+
+</head>
+<title>The Club</title>
+    <body> 
+        <h1 >The Club</h1>
+        <form type="submit" action="/club/home" method="POST" id="homeForm" class="display">
+            <button type="button" class="button" id="button1" onclick="showForm('loginForm');" onclick="hideForm('homeForm');">Login </button>
+            <button type="button" class="button" id="button2" onclick="showForm('registerForm');" onclick="hideForm('homeForm');">Register </button>
+        </form>
+        <form type="submit" action="/club/login" method="GET" id="loginForm" class="hide">
+            <div id="input">
+                <table id="table1">
+                    <tbody id="logintable">
+                        <tr>
+                            <th>Username:</th>
+                            <td><input type="text" name="username" placeholder="Username" equired></td>   
+                        </tr>                
+                        <tr>
+                            <th>password:</th>
+                            <td> <input type="password" name="password" placeholder="password" required></td>
+                        </tr>
+                          
+                    </tbody>
+                </table>
+                <p></p>
+                <button type="button" class ="button" id="frontbutton" type ="submit" onclick="login()">Login</button>
+                <button class= "button" id="button2"  onclick="showForm('homeForm');">Back to Homescreen</button>
+            
+            </div>
+        </form>
+        <form type="submit" action="/club/reg" method="POST" id="registerForm" class="hide">
+            <div id="input">
+                <table id="table2">
+                    <tr>
+                        <th>Create Username:</th>
+                        <td><input type="text" name="username" placeholder="Create Username" required></td>   
+                    </tr>                
+                    <tr>
+                        <th>Create password:</th>
+                        <td> <input type="password" name="password" placeholder="Create password" required/></td>
+                    </tr>       
+                </table>
+                <p></p>
+                <button class= "button" id="frontbutton" type="submit">Finish signing up!</button>
+                <button class= "button" id="button2" onclick="showForm('homeForm');">Back to Homescreen</button>
+            </div>
+        </form>
+    </body>
+    
+</html>

@@ -1,63 +1,62 @@
 const express = require('express')
 const path = require('path')
 const PORT = process.env.PORT || 5000
+const { Pool } = require('pg');
 
-<<<<<<< HEAD
-express()
-  .use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
-  .get('/hello', (req, res) => res.send('Hello There!'))
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
-//test
-=======
-var app = express()
-app.use(express.static(path.join(__dirname, 'public')))
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'ejs')
-app.get('/', (req, res) => res.render('pages/index'))
-app.get('/hello', (req, res) => res.send('Hello There!'))
-app.listen(PORT, () => console.log(`Listening on ${PORT}`))
-
-app.get('/register', async (req, res) => {  //loads registerform
-    try {
-        res.render('pages/register', name);
-    } catch (err) {
-        console.error(err);
-        res.send("Error " + err);
-    }
+var pool = new Pool({
+    ssl: true,
+    connectionString:""
 });
+var app = express();
+app.use(express.urlencoded());
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.get('/', (req, res) => res.render('pages/index'));
+app.get('/hello', (req, res) => res.send('Hello There!'));
 
-app.get('/login', async (req, res) => {     //loads loginform
-    try {
-        res.render('pages/login', name);
-    } catch (err) {
-        console.error(err);
-        res.send("Error " + err);
-    }
-});
+app.post('/club/reg', (req,res) => {        // loads new reg to database +check if username already exist
+    console.log(req.body);
+    let body = req.body;
+    let userCheck = `SELECT * FROM users WHERE username = '${body.username}';`;
+    pool.query(userCheck, (error, result) => {
+        if(result.rows.length > 0) {
+            res.render('pages/club', {'props': {regFailed: true}});
+            return;
+        }
+        var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
+        console.log(getUsersQuery);
+        pool.query(getUsersQuery,(error,result)=>{
+            if (error){
+                res.send("error");
+                console.log(error);
+            }
+            // res.redirect("actual app page");
+            res.send("placeholder"); //after reg go straight to start screen
+        });
+    });
+})
 
-app.get('/:user/login', async (req, res) => {   //puts info into databse and loads home
-        //  TODO
-    try {
-        res.render('pages/login', name);
-    } catch (err) {
-        console.error(err);
-        res.send("Error " + err);
-    }
-});
+app.get("/club", (req, res) => {
+    res.render("pages/club", {"props": {loginFailed: false}})
+})
 
-app.get('/:user/register', async (req, res) => {    //checks if person in databse with same password, home if does, error if not right password
-        // TODO
-    try {
-        res.render('pages/login', name);
-    } catch (err) {
-        console.error(err);
-        res.send("Error " + err);
-    }
-});
+app.get("/club/login", (req, res) => {
 
+    var queryString = `SELECT * FROM users WHERE username='${req.query.username}';`;
+    pool.query(queryString, (error, result) => {
+        if(error)
+            res.send(error);
+        if(result.rows.length > 0 && result.rows[0].password === req.query.password){
+            if(result.rows[0].type === "admin"){ 
+                res.render("pages/admin");   // load admin page for admins
+            }else{
+                res.render("pages/user");    // load user page for users
+            }
+        }
+        res.render('pages/club', {'props': {loginFailed: true}});
+    })
 
->>>>>>> 9b825e0a180a25a8fde9edef445c1d5982b1f700
+})
 
+app.listen(PORT, () => console.log(`Listening on ${PORT}`));
