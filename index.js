@@ -15,15 +15,6 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => res.render('pages/index'));
 app.get('/hello', (req, res) => res.send('Hello There!'));
 
-app.get('/admin', (req,res) => {
-  var getUserQuery = `SELECT * FROM users`;
-  pool.query(getUserQuery, (error, result) => {
-    if (error)
-      res.end(error);
-    var results = {'rows': result.rows };
-    res.render('pages/admin', results)
-  })
-})
 app.get('/play', (req,res) => {
   res.render("pages/play")
 })
@@ -88,7 +79,13 @@ app.get("/club/login", (req, res) => {
             res.send(error);
         if(result.rows.length > 0 && result.rows[0].password === req.query.password){
             if(result.rows[0].type === "admin"){
-                res.render("pages/admin");   // load admin page for admins
+              var getUserQuery = `SELECT * FROM users`;
+              pool.query(getUserQuery, (error, result) => {
+                if (error)
+                  res.end(error);
+                var results = {'rows': result.rows };
+                res.render('pages/admin', results)  // load admin page for admins
+              })
             }else{
                 res.render("pages/user");    // load user page for users
             }
