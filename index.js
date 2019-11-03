@@ -15,6 +15,37 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => res.render('pages/index'));
 app.get('/hello', (req, res) => res.send('Hello There!'));
 
+app.get('/admin', (req,res) => {
+  var getUserQuery = `SELECT * FROM users`;
+  pool.query(getUserQuery, (error, result) => {
+    if (error)
+      res.end(error);
+    var results = {'rows': result.rows };
+    res.render('pages/admin', results)
+  })
+})
+app.get('/play', (req,res) => {
+  res.render("pages/play")
+})
+app.get('/delete', (req, res) => res.render('pages/delete'))
+app.get('/deleted', (req, res) => res.render('pages/admin'))
+app.post('/deleted', (req,res) => {
+  var deleteUserQuery = `DELETE FROM users WHERE username = '${req.body.username}'`;
+  console.log(req.body);
+  pool.query(deleteUserQuery, (error) => {
+    if (error)
+      res.end(error);
+    //res.redirect('pages/admin', results)
+    var getUserQuery = `SELECT * FROM users`;
+    pool.query(getUserQuery, (error, result) => {
+      if (error)
+        res.end(error);
+      var results = {'rows': result.rows };
+      res.render('pages/admin', results)
+    })
+  })
+})
+
 app.post('/club/reg', (req,res) => {        // loads new reg to database +check if username already exist
     console.log(req.body);
     let body = req.body;
@@ -32,6 +63,14 @@ app.post('/club/reg', (req,res) => {        // loads new reg to database +check 
                 console.log(error);
             }
             // res.redirect("actual app page");
+            //TODO: decide whether user is admin
+            var getUserQuery = `SELECT * FROM users`;
+            pool.query(getUserQuery, (error, result) => {
+              if (error)
+                res.end(error);
+              var results = {'rows': result.rows };
+              res.render('pages/admin', results)
+            })
             res.send("placeholder"); //after reg go straight to start screen
         });
     });
@@ -48,7 +87,7 @@ app.get("/club/login", (req, res) => {
         if(error)
             res.send(error);
         if(result.rows.length > 0 && result.rows[0].password === req.query.password){
-            if(result.rows[0].type === "admin"){ 
+            if(result.rows[0].type === "admin"){
                 res.render("pages/admin");   // load admin page for admins
             }else{
                 res.render("pages/user");    // load user page for users
