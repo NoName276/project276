@@ -73,18 +73,20 @@ h1{
 	letter-spacing: -0.015em;
 	color: rgba(255, 255, 255, 0.42);
 }
-form.hide {
+.hide {
     display: none;
 }
 
 table, #table1, #table2{
-	position: relative;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
     text-align: center;
 	border: solid;
     font-size: 30px;
     font-family: "montserrat";
-    margin-left:35%; 
-    margin-right:35%;
+    /* margin-left:35%; 
+    margin-right:35%; */
 	color: rgba(255, 255, 255, 0.42);
 	padding: 1.5%;
 }
@@ -110,5 +112,12 @@ table, #table1, #table2{
     color: black;
 	font-weight: bold;
 	text-align: center;
+
+}
+.error{
+    color: red;
+    text-align: center;
+    font-weight: bold;
+    font-family: "montserrat";
 
 }

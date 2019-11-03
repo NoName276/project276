@@ -3,6 +3,9 @@ function showForm(formToShow) {
     forms.forEach(form => {
         document.getElementById(form).className = form == formToShow ? '' : 'hide';
     })
+    document.querySelectorAll("p.error").forEach(ele => {
+        ele.className += " hide";
+    })
 } 
 
 function hideForm(formToHide) {
