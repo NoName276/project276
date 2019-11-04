@@ -1,0 +1,128 @@
+#button1{
+	padding: 10px 24px; 
+	width: 20%;
+	height: 6%;
+	text-align: center;
+	margin-left: 30%;
+
+}
+#button2{
+	width: 20%;
+	height: 6%;
+	top: 76%;
+    border: 6px solid  #183E61;
+    background: none;
+    padding: 10px 24px;   
+    font-size: 20px;
+    font-family: "montserrat";
+    cursor: pointer;
+    margin: 12px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    color: black;
+	font-weight: bold;
+	text-align: center;
+}
+.button{
+    border: 6px solid  #183E61;
+    background: none;
+    padding: 10px 24px;   
+    font-size: 20px;
+    font-family: "montserrat";
+    cursor: pointer;
+    margin: 12px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    color: black;
+	font-weight: bold;
+	text-align: center;
+  }
+.button::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: #3498db;
+    z-index: -1;
+    transition: 0.8s;
+    bottom: 0;
+    border-radius: 50% 50% 0 0;
+}
+.button:hover{
+    color: #fff;
+}
+.button:hover::before{
+    height: 180%;
+}
+
+body {
+	background: #3B518A;
+
+}
+h1{
+	width: 100%;
+	font-family:Monofett;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 220px;
+	align-items: center;
+	text-align: center;
+	letter-spacing: -0.015em;
+	color: rgba(255, 255, 255, 0.42);
+}
+.hide {
+    display: none;
+}
+
+table, #table1, #table2{
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+	border: solid;
+    font-size: 30px;
+    font-family: "montserrat";
+    /* margin-left:35%; 
+    margin-right:35%; */
+	color: rgba(255, 255, 255, 0.42);
+	padding: 1.5%;
+}
+#input{
+	text-align: center;
+	box-sizing: border-box;
+	
+}
+#frontbutton{
+	width: 20%;
+	height: 6%;
+	top: 66%;
+    border: 6px solid  #183E61;
+    background: none;
+    padding: 10px 24px;   
+    font-size: 20px;
+    font-family: "montserrat";
+    cursor: pointer;
+    margin: 12px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    color: black;
+	font-weight: bold;
+	text-align: center;
+
+}
+.error{
+    color: red;
+    text-align: center;
+    font-weight: bold;
+    font-family: "montserrat";
+}
+.notice{
+    color: green;
+    text-align: center;
+    font-weight: bold;
+    font-family: "montserrat";
+}
