@@ -1,11 +1,12 @@
 var FRAMERATE = 30;
 var fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
 var beat_offset = 0;
+var key_flag = false;
 var upcoming_beats = [];
-var temp_beat_shelf = [,,,,,];
+var beat_shelf = [,,,,,'|',];
 var game_grid = [
-    [,,,,,,,,,,],
-    [,,,,,,,,,,],
+    ['O',,,'O',,,'O',,,'O',],
+    [,,,'P',,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
@@ -15,10 +16,27 @@ var game_grid = [
     [,,,,,,,,,,],
     [,,,,,,,,,,]
 ];
+var player_pos = [[1,4]]
 
 function change_bpm(){
     fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
     console.log(`update FRAMERATE:${FRAMERATE} fpb:${fpb}`);
+}
+
+function player_move(){
+    gridEl = document.getElementById('game_grid');
+    if(key_flag==false){
+        if(beat_shelf[5]=='0'){
+            gridEl.style.color = 'lime';
+            key_flag=true;
+            setTimeout(function(){reset_conditions();}, 500);
+        }
+        else{        
+            gridEl.style.color = 'red';
+            key_flag=true;
+            setTimeout(function(){reset_conditions();}, 500);
+        }
+    }
 }
 
 function display_game_grid(){
@@ -40,7 +58,7 @@ function display_game_grid(){
 }
 
 function generate_upcoming_beats(){
-    temp_beat_shelf = [,,,,,];
+    beat_shelf = [,,,,,'|',];
 
     for(var i=0; i<upcoming_beats.length; ++i){
         upcoming_beats[i] += 1/fpb;
@@ -51,28 +69,27 @@ function generate_upcoming_beats(){
         
         else{
             var temp = parseInt(upcoming_beats[i]*6)
-            if(temp<5){temp_beat_shelf[temp] = 0}
+            if(temp<6){beat_shelf[temp] = 0}
         }
     }
     if(beat_offset<1){
         upcoming_beats.push(0);
-        temp_beat_shelf[0]=0;
+        beat_shelf[0]=0;
     }
-    //console.log(temp_beat_shelf)
+    //console.log(beat_shelf)
     // This block can be removed once graphics are moved to a continuous game space
     gridEl = document.getElementById('game_grid');
     gridEl.innerHTML += '<br>------------<br>'
-    for(var i=0; i<5; ++i){
-        if(temp_beat_shelf[i] == null){gridEl.innerHTML += '&nbsp;';}
+    for(var i=0; i<6; ++i){
+        if(beat_shelf[i] == null){gridEl.innerHTML += '&nbsp;';}
         else{
-            gridEl.innerHTML += '0';
+            gridEl.innerHTML += beat_shelf[i];
         }
     }
-    gridEl.innerHTML += '||';
-    for(var i=4; i>=0; --i){
-        if(temp_beat_shelf[i] == null){gridEl.innerHTML += '&nbsp;';}
+    for(var i=5; i>=0; --i){
+        if(beat_shelf[i] == null){gridEl.innerHTML += '&nbsp;';}
         else{
-            gridEl.innerHTML += '0';
+            gridEl.innerHTML += beat_shelf[i];
         }
     }
     gridEl.innerHTML += '<br>------------<br>'
@@ -80,43 +97,22 @@ function generate_upcoming_beats(){
 }
 
 function game_loop(){
-    //console.log("running");
     display_game_grid();
     generate_upcoming_beats();
-    /*
-    temp = beat_offset;
-    for(var i = 1; i<6; ++i){
-        if (Math.round(temp/fpb) >= i){
-            console.log(Math.round(temp*6/fpb))
-            gridEl.innerHTML += '0';
-        }
-        else {
-            gridEl.innerHTML += '&nbsp;';
-            
-            console.log(Math.round((temp*6)/fpb))
-        }
-    }
-    gridEl.innerHTML += '||';
-    temp = beat_offset;
-    for(var i = 5; 1<=i; --i){
-        if ((i+temp+10)>=fpb){
-            temp -= fpb
-            gridEl.innerHTML += '0';
-        }
-        else {
-            gridEl.innerHTML += '&nbsp;';
-        }
-    }
-    gridEl.innerHTML += '<br>------------<br>';
-    //console.log(gridEl.innerHTML)
-    */
     beat_offset += 1;
     while(beat_offset>=fpb){beat_offset -= fpb;}
-    //console.log(beat_offset)
     
     setTimeout(function(){game_loop();}, 1000/FRAMERATE);
 }
 
+function reset_conditions() {
+    gridEl = document.getElementById('game_grid');
+    gridEl.style.color = 'blue';
+    key_flag = false;
+
+}
 console.log(`start FRAMERATE:${FRAMERATE} fpb:${fpb}`);
+document.onkeypress = player_move;
+
 
 setTimeout(function(){game_loop();}, 1000/FRAMERATE);
