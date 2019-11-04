@@ -53,16 +53,7 @@ app.post('/club/reg', (req,res) => {        // loads new reg to database +check 
         res.send("error");
         console.log(error);
       }
-      // res.redirect("actual app page");
-      //TODO: decide whether user is admin
-      var getUserQuery = `SELECT * FROM users`;
-      pool.query(getUserQuery, (error, result) => {
-        if (error)
-          res.end(error);
-        var results = {'rows': result.rows };
-        res.render('pages/admin', results)
-      })
-      res.send("placeholder"); //after reg go straight to start screen
+      res.render("pages/club", {props: {'login': true}});
     });
   });
 })
@@ -72,7 +63,7 @@ app.get("/club", (req, res) => {
 })
 
 app.get("/club/login", (req, res) => {
-
+  console.log(req.query);
     var queryString = `SELECT * FROM users WHERE username='${req.query.username}';`;
     pool.query(queryString, (error, result) => {
         if(error)
@@ -86,8 +77,10 @@ app.get("/club/login", (req, res) => {
                 var results = {'rows': result.rows };
                 res.render('pages/admin', results)  // load admin page for admins
               })
+              return;
             }else{
-                res.render("pages/user");    // load user page for users
+              res.render("pages/play", {'props': {username: req.query.username}});    // load user page for users
+              return;
             }
         }
         res.render('pages/club', {'props': {loginFailed: true}});
