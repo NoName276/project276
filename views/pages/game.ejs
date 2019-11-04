@@ -4,12 +4,36 @@
 	<head>
 		<title>Club Game Prototype</title>
 
-		<link rel="stylesheet" href="" />
+		<link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
 
-		<script type="text/javascript" src=""></script> 
+		<script async type="text/javascript" src="/scripts/game.js"></script> 
 	</head>
 
 	<body>
-			
+            <div>
+                <h1 id="game_grid">
+                    ############<br>
+                    #0000000000#<br>
+                    #0000000000#<br>
+                    #0000000000#<br>
+                    #0000000000#<br>
+                    #0000000000#<br>
+                    #0000000000#<br>
+                    #0000000000#<br>
+                    #0000000000#<br>
+                    #0000000000#<br>
+                    #0000000000#<br>
+                    ############<br>
+                    <br>
+                    ------------<br>
+                    00000||00000<br>
+                    ------------<br>
+                
+                </h1>
+            </div>
+            <form>
+                <input type="number" id="bpm" value='120'/>
+                <input type="button" value="change bpm" onclick="change_bpm()" />
+            </form>
 	</body>
 </html>
