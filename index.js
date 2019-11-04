@@ -5,7 +5,7 @@ const { Pool } = require('pg');
 
 var pool = new Pool({
     ssl: true,
-    connectionString:""
+    connectionString:"postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
 });
 var app = express();
 app.use(express.urlencoded());
@@ -31,8 +31,7 @@ app.post('/club/reg', (req,res) => {        // loads new reg to database +check 
                 res.send("error");
                 console.log(error);
             }
-            // res.redirect("actual app page");
-            res.send("placeholder"); //after reg go straight to start screen
+            res.render("pages/club", {props: {}});
         });
     });
 })
@@ -42,7 +41,7 @@ app.get("/club", (req, res) => {
 })
 
 app.get("/club/login", (req, res) => {
-
+  console.log(`login form: ${res.query}`);
     var queryString = `SELECT * FROM users WHERE username='${req.query.username}';`;
     pool.query(queryString, (error, result) => {
         if(error)
@@ -51,7 +50,7 @@ app.get("/club/login", (req, res) => {
             if(result.rows[0].type === "admin"){ 
                 res.render("pages/admin");   // load admin page for admins
             }else{
-                res.render("pages/user");    // load user page for users
+                res.render("pages/play");    // load user page for users
             }
         }
         res.render('pages/club', {'props': {loginFailed: true}});
