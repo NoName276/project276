@@ -59,3 +59,9 @@ body{
     display: inline;
     margin-top: -9%;
 }
+
+#logoutnormal {
+    float: right;
+    display: inline;
+    margin-top: -6%;
+}
