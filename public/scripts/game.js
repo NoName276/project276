@@ -25,34 +25,35 @@ function change_bpm(){
 
 function player_move(e){
     gridEl = document.getElementById('game_grid');
+    var pressed = e.which || e.keyCode;
     if(key_flag==false){
         if(beat_shelf[5]=='0'){
             gridEl.style.color = 'lime';
             key_flag=true;
 
-            switch(e.code){
-                case 'KeyW':
+            switch(pressed){
+                case 87:
                     if(player_pos[0][0] > 0 && game_grid[player_pos[0][0]-1][player_pos[0][1]] != 'O'){
                         game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                         player_pos[0][0] -= 1;
                         game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
                     }
                     break;
-                case 'KeyS':
+                case 83:
                     if(player_pos[0][0] < 9){
                         game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                         player_pos[0][0] += 1;
                         game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
                     }
                     break;
-                case 'KeyA':
+                case 65:
                     if(player_pos[0][1] > 0 && game_grid[player_pos[0][0]][player_pos[0][1]-1] != 'O'){
                         game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                         player_pos[0][1] -= 1;
                         game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
                     }
                     break;
-                case 'KeyD':
+                case 68:
                     if(player_pos[0][1] < 9 && game_grid[player_pos[0][0]][player_pos[0][1]+1] != 'O'){
                         game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                         player_pos[0][1] += 1;
@@ -144,7 +145,7 @@ function reset_conditions() {
 
 }
 console.log(`start FRAMERATE:${FRAMERATE} fpb:${fpb}`);
-document.onkeypress = player_move;
+document.onkeydown = player_move;
 
 
 setTimeout(function(){game_loop();}, 1000/FRAMERATE);
