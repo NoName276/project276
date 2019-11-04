@@ -19,8 +19,11 @@ var game_grid = [
 var player_pos = [[1,3]]
 
 function change_bpm(){
-    fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
-    console.log(`update FRAMERATE:${FRAMERATE} fpb:${fpb}`);
+    new_bpm = document.getElementById('bpm').value;
+    if (new_bpm >= 1){
+        fpb = FRAMERATE/(parseInt()/60);
+        console.log(`update FRAMERATE:${FRAMERATE} fpb:${fpb}`);
+    }
 }
 
 function player_move(e){
