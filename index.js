@@ -12,7 +12,7 @@ app.use(express.urlencoded());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.get('/', (req, res) => res.render('pages/index'));
+app.get('/', (req, res) => res.render("pages/club", {"props": {loginFailed: false}}));
 app.get('/hello', (req, res) => res.send('Hello There!'));
 
 app.get('/play', (req,res) => {
