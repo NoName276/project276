@@ -18,6 +18,9 @@ app.get('/hello', (req, res) => res.send('Hello There!'));
 app.get('/play', (req,res) => {
   res.render("pages/play")
 })
+app.get('/game', (req,res) => {
+  res.render("pages/game")
+})
 app.get('/delete', (req, res) => res.render('pages/delete'))
 app.get('/deleted', (req, res) => res.render('pages/admin'))
 app.post('/deleted', (req,res) => {
