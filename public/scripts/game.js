@@ -16,19 +16,51 @@ var game_grid = [
     [,,,,,,,,,,],
     [,,,,,,,,,,]
 ];
-var player_pos = [[1,4]]
+var player_pos = [[1,3]]
 
 function change_bpm(){
     fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
     console.log(`update FRAMERATE:${FRAMERATE} fpb:${fpb}`);
 }
 
-function player_move(){
+function player_move(e){
     gridEl = document.getElementById('game_grid');
     if(key_flag==false){
         if(beat_shelf[5]=='0'){
             gridEl.style.color = 'lime';
             key_flag=true;
+
+            switch(e.code){
+                case 'KeyW':
+                    if(player_pos[0][0] > 0 && game_grid[player_pos[0][0]-1][player_pos[0][1]] != 'O'){
+                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                        player_pos[0][0] -= 1;
+                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                    }
+                    break;
+                case 'KeyS':
+                    if(player_pos[0][0] < 9){
+                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                        player_pos[0][0] += 1;
+                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                    }
+                    break;
+                case 'KeyA':
+                    if(player_pos[0][1] > 0 && game_grid[player_pos[0][0]][player_pos[0][1]-1] != 'O'){
+                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                        player_pos[0][1] -= 1;
+                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                    }
+                    break;
+                case 'KeyD':
+                    if(player_pos[0][1] < 9 && game_grid[player_pos[0][0]][player_pos[0][1]+1] != 'O'){
+                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                        player_pos[0][1] += 1;
+                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                    }
+                    break;
+            }
+            
             setTimeout(function(){reset_conditions();}, 500);
         }
         else{        
