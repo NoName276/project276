@@ -5,7 +5,7 @@ const { Pool } = require('pg');
 
 var pool = new Pool({
     ssl: true,
-    connectionString:"postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
+    connectionString:""
 });
 var app = express();
 app.use(express.urlencoded());
@@ -38,23 +38,22 @@ app.post('/deleted', (req,res) => {
 })
 
 app.post('/club/reg', (req,res) => {        // loads new reg to database +check if username already exist
-    console.log(req.body);
-    let body = req.body;
-    let userCheck = `SELECT * FROM users WHERE username = '${body.username}';`;
-    pool.query(userCheck, (error, result) => {
-        if(result.rows.length > 0) {
-            res.render('pages/club', {'props': {regFailed: true}});
-            return;
-        }
-        var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
-        console.log(getUsersQuery);
-        pool.query(getUsersQuery,(error,result)=>{
-            if (error){
-                res.send("error");
-                console.log(error);
-            }
-            res.render("pages/club", {props: {}});
-        });
+  console.log(req.body);
+  let body = req.body;
+  let userCheck = `SELECT * FROM users WHERE username = '${body.username}';`;
+  pool.query(userCheck, (error, result) => {
+    if(result.rows.length > 0) {
+      res.render('pages/club', {'props': {regFailed: true}});
+      return;
+    }
+    var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
+    console.log(getUsersQuery);
+    pool.query(getUsersQuery,(error,result)=>{
+      if (error){
+        res.send("error");
+        console.log(error);
+      }
+      res.render("pages/club", {props: {'login': true}});
     });
   });
 })
@@ -64,7 +63,7 @@ app.get("/club", (req, res) => {
 })
 
 app.get("/club/login", (req, res) => {
-  console.log(`login form: ${res.query}`);
+  console.log(req.query);
     var queryString = `SELECT * FROM users WHERE username='${req.query.username}';`;
     pool.query(queryString, (error, result) => {
         if(error)
@@ -78,8 +77,10 @@ app.get("/club/login", (req, res) => {
                 var results = {'rows': result.rows };
                 res.render('pages/admin', results)  // load admin page for admins
               })
+              return;
             }else{
-                res.render("pages/play");    // load user page for users
+              res.render("pages/play", {'props': {username: req.query.username}});    // load user page for users
+              return;
             }
         }
         res.render('pages/club', {'props': {loginFailed: true}});
