@@ -1,6 +1,7 @@
 const express = require('express')
 const path = require('path')
 const PORT = process.env.PORT || 5000
+var SpotifyWebApi = require('spotify-web-api-node');
 
 var app = express()
 app.use(express.static(path.join(__dirname, 'public')))
@@ -53,4 +54,11 @@ app.get('/music', function (req, res) {
     res.render('pages/music-client');
 });
 
+app.get('/song', (req,res) => {
+    // res.send({
+    //     name: 'test',
+    //     artist: 'me'
+    // })
+    res.render('pages/song');
+})
 
