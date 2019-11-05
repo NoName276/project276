@@ -5,7 +5,8 @@ const { Pool } = require('pg');
 
 var pool = new Pool({
     ssl: true,
-    connectionString: process.env.DATABASE_URL
+    connectionString: ""
+    //process.env.DATABASE_URL
 });
 var app = express();
 app.use(express.urlencoded());
@@ -23,22 +24,27 @@ app.get('/game', (req,res) => {
 })
 app.get('/delete', (req, res) => res.render('pages/delete'))
 app.get('/deleted', (req, res) => res.render('pages/admin'))
-app.post('/deleted', (req,res) => {
-  var deleteUserQuery = `DELETE FROM users WHERE username = '${req.body.username}'`;
-  console.log(req.body);
-  pool.query(deleteUserQuery, (error) => {
-    if (error)
-      res.end(error);
-    //res.redirect('pages/admin', results)
-    var getUserQuery = `SELECT * FROM users`;
-    pool.query(getUserQuery, (error, result) => {
-      if (error)
-        res.end(error);
-      var results = {'rows': result.rows };
-      res.render('pages/admin', results)
-    })
-  })
-})
+app.post('/deleted', (req, res) => {
+    var deleteUserQuery = `DELETE FROM users WHERE username = '${req.body.username}'`;
+    var deleteStatsQuery = `DELETE FROM stats WHERE username = '${req.body.username}'`;
+    console.log(req.body);
+    pool.query(deleteStatsQuery, (error) => {
+        if (error)
+            res.end(error);
+    });
+    pool.query(deleteUserQuery, (error) => {
+        if (error)
+            res.end(error);
+        //res.redirect('pages/admin', results)
+        var getUserQuery = `SELECT * FROM users`;
+        pool.query(getUserQuery, (error, result) => {
+            if (error)
+                res.end(error);
+            var results = { 'rows': result.rows };
+            res.render('pages/admin', results)
+        });
+    });
+});
 
 app.post('/club/reg', (req,res) => {        // loads new reg to database +check if username already exist
   console.log(req.body);
@@ -49,15 +55,23 @@ app.post('/club/reg', (req,res) => {        // loads new reg to database +check 
       res.render('pages/club', {'props': {regFailed: true}});
       return;
     }
-    var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
+      var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
+      var getStatsQuery = `INSERT INTO stats (username , gamesplayed, gameswon, gameslost, gamesdrawn, highscore, totalpoints) VALUES ('${body.username}' , 0, 0, 0, 0, 0, 0);`;
     console.log(getUsersQuery);
     pool.query(getUsersQuery,(error,result)=>{
       if (error){
         res.send("error");
         console.log(error);
-      }
-      res.render("pages/club", {props: {'login': true}});
-    });
+       }
+      });
+      console.log("passed User Query\n");
+    pool.query(getStatsQuery, (error, result) => {
+      if (error) {
+         res.send("error");
+         console.log(error);
+         }
+      });
+      res.render("pages/club", { props: { 'login': true } });
   });
 })
 
