@@ -5,8 +5,7 @@ const { Pool } = require('pg');
 
 var pool = new Pool({
     ssl: true,
-    connectionString: ""
-    //process.env.DATABASE_URL
+    connectionString: process.env.DATABASE_URL
 });
 var app = express();
 app.use(express.urlencoded());
@@ -104,5 +103,58 @@ app.get("/club/login", (req, res) => {
     })
 
 })
+
+app.get("/club/:name/stats", (req, res) => {
+    let name = req.params.name;
+    let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
+    let loadRank = `SELECT RANK() OVER(ORDER BY highscore DESC) from stats where username = '${name}';`;
+    let results = {};
+    pool.query(loadStats, (error, result) => {
+        if (error) {
+            res.send("error");
+            console.log(error);
+        }
+        results.stats = result.rows[0];
+        pool.query(loadRank, (error, result) => {
+            if (error) {
+                res.send("error");
+                console.log(error);
+            }
+            results.rank = result.rows[0].rank;
+            res.render('pages/stats', { 'rows': results });
+        });
+    });
+
+});
+
+app.get("/club/:name/leaderboard", (req, res) => {
+    var name = req.params.name;
+});
+
+app.get("/club/:name/home", (req, res) => {
+    var name = req.params.name;
+    var queryString = `SELECT * FROM users WHERE username='${name}';`;
+    pool.query(queryString, (error, result) => {
+        if (error)
+            res.send(error);
+        if (result.rows.length > 0) {
+            if (result.rows[0].type === "admin") {
+                var getUserQuery = `SELECT * FROM users`;
+                pool.query(getUserQuery, (error, result) => {
+                    if (error)
+                        res.end(error);
+                    var results = { 'rows': result.rows };
+                    res.render('pages/admin', results)  // load admin page for admins
+                })
+                return;
+            }
+            else {
+                res.render("pages/play", { 'props': { username: name } });    // load user page for users
+                return;
+            }
+        }
+        res.render('pages/club', { 'props': { loginFailed: true } });
+    });
+});
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
