@@ -1,16 +1,17 @@
 Project Proposal Team: NoName
 
-NAME of the web application: Server Simulator/ TBD
+### NAME of the web application: 
+Server Simulator/ TBD
 
 Git link: https://github.com/NoName276/project276
 
-Do we have a clear understanding of the problem?
+### Do we have a clear understanding of the problem?
 
 Currently, the problem of making a multiplayer real-time game in a web application has been solved in various different genres of games published across the internet. For instance, developers have created online games such as Tetris battle, Runescape and Town of Salem which greatly differ in their gameplay mechanics but ultimately share the feature of being multiplayer and real-time web-applications. As a group, we aim to create a competitive multiplayer game that shares similar gameplay mechanics as Frogger while incorporating a musically synchronous feature that would move obstacles following the beat of the music from a music API. Players are to compete with one another in serving drinks from the bar to their customer’s table, successfully bringing the drinks(without spilling them) across the crowded club filled with dancing people (ie dangerous obstacles). This project is designed to be a competitive multiplayer game for entertainment purposes.
 
 The target demographic is casual gamers and individuals who wish to play with their friends while listening to the music of their choice. Fans of Guitar Hero or OSU may also enjoy our unique gameplay idea centered around music synchronization.
 
-What is the scope of your project?
+### What is the scope of your project?
 
 Does this project have many individual features, or one main feature (a possibility with many subproblems)? These are the ‘epics’ of your project. 
 
@@ -29,7 +30,7 @@ Another “epic” sized feature would be the creation and customization of “r
 Lastly, the final “epic” sized feature we plan is for a user to access their lifetime stats in their account and read them. These could be something like Win to Lose ratios, amount of games played, average money made per game, total money accumulated, most common served drink, etc. 
 
 
-What are some sample stories/scenarios? For example, as a regular user to your site, what types of things can I do? These are the ‘stories’ of your project. 
+### What are some sample stories/scenarios? For example, as a regular user to your site, what types of things can I do? These are the ‘stories’ of your project. 
 
 There are many scenarios a player may come across that could negatively affect their experience with our game, therefore we have begun to consider possible scenarios in an attempt to prevent a user’s negative experience. For example, a player will likely want to listen to their preferred genre of music, thus they should be allowed to join rooms that play those genres and avoid others. Another player may want the ability to play with their friends in a private room. 
 
@@ -39,5 +40,5 @@ Before the game starts players can choose their own name/username and avatar col
 
 
 
-Be honest, is the amount of work required in this proposal enough for five group members
+### Be honest, is the amount of work required in this proposal enough for five group members
 Yes
