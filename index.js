@@ -46,15 +46,21 @@ app.post('/club/reg', (req,res) => {        // loads new reg to database +check 
       res.render('pages/club', {'props': {regFailed: true}});
       return;
     }
-    var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
+      var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
+      var getStatsQuery = `INSERT INTO stats (username , gamesplayed, gameswon, gameslost, gamesdrawn, highscore, totalpoints) VALUES ('${body.username}' , 0, 0, 0, 0, 0, 0);`;
     console.log(getUsersQuery);
     pool.query(getUsersQuery,(error,result)=>{
       if (error){
         res.send("error");
         console.log(error);
-      }
-      res.render("pages/club", {props: {'login': true}});
+        }
     });
+    pool.query(getStatsQuery, (error, result) => {
+      if (error) {
+         res.send("error");
+         console.log(error);
+         }
+      });
   });
 })
 
