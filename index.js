@@ -5,7 +5,7 @@ const { Pool } = require('pg');
 
 var pool = new Pool({
     ssl: true,
-    connectionString:""
+    connectionString: process.env.DATABASE_URL
 });
 var app = express();
 app.use(express.urlencoded());
