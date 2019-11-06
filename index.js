@@ -89,9 +89,11 @@ app.get("/club/login", (req, res) => {
               var getUserQuery = `SELECT * FROM users`;
               pool.query(getUserQuery, (error, result) => {
                 if (error)
-                  res.end(error);
-                var results = {'rows': result.rows };
-                res.render('pages/admin', results)  // load admin page for admins
+                      res.end(error);
+                  var results = {};
+                  results.users = result.rows;
+                  results.name = req.query.username;
+                  res.render('pages/admin', { 'rows': results })  // load admin page for admins
               })
               return;
             }else{
@@ -107,7 +109,7 @@ app.get("/club/login", (req, res) => {
 app.get("/club/:name/stats", (req, res) => {
     let name = req.params.name;
     let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
-    let loadRank = `SELECT RANK() OVER(ORDER BY highscore DESC) from stats where username = '${name}';`;
+    let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
     let results = {};
     pool.query(loadStats, (error, result) => {
         if (error) {
@@ -120,7 +122,28 @@ app.get("/club/:name/stats", (req, res) => {
                 res.send("error");
                 console.log(error);
             }
-            results.rank = result.rows[0].rank;
+            console.log(result);
+            findrank = (result) ? result.rows : null;
+            findrank.forEach(function (user) {
+                if (user.username == name) {
+                    results.rank = user.rank;
+                }
+            });
+           // console.log("rank of " + name + " :" + results.rank);
+            //results.rank = result.rows[0].rank;
+            if (results.rank == 1) {
+                results.color = "#D4AF37";
+            }
+            else if (results.rank == 2) {
+                results.color = "#C0C0C0";
+            }
+            else if (results.rank == 3) {
+                results.color = "#cd7f32";
+            }
+            else {
+                results.color = "white";
+            }
+            //console.log("color= ", results.color);
             res.render('pages/stats', { 'rows': results });
         });
     });
@@ -155,6 +178,64 @@ app.get("/club/:name/home", (req, res) => {
         }
         res.render('pages/club', { 'props': { loginFailed: true } });
     });
+});
+
+app.get("/club/admin/:name/stats", (req, res) => {
+    let name = req.params.name;
+    let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
+    let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
+    let results = {};
+    pool.query(loadStats, (error, result) => {
+        if (error) {
+            res.send("error");
+            console.log(error);
+        }
+        results.stats = result.rows[0];
+        pool.query(loadRank, (error, result) => {
+            if (error) {
+                res.send("error");
+                console.log(error);
+            }
+            console.log(result);
+            findrank = (result) ? result.rows : null;
+            findrank.forEach(function (user) {
+                if (user.username == name) {
+                    results.rank = user.rank;
+                }
+            });
+            // console.log("rank of " + name + " :" + results.rank);
+            //results.rank = result.rows[0].rank;
+            if (results.rank == 1) {
+                results.color = "#D4AF37";
+            }
+            else if (results.rank == 2) {
+                results.color = "#C0C0C0";
+            }
+            else if (results.rank == 3) {
+                results.color = "#cd7f32";
+            }
+            else {
+                results.color = "white";
+            }
+            //console.log("color= ", results.color);
+            res.render('pages/stats_admin', { 'rows': results });
+        });
+    });
+
+});
+
+app.get("/club/admin/:name/home", (req, res) => {
+    console.log("in!");
+    let name = req.params.name;
+    var getUserQuery = `SELECT * FROM users`;
+    pool.query(getUserQuery, (error, result) => {
+        if (error)
+            res.end(error);
+        var results = {};
+        results.users = result.rows;
+        results.name = name;
+        res.render('pages/admin', { 'rows': results })  // load admin page for admins
+    })
 });
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
