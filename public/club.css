@@ -4,7 +4,6 @@
 	height: 6%;
 	text-align: center;
 	margin-left: 30%;
-
 }
 #button2{
 	width: 20%;
@@ -71,7 +70,7 @@ h1{
 	font-size: 220px;
 	align-items: center;
 	text-align: center;
-	letter-spacing: -0.015em;
+	letter-spacing: 0.015em;
 	color: rgba(255, 255, 255, 0.42);
 }
 .hide {
@@ -180,7 +179,7 @@ table, #table1, #table2{
     animation-duration: 12s;
 }
 .box li:nth-child(6){
-    left: 15%;
+    left: 18%;
     width: 50px;
     height: 50px;
     animation-delay: 3.5s;
@@ -200,12 +199,10 @@ table, #table1, #table2{
     animation-duration: 10s;
 }
 .box li:nth-child(9){
-    left: 6%;
+    left: 1%;
     width: 130px;
     height: 130px;
     animation-delay: 3s;
-
-
 }
 @keyframes animate{
     0%{
