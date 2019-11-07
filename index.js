@@ -69,7 +69,24 @@ var spotifyApi = new SpotifyWebApi({
     redirectUri: 'http://localhost:5000/song'
 });
 
-spotifyApi.setAccessToken('BQDRiH_GrXe9m_lE5sFXrg6dvwlpsSphZwVTYxv7LBM0JO9Hg5h4N0ru8CHH-7kFX9zragIOyDNAHhHRrSdyx1AFxRfukMz22IZ3rnY2xVHjoVod09rXDx5TvR9-VQhtsStDRR1QzlmzsZFlm9MHjpRXMPCX78-MwkYXYb2K4mKE5fcUy9foMSQTzQ');
+spotifyApi.setAccessToken('BQAAyBx7cC619XISfnJ5Y3ZTby2-bNkiwlRGnRK7Mt6iDYoQ8v8leJVhLgblnG1i87lt6U3JSzykQdR_lcstsonhk_JbwI9o7p4NWc3O28kjotfk_LAMp38RkSVE7Oa5VOLsG7DIq94JSoreGAWXaDYtkElsehzf3SFGNr_IDRbxmJw-PmDUj9dNLQ');
+
+spotifyApi.getMyCurrentPlaybackState({
+})
+.then(function(data) {
+  // Output items
+//   console.log("Now Playing: ",data.body);
+  console.log("Now Playing: ",data.body.item.artists[0].name);
+  console.log("Now Playing: ",data.body.item.name);
+//   console.log("Now Playing: ",data.body.item.uri);
+  var trackURI = data.body.item.uri;
+  var trackURIFormatted = trackURI.replace('spotify:track:', '')
+  console.log(trackURIFormatted)
+//   console.log("Now Playing: ",data.body.name);
+//   console.log("Now Playing: ",data.body.artists);
+}, function(err) {
+  console.log('Something went wrong!', err);
+});
 
 /* Get Audio Analysis for a Track */
 spotifyApi.getAudioAnalysisForTrack('0rKtyWc8bvkriBthvHKY8d')
@@ -87,3 +104,21 @@ spotifyApi.getTrack('0rKtyWc8bvkriBthvHKY8d')
   }, function(err) {
     done(err);
 });
+
+/* Get Audio Analysis for a Track */
+
+// spotifyApi.getAudioAnalysisForTrack(trackURIFormatted)
+//   .then(function(data) {
+//     console.log(data.body.track.duration);
+//     console.log(data.body.track.tempo);
+//   }, function(err) {
+//     done(err);
+// });
+  
+// spotifyApi.getTrack(trackURIFormatted)
+//   .then(function(data) {
+//     console.log(data.body.name);
+//     console.log(data.body.artists[0].name);
+//   }, function(err) {
+//     done(err);
+// });
