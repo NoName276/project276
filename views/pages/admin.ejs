@@ -9,7 +9,7 @@
   <body>
     <div>
     <h1>ThE ClUb</h1>
-    <p>Welcome, Admin User <%= rows.name %>. Here is a list of current users:</p>
+    <p>Welcome, Admin User <%= rows.name ? rows.name : ''; %>. Here is a list of current users:</p>
 	<button type="button" id= "logoutadmin" onclick="window.location.href = '/club';">LOG OUT</button>
     <table>
       <tr>
@@ -22,7 +22,7 @@
       <% }); %>
     </table>
 </div>
-    <button type="button" onclick="window.location.href = '/delete';">DELETE A USER</button>
+    <button type="button" onclick="window.location.href = '/<%= rows.name %>/delete';">DELETE A USER</button>
 	<button type="button" id= "stats" onclick="window.location.href = '/club/admin/<%= rows.name %>/stats';">STATS</button>
   </body>
 

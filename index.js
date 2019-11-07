@@ -21,6 +21,10 @@ app.get('/play', (req,res) => {
 app.get('/game', (req,res) => {
   res.render("pages/game")
 })
+
+/*  IN CASE WE WANT TO REVERT BACK TO THESE DELETE VERSIONS
+ * 
+ * 
 app.get('/delete', (req, res) => res.render('pages/delete'))
 app.get('/deleted', (req, res) => res.render('pages/admin'))
 app.post('/deleted', (req, res) => {
@@ -41,6 +45,47 @@ app.post('/deleted', (req, res) => {
                 res.end(error);
             var results = { 'rows': result.rows };
             res.render('pages/admin', results)
+        });
+    });
+});
+ * 
+ * 
+ */
+
+
+app.get('/delete', (req, res) => res.render('pages/delete'))
+app.get('/:name/delete', (req, res) => {
+    var results = {};
+    results.name = req.params.name;
+    res.render('pages/delete', { 'user': results });
+});
+
+app.get('/deleted', (req, res) => res.render('pages/admin'))
+
+app.post('/:name/deleted', (req, res) => {
+    let name = req.params.name;
+    var deleteUserQuery = `DELETE FROM users WHERE username = '${req.body.username}'`;
+    var deleteStatsQuery = `DELETE FROM stats WHERE username = '${req.body.username}'`;
+    console.log(req.body);
+    pool.query(deleteStatsQuery, (error) => {
+        if (error)
+            res.end(error);
+    });
+    pool.query(deleteUserQuery, (error) => {
+        if (error)
+            res.end(error);
+        //res.redirect('pages/admin', results)
+        var getUserQuery = `SELECT * FROM users`;
+        pool.query(getUserQuery, (error, result) => {
+            if (error)
+                res.end(error);
+            var results = {};
+            results.users = result.rows;
+            results.name = name;
+            res.render('pages/admin', { 'rows': results })
+            //var results = { 'rows': result.rows };
+            console.log("results= " , results);
+            res.render('pages/admin', { 'rows': results })
         });
     });
 });
@@ -152,6 +197,48 @@ app.get("/club/:name/stats", (req, res) => {
 
 app.get("/club/:name/leaderboard", (req, res) => {
     var name = req.params.name;
+    let loadLeaderboard = `SELECT username, highscore, RANK() OVER (ORDER BY highscore DESC) FROM stats limit 10;`;
+    let results = {};
+    var player;
+    pool.query(loadLeaderboard, (error, result) => {
+        if (error) {
+            res.send(error);
+            console.log(error);
+        }
+        var foundplayer = false;
+        var leaderboard = (result) ? result.rows : null;
+        leaderboard.forEach(function (user) {
+            if (user.username == name) {
+                foundplayer = true;
+                player = user;
+            }
+        });
+        results.topten = leaderboard;
+        if (foundplayer == true) {
+            results.player = player;
+            console.log(results.player);
+            res.render('pages/leaderboard', { 'rows': results });
+        }
+        else {
+            let findplayer = `SELECT username, highscore, RANK() OVER (ORDER BY highscore DESC) FROM stats offset 10;`;
+            pool.query(findplayer, (error, result) => {
+                if (error) {
+                    res.send(error);
+                    console.log(error);
+                }
+                var lookforplayer = (result) ? result.rows : null;
+                console.log("look for player:\n" , lookforplayer);
+                lookforplayer.forEach(function (user) {
+                    if (user.username == name) {
+                        player = user;
+                    }
+                });
+                results.player = player;
+                console.log(results.player);
+                res.render('pages/leaderboard', { 'rows': results })
+            });
+        }
+    });
 });
 
 app.get("/club/:name/home", (req, res) => {
@@ -196,7 +283,7 @@ app.get("/club/admin/:name/stats", (req, res) => {
                 res.send("error");
                 console.log(error);
             }
-            console.log(result);
+           // console.log(result);
             findrank = (result) ? result.rows : null;
             findrank.forEach(function (user) {
                 if (user.username == name) {
