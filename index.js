@@ -80,3 +80,10 @@ spotifyApi.getAudioAnalysisForTrack('0rKtyWc8bvkriBthvHKY8d')
     done(err);
 });
   
+spotifyApi.getTrack('0rKtyWc8bvkriBthvHKY8d')
+  .then(function(data) {
+    console.log(data.body.name);
+    console.log(data.body.artists[0].name);
+  }, function(err) {
+    done(err);
+});
