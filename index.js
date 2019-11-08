@@ -5,6 +5,8 @@ const PORT = process.env.PORT || 5000
 
 var app = express()
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 app.get('/', (req, res) => res.render('pages/index'))
@@ -50,26 +52,26 @@ app.get('/:user/register', async (req, res) => {    //checks if person in databs
     }
 });
 
-app.get('/music', function (req, res) {
+app.get('/music-client', function (req, res) {
     res.render('pages/music-client');
 });
 
-app.get('/song', (req,res) => {
-    
-   
-    res.render('pages/song');
+app.get('/music', (req,res) => {
+    res.render('pages/music');
 })
 
-app.get('/playing', (req,res) => {
+app.post('/testPost', (req,res) => {
+    console.log(req.body)
+})
+
+app.post('/playing', (req,res) => {
+    var token = req.body.tokenName;
     var spotifyApi = new SpotifyWebApi({
         clientId: '76399d6d66784fbd9b089a5363553e47',
         clientSecret: '5d6ec7245f5a4902af2f5b40c6315a63',
-        redirectUri: 'http://localhost:5000/song'
+        redirectUri: 'http://localhost:5000/music'
     });
-    spotifyApi.setAccessToken('BQAK-1IcxqBEHAyb3owdEK2qibj-XjoBZgx31gblD7KD0QTWx2CAlVHZz9kojqkt_xEk_6SNs0DDnioBM6JLFDRhWg4nWLITl0MVblVwrp9bfZKBHn9df9gjqcwVgdgCIvhgMpLyImjFLTlAJ6BE-HLqwisvK-IFJszdIEWhgFK95XZsima7aRGu5A');
-    
-
-    
+    spotifyApi.setAccessToken(token);
     spotifyApi.getMyCurrentPlaybackState({
     })
     .then(function(data) {
@@ -102,10 +104,53 @@ app.get('/playing', (req,res) => {
     }, function(err) {
     console.log('Something went wrong!', err);
     });
-
-
-    // res.render('pages/playing', data)
 })
+
+// app.get('/playing', (req,res) => {
+    
+//     var spotifyApi = new SpotifyWebApi({
+//         clientId: '76399d6d66784fbd9b089a5363553e47',
+//         clientSecret: '5d6ec7245f5a4902af2f5b40c6315a63',
+//         redirectUri: 'http://localhost:5000/music'
+//     });
+//     spotifyApi.setAccessToken('');
+//     spotifyApi.getMyCurrentPlaybackState({
+//     })
+//     .then(function(data) {
+//         // Output items
+//         //console.log("Now Playing: ",data.body.item.artists[0].name);
+//         //console.log("Now Playing: ",data.body.item.name);
+//         var queryData = {}
+//         var trackURI = data.body.item.uri;
+//         var trackURIFormatted = trackURI.replace('spotify:track:', '')
+//         // console.log(trackURIFormatted)
+//         queryData.artist = data.body.item.artists[0].name + '';
+//         queryData.name = data.body.item.name + '';
+//         queryData.uri = trackURIFormatted + '';
+//         /* Get Audio Analysis for a Track */
+//         spotifyApi.getAudioAnalysisForTrack(queryData.uri)
+//         .then(function(data) {
+//             // console.log(data.body.track.duration);
+//             // console.log(data.body.track.tempo);
+//             queryData.duration = data.body.track.duration;
+//             queryData.tempo = data.body.track.tempo;
+//             // res.send(queryData)
+//             res.render('pages/playing', queryData)
+//         }, function(err) {
+//             // done(err);
+//             console.log(err)
+//         });
+//         // console.log(queryData)
+//         // res.send(queryData)
+//         // res.render('pages/playing', queryData)
+//     }, function(err) {
+//     console.log('Something went wrong!', err);
+//     });
+
+// })
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // // credentials are optional
 // var spotifyApi = new SpotifyWebApi({

@@ -3,16 +3,25 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <style>
+      #tokenid {
+        width: 50%;
+      }
+    </style>
   </head>
   <body>
-      <a href="http://localhost:8888">
+      <a href="http://localhost:8888/">
           <button>Login With Spotify</button>
       </a>
       <button id = "getToken">Get Access Token</button>
-      <p>Access Token is: </p>
+
       <p id = "token"></p>
 
-      <div>Now Playing: </div>
+      <form class="" action="/playing" method="post">
+        <input id ="tokenid" type="text" name="tokenName" placeholder="Click Get Access Token" readonly required>
+        <input type="submit" name="" value="Get Now Playing">
+      </form>
+      
       <script>
         function getHashParams() {
             var hashParams = {};
@@ -30,7 +39,8 @@
           if (typeof params.access_token === 'undefined') {
             document.getElementById("token").innerHTML = "Please login to Spotify first";
           } else {
-            document.getElementById("token").innerHTML = params.access_token;
+            // document.getElementById("token").innerHTML = params.access_token;
+            document.getElementById("tokenid").value = params.access_token;
           }
         })
         
