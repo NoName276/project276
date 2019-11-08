@@ -85,6 +85,7 @@ app.post('/playing', (req,res) => {
         queryData.artist = data.body.item.artists[0].name + '';
         queryData.name = data.body.item.name + '';
         queryData.uri = trackURIFormatted + '';
+        queryData.accessToken = token + '';
         /* Get Audio Analysis for a Track */
         spotifyApi.getAudioAnalysisForTrack(queryData.uri)
         .then(function(data) {

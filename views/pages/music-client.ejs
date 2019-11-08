@@ -4,15 +4,15 @@
   <title>Spotify Web Playback SDK Quick Start Tutorial</title>
 </head>
 <body>
-  <h1>Spotify Web Playback SDK Quick Start Tutorial</h1>
-  <h2>Open your console log: <code>View > Developer > JavaScript Console</code></h2>
-
+  <!-- <h1>Spotify Web Playback SDK Quick Start Tutorial</h1>
+  <h2>Open your console log: <code>View > Developer > JavaScript Console</code></h2> -->
+  <h1>Music Client</h1>
   <script src="https://sdk.scdn.co/spotify-player.js"></script>
   <script>
     window.onSpotifyWebPlaybackSDKReady = () => {
-      const token = 'BQCScD-v76hD6Sq8mbjgX9qMH8nWsQHTVcvj-K25Ap2zmaqrTFWz0jo5UOi3hAoyPe5pnpMSiRnosjhnrIdsq_hpdfsCjivn_OOzv2VV39x3b6gbAGKPUIuRdTaGgT_z9bdr5M1c8IGbCHOuf65A1WQxKViPtAuCd_1ItPYpy9yv7D3yDX3R5w';
+      const token = 'BQB28baPFwZjULGTpLW8SDbTk-xLs7K02n_RWVTKhjCYDZ8dFctQULjPc70mFmodMZD-n_zDQCSDCjVvAVuv_-xWJRjbdFUxPw9p3CmJZbfdFNwF4F2ajZGzjEwDDl9HpKNbGG4RDPbljGg3GbyxrYuUCTDeb48lNpzWzUPteJ8yZwTfiW-BQTnT_Q';
       const player = new Spotify.Player({
-        name: 'Web Playback SDK Quick Start Player',
+        name: 'Game Music Player',
         getOAuthToken: cb => { cb(token); }
       });
 
