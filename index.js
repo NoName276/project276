@@ -123,13 +123,13 @@ app.get("/club", (req, res) => {
     res.render("pages/club", {"props": {loginFailed: false}})
 })
 
-app.get("/club/login", (req, res) => {
-  console.log(req.query);
-    var queryString = `SELECT * FROM users WHERE username='${req.query.username}';`;
+app.post("/club/login", (req, res) => {
+  console.log(req.body);
+    var queryString = `SELECT * FROM users WHERE username='${req.body.username}';`;
     pool.query(queryString, (error, result) => {
         if(error)
             res.send(error);
-        if(result.rows.length > 0 && result.rows[0].password === req.query.password){
+        if(result.rows.length > 0 && result.rows[0].password === req.body.password){
             if(result.rows[0].type === "admin"){
               var getUserQuery = `SELECT * FROM users`;
               pool.query(getUserQuery, (error, result) => {
@@ -142,7 +142,7 @@ app.get("/club/login", (req, res) => {
               })
               return;
             }else{
-              res.render("pages/play", {'props': {username: req.query.username}});    // load user page for users
+              res.render("pages/play", {'props': {username: req.body.username}});    // load user page for users
               return;
             }
         }
