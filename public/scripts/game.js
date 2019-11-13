@@ -12,9 +12,9 @@ var game_grid = [
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
-    [,,,,,,,,,,],
-    [,,,,,,,,,,],
-    [,,,,,,,,,,]
+    ['T',,,,,,,,,'T',],
+    ['T',,,,,,,,,'T',],
+    [,,'T','T',,'T','T',,'T','T',]
 ];
 var player_pos = [[1,3]]
 
@@ -29,6 +29,7 @@ function change_bpm(){
 function player_move(e){
     gridEl = document.getElementById('game_grid');
     var pressed = e.which || e.keyCode;
+    console.log(pressed)
     if(key_flag==false){
         if(beat_shelf[5]=='0'){
             gridEl.style.color = 'lime';
@@ -36,6 +37,7 @@ function player_move(e){
 
             switch(pressed){
                 case 87:
+                case 38:
                     if(player_pos[0][0] > 0 && game_grid[player_pos[0][0]-1][player_pos[0][1]] != 'O'){
                         game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                         player_pos[0][0] -= 1;
@@ -43,6 +45,7 @@ function player_move(e){
                     }
                     break;
                 case 83:
+                case 40:
                     if(player_pos[0][0] < 9){
                         game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                         player_pos[0][0] += 1;
@@ -50,6 +53,7 @@ function player_move(e){
                     }
                     break;
                 case 65:
+                case 37:
                     if(player_pos[0][1] > 0 && game_grid[player_pos[0][0]][player_pos[0][1]-1] != 'O'){
                         game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                         player_pos[0][1] -= 1;
@@ -57,7 +61,8 @@ function player_move(e){
                     }
                     break;
                 case 68:
-                    if(player_pos[0][1] < 9 && game_grid[player_pos[0][0]][player_pos[0][1]+1] != 'O'){
+                case 39:
+                    if(player_pos[0][1] < 9 && game_grid[player_pos[0][0]][player_pos[0][1]-1] != 'O'){
                         game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                         player_pos[0][1] += 1;
                         game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';

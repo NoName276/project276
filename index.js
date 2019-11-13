@@ -18,7 +18,7 @@ app.get('/', (req, res) => res.render("pages/club", {"props": {loginFailed: fals
 app.get('/hello', (req, res) => res.send('Hello There!'));
 
 app.get('/play', (req,res) => {
-  res.render("pages/play")
+  res.render("pages/game")
 })
 app.get('/game', (req,res) => {
   res.render("pages/game")
