@@ -5,23 +5,23 @@ var key_flag = false;
 var upcoming_beats = [];
 var beat_shelf = [,,,,,'|',];
 var game_grid = [
-    ['O',,,'O',,,'O',,,'O',],
+    ['T',,,'T',,,'T',,,'T',],
     [,,,'P',,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
-    ['T',,,,,,,,,'T',],
-    ['T',,,,,,,,,'T',],
-    [,,'T','T',,'T','T',,'T','T',]
+    ['O',,,,,,,,,'O',],
+    ['O',,,,,,,,,'O',],
+    ['O','O','O',,'O','O',,'O','O','O',]
 ];
 var player_pos = [[1,3]]
 
 function change_bpm(){
     new_bpm = document.getElementById('bpm').value;
     if (new_bpm >= 1){
-        fpb = FRAMERATE/(parseInt()/60);
+        fpb = FRAMERATE/(parseInt(new_bpm)/60);
         console.log(`update FRAMERATE:${FRAMERATE} fpb:${fpb}`);
     }
 }
@@ -38,7 +38,7 @@ function player_move(e){
             switch(pressed){
                 case 87:
                 case 38:
-                    if(player_pos[0][0] > 0 && game_grid[player_pos[0][0]-1][player_pos[0][1]] != 'O'){
+                    if(player_pos[0][0] > 0 && game_grid[player_pos[0][0]-1][player_pos[0][1]] == null){
                         game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                         player_pos[0][0] -= 1;
                         game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
@@ -46,7 +46,7 @@ function player_move(e){
                     break;
                 case 83:
                 case 40:
-                    if(player_pos[0][0] < 9){
+                    if(player_pos[0][0] < 9 && game_grid[player_pos[0][0]+1][player_pos[0][1]] == null){
                         game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                         player_pos[0][0] += 1;
                         game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
@@ -54,7 +54,7 @@ function player_move(e){
                     break;
                 case 65:
                 case 37:
-                    if(player_pos[0][1] > 0 && game_grid[player_pos[0][0]][player_pos[0][1]-1] != 'O'){
+                    if(player_pos[0][1] > 0 && game_grid[player_pos[0][0]][player_pos[0][1]-1] == null){
                         game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                         player_pos[0][1] -= 1;
                         game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
@@ -62,7 +62,7 @@ function player_move(e){
                     break;
                 case 68:
                 case 39:
-                    if(player_pos[0][1] < 9 && game_grid[player_pos[0][0]][player_pos[0][1]-1] != 'O'){
+                    if(player_pos[0][1] < 9 && game_grid[player_pos[0][0]][player_pos[0][1]+1] == null){
                         game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                         player_pos[0][1] += 1;
                         game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
@@ -70,12 +70,12 @@ function player_move(e){
                     break;
             }
             
-            setTimeout(function(){reset_conditions();}, 500);
+            setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
         }
         else{        
             gridEl.style.color = 'red';
             key_flag=true;
-            setTimeout(function(){reset_conditions();}, 500);
+            setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
         }
     }
 }
