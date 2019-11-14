@@ -14,11 +14,12 @@ var game_grid = [
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
-    ['O',,,,,,,,,'O',],
-    ['O',,,,,,,,,'O',],
-    ['O','O','O',,'O','O',,'O','O','O',]
+    ['0',,,,,,,,,'9',],
+    ['1',,,,,,,,,'8',],
+    ['O','2','3',,'4','5',,'6','7','O',]
 ];
 var player_pos = [[1,3]]
+var glasses = [0,1,2,3,4,5,6,7,8,9,]
 
 function change_bpm(){
     new_bpm = document.getElementById('bpm').value;
@@ -31,7 +32,7 @@ function change_bpm(){
 function player_move(e){
     gridEl = document.getElementById('game_grid');
     var pressed = e.which || e.keyCode;
-    console.log(pressed)
+    //console.log(pressed)
     if(!key_flag){
         key_flag = true;
         if(valid_flag){
@@ -40,34 +41,46 @@ function player_move(e){
             switch(pressed){
                 case 87:
                 case 38:
-                    if(player_pos[0][0] > 0 && game_grid[player_pos[0][0]-1][player_pos[0][1]] == null){
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                        player_pos[0][0] -= 1;
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                    if(player_pos[0][0] > 0){
+                        if(game_grid[player_pos[0][0]-1][player_pos[0][1]] == null){
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                            player_pos[0][0] -= 1;
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                        }
+                        else if(!isNaN(game_grid[player_pos[0][0]-1][player_pos[0][1]])){console.log(glasses[parseInt(game_grid[player_pos[0][0]-1][player_pos[0][1]])])}
                     }
                     break;
                 case 83:
                 case 40:
-                    if(player_pos[0][0] < 9 && game_grid[player_pos[0][0]+1][player_pos[0][1]] == null){
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                        player_pos[0][0] += 1;
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                    if(player_pos[0][0] < 9){
+                        if(game_grid[player_pos[0][0]+1][player_pos[0][1]] == null){
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                            player_pos[0][0] += 1;
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                        }
+                        else if(!isNaN(game_grid[player_pos[0][0]+1][player_pos[0][1]])){console.log(glasses[parseInt(game_grid[player_pos[0][0]+1][player_pos[0][1]])])}
                     }
                     break;
                 case 65:
                 case 37:
-                    if(player_pos[0][1] > 0 && game_grid[player_pos[0][0]][player_pos[0][1]-1] == null){
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                        player_pos[0][1] -= 1;
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                    if(player_pos[0][1] > 0){
+                        if (game_grid[player_pos[0][0]][player_pos[0][1]-1] == null){
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                            player_pos[0][1] -= 1;
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                       }
+                        else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]-1])){console.log(glasses[parseInt(game_grid[player_pos[0][0]][player_pos[0][1]-1])])}
                     }
                     break;
                 case 68:
                 case 39:
-                    if(player_pos[0][1] < 9 && game_grid[player_pos[0][0]][player_pos[0][1]+1] == null){
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                        player_pos[0][1] += 1;
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                    if(player_pos[0][1] < 9){
+                        if (game_grid[player_pos[0][0]][player_pos[0][1]+1] == null){
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                            player_pos[0][1] += 1;
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                        }
+                        else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]+1])){console.log(glasses[parseInt(game_grid[player_pos[0][0]][player_pos[0][1]+1])])}
                     }
                     break;
             }
@@ -157,6 +170,9 @@ function reset_conditions() {
     key_flag = false;
 
 }
+
+
+
 console.log(`start FRAMERATE:${FRAMERATE} fpb:${fpb}`);
 document.onkeydown = player_move;
 
