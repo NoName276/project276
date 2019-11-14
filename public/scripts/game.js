@@ -1,6 +1,8 @@
 var FRAMERATE = 30;
 var fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
 var beat_offset = 0;
+var valid_flag = false;
+var bonus_flag =false;
 var key_flag = false;
 var upcoming_beats = [];
 var beat_shelf = [,,,,,'|',];
@@ -30,11 +32,11 @@ function player_move(e){
     gridEl = document.getElementById('game_grid');
     var pressed = e.which || e.keyCode;
     console.log(pressed)
-    if(key_flag==false){
-        if(beat_shelf[5]=='0'){
+    if(!key_flag){
+        key_flag = true;
+        if(valid_flag){
             gridEl.style.color = 'lime';
-            key_flag=true;
-
+            if(bonus_flag){gridEl.style.color = 'yellow'}
             switch(pressed){
                 case 87:
                 case 38:
@@ -74,7 +76,6 @@ function player_move(e){
         }
         else{        
             gridEl.style.color = 'red';
-            key_flag=true;
             setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
         }
     }
@@ -106,9 +107,13 @@ function generate_upcoming_beats(){
         if(upcoming_beats[i]>=1){
             upcoming_beats.shift();
             --i;
+            valid_flag = false;
+            bonus_flag = false;
         }
         
         else{
+            if(upcoming_beats[i]>=0.8){valid_flag=true;}
+            if(upcoming_beats[i]>=0.9){bonus_flag=true;}
             var temp = parseInt(upcoming_beats[i]*6)
             if(temp<6){beat_shelf[temp] = 0}
         }
