@@ -21,6 +21,8 @@ var game_grid = [
 var player_pos = [[1,3]];
 var glasses = [0,0,0,0,0,0,0,0,0,0,];
 var filled_glasses = 0;
+var score = 0;
+var multiplier = 1.0;
 
 function change_bpm(){
     new_bpm = document.getElementById('bpm').value;
@@ -38,7 +40,12 @@ function player_move(e){
         key_flag = true;
         if(valid_flag){
             gridEl.style.color = 'lime';
-            if(bonus_flag){gridEl.style.color = 'yellow'}
+            if(bonus_flag){
+                gridEl.style.color = 'yellow';                
+                if(multiplier < 2.0){
+                    multiplier += 0.1;
+                }
+            }
             switch(pressed){
                 case 87:
                 case 38:
@@ -90,6 +97,7 @@ function player_move(e){
         }
         else{        
             gridEl.style.color = 'red';
+            multiplier = 1.0;
             setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
         }
     }
@@ -126,12 +134,19 @@ function generate_upcoming_beats(){
             --i;
             valid_flag = false;
             bonus_flag = false;
+            if(!key_flag){
+                multiplier = 1.0
+            }
             add_glass();
         }
         
         else{
-            if(upcoming_beats[i]>=0.8){valid_flag=true;}
-            if(upcoming_beats[i]>=0.9){bonus_flag=true;}
+            if(upcoming_beats[i]>=0.8){
+                valid_flag=true;
+            }
+            if(upcoming_beats[i]>=0.9){
+                bonus_flag=true;
+            }
             var temp = parseInt(upcoming_beats[i]*6)
             if(temp<6){beat_shelf[temp] = 0}
         }
@@ -163,6 +178,7 @@ function generate_upcoming_beats(){
 function game_loop(){
     display_game_grid();
     generate_upcoming_beats();
+    document.getElementById('player mult').innerHTML = 'x' + multiplier.toFixed(1);
     beat_offset += 1;
     while(beat_offset>=fpb){beat_offset -= fpb;}
     
