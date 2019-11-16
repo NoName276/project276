@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>tHe ClUb</title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+  </head>
+  <body>
+    <div>
+    <h1>ThE ClUb</h1>
+	<button type="button" id= "logoutnormal" onclick="window.location.href = '/club';">LOG OUT</button>
+  <p>Welcome, <%= props.username %>! This game is currently under construction, but you can try the prototype <a href="/game">here</a>!</p>
+</div>
+<button type="button" id= "stats" onclick="window.location.href = '/club/<%= props.username %>/stats';">STATS</button>
+  <button type="button" id= "leaderboard" onclick="window.location.href = '/club/<%= props.username %>/leaderboard';">LEADERBOARD</button>
+  </body>
+
+  <script></script>
+</html>

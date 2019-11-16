@@ -1,0 +1,217 @@
+#button1{
+	padding: 10px 24px; 
+	width: 20%;
+	height: 6%;
+	text-align: center;
+	margin-left: 30%;
+}
+#button2{
+	width: 20%;
+	height: 6%;
+	top: 76%;
+    border: 6px solid  #183E61;
+    background: none;
+    padding: 10px 24px;   
+    font-size: 20px;
+    font-family: "montserrat";
+    cursor: pointer;
+    margin: 12px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    color: black;
+	font-weight: bold;
+	text-align: center;
+}
+.button{
+    border: 6px solid  #183E61;
+    background: none;
+    padding: 10px 24px;   
+    font-size: 20px;
+    font-family: "montserrat";
+    cursor: pointer;
+    margin: 12px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    color: black;
+	font-weight: bold;
+	text-align: center;
+  }
+.button::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: #3498db;
+    z-index: -1;
+    transition: 0.8s;
+    bottom: 0;
+    border-radius: 50% 50% 0 0;
+}
+.button:hover{
+    color: #fff;
+}
+.button:hover::before{
+    height: 180%;
+}
+
+body {
+    background: linear-gradient(#3B518A, #3498db);
+    height: 100vh;
+}
+h1{
+	width: 100%;
+	font-family:Monofett;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 220px;
+	align-items: center;
+	text-align: center;
+	letter-spacing: 0.015em;
+	color: rgba(255, 255, 255, 0.42);
+}
+.hide {
+    display: none;
+}
+
+table, #table1, #table2{
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+	border: solid;
+    font-size: 30px;
+    font-family: "montserrat";
+    /* margin-left:35%; 
+    margin-right:35%; */
+	color: rgba(255, 255, 255, 0.42);
+	padding: 1.5%;
+}
+#input{
+	text-align: center;
+	box-sizing: border-box;
+	
+}
+#frontbutton{
+	width: 20%;
+	height: 6%;
+	top: 66%;
+    border: 6px solid  #183E61;
+    background: none;
+    padding: 10px 24px;   
+    font-size: 20px;
+    font-family: "montserrat";
+    cursor: pointer;
+    margin: 12px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    color: black;
+	font-weight: bold;
+	text-align: center;
+
+}
+.error{
+    color: red;
+    text-align: center;
+    font-weight: bold;
+    font-family: "montserrat";
+}
+.notice{
+    color: green;
+    text-align: center;
+    font-weight: bold;
+    font-family: "montserrat";
+}
+.box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 120vh;
+    overflow: hidden;
+}
+.box li{
+    position: absolute;
+    display: block;
+    list-style: none;
+    width: 25px;
+    height: 25px;
+    background:rgba(0, 0, 0, 0.2);
+    animation: animate 15s linear infinite;
+    bottom: -175px;
+}
+.box li:nth-child(1){
+    left: 86%;
+    width: 80px;
+    height: 80px;
+    animation-delay: 10s;
+}
+.box li:nth-child(2){
+    left: 45%;
+    width: 30px;
+    height: 30px;
+    animation-delay:1.5s;
+    animation-duration: 8s;
+}
+.box li:nth-child(3){
+    left: 60%;
+    width: 100px;
+    height: 100px;
+    animation-delay: 5.5s;
+    animation-duration: 8s;
+}
+.box li:nth-child(4){
+    left: 70%;
+    width: 150px;
+    height: 150px;
+    animation-delay: 2s;
+    animation-duration: 10s;
+}
+.box li:nth-child(5){
+    left: 15%;
+    width: 40px;
+    height: 40px;
+    animation-delay: 0s;
+    animation-duration: 12s;
+}
+.box li:nth-child(6){
+    left: 18%;
+    width: 50px;
+    height: 50px;
+    animation-delay: 3.5s;
+    animation-duration: 15s;
+}
+.box li:nth-child(7){
+    left: 25%;
+    width: 90px;
+    height: 90px;
+    animation-delay: 4.5s;
+}
+.box li:nth-child(8){
+    left: 90%;
+    width: 20px;
+    height: 20px;
+    animation-delay: 0s;
+    animation-duration: 10s;
+}
+.box li:nth-child(9){
+    left: 1%;
+    width: 130px;
+    height: 130px;
+    animation-delay: 3s;
+}
+@keyframes animate{
+    0%{
+        transform: translateY(-1000px) rotate(360deg);
+        opacity: 0;
+    }
+    100%{
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+}

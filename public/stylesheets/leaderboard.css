@@ -1,0 +1,71 @@
+div {
+    background-color: black;
+    padding: 2%;
+    margin: 5%;
+    font-family: 'Press Start 2P', cursive;
+}
+
+h1 {
+    color: blue;
+    font-size: 24pt;
+    text-align: center;
+}
+
+h2 {
+    color: blue;
+    font-family: 'Press Start 2P', cursive;
+}
+
+input[type=submit], button {
+    background-color: black;
+    color: white;
+    padding: 2% 2%;
+    float: center;
+    border-radius: 0px;
+    border: 0px;
+    margin: 0 5%;
+    font-size: 20px;
+    font-family: 'Press Start 2P', cursive;
+}
+
+input[type=text] {
+    font-family: 'Press Start 2P', cursive;
+    height: 25px;
+}
+
+table, th, td {
+    border: 0px;
+    width: 75%;
+}
+
+th {
+    font-weight: bold;
+    font-family: 'Press Start 2P', cursive;
+    line-height: 200%;
+    width: 30%
+}
+
+th, td {
+    font-size: 11pt;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+}
+
+p {
+    font-size: 12pt;
+    color: white;
+    line-height: 125%;
+}
+
+body {
+    background-image: url("/homeimage.png");
+    text-align: left;
+    margin: 0% 0% 5% 0%;
+    font-family: 'Press Start 2P', cursive;
+}
+
+#backstats {
+    float: right;
+    display: inline;
+    margin-top: -6.0%;
+}
