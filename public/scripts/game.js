@@ -18,8 +18,11 @@ var game_grid = [
     ['1',,,,,,,,,'8',],
     ['O','2','3',,'4','5',,'6','7','O',]
 ];
-var player_pos = [[1,3]]
-var glasses = [0,1,2,3,4,5,6,7,8,9,]
+var player_pos = [[1,3]];
+var glasses = [0,0,0,0,0,0,0,0,0,0,];
+var filled_glasses = 0;
+var score = 0;
+var multiplier = 1.0;
 
 function change_bpm(){
     new_bpm = document.getElementById('bpm').value;
@@ -37,7 +40,12 @@ function player_move(e){
         key_flag = true;
         if(valid_flag){
             gridEl.style.color = 'lime';
-            if(bonus_flag){gridEl.style.color = 'yellow'}
+            if(bonus_flag){
+                gridEl.style.color = 'yellow';                
+                if(multiplier < 2.0){
+                    multiplier += 0.1;
+                }
+            }
             switch(pressed){
                 case 87:
                 case 38:
@@ -89,6 +97,7 @@ function player_move(e){
         }
         else{        
             gridEl.style.color = 'red';
+            multiplier = 1.0;
             setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
         }
     }
@@ -103,6 +112,9 @@ function display_game_grid(){
             if(game_grid[i][j] == null){
                 gridEl.innerHTML += '&nbsp;'
             }
+            else if(!isNaN(game_grid[i][j])){
+                gridEl.innerHTML += glasses[game_grid[i][j]];
+            }
             else{
                 gridEl.innerHTML += game_grid[i][j];
             }
@@ -114,7 +126,7 @@ function display_game_grid(){
 
 function generate_upcoming_beats(){
     beat_shelf = [,,,,,'|',];
-
+    //console.log(upcoming_beats)
     for(var i=0; i<upcoming_beats.length; ++i){
         upcoming_beats[i] += 1/fpb;
         if(upcoming_beats[i]>=1){
@@ -122,11 +134,19 @@ function generate_upcoming_beats(){
             --i;
             valid_flag = false;
             bonus_flag = false;
+            if(!key_flag){
+                multiplier = 1.0
+            }
+            add_glass();
         }
         
         else{
-            if(upcoming_beats[i]>=0.8){valid_flag=true;}
-            if(upcoming_beats[i]>=0.9){bonus_flag=true;}
+            if(upcoming_beats[i]>=0.8){
+                valid_flag=true;
+            }
+            if(upcoming_beats[i]>=0.9){
+                bonus_flag=true;
+            }
             var temp = parseInt(upcoming_beats[i]*6)
             if(temp<6){beat_shelf[temp] = 0}
         }
@@ -151,17 +171,39 @@ function generate_upcoming_beats(){
             gridEl.innerHTML += beat_shelf[i];
         }
     }
-    gridEl.innerHTML += '<br>------------<br>'
+    gridEl.innerHTML += '<br>------------<br>';
     //
 }
 
 function game_loop(){
     display_game_grid();
     generate_upcoming_beats();
+    document.getElementById('player mult').innerHTML = 'x' + multiplier.toFixed(1);
     beat_offset += 1;
     while(beat_offset>=fpb){beat_offset -= fpb;}
     
     setTimeout(function(){game_loop();}, 1000/FRAMERATE);
+}
+
+function add_glass() {
+    if(filled_glasses<10){
+        glass_pos = parseInt(Math.random()*10);
+        while( glasses[glass_pos] != 0){
+            glass_pos = (glass_pos+1) % 10
+        }
+        glass_value = Math.random();
+        if(glass_value<=0.5){
+            glasses[glass_pos] = 1;
+        }
+        else if(glass_value<=0.9){
+            glasses[glass_pos] = 2;
+        }
+        else {
+            glasses[glass_pos] = 3;
+        }
+        filled_glasses += 1;
+    }
+
 }
 
 function reset_conditions() {

@@ -18,4 +18,10 @@ h1 {
     border: 5% solid white;
     border-radius: 10px;
 	float: left;
+    letter-spacing: 25px;
+    line-height: 30px;
+}
+
+p {
+    color: white;
 }
