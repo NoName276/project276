@@ -1,73 +1,95 @@
 var FRAMERATE = 30;
 var fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
 var beat_offset = 0;
+var valid_flag = false;
+var bonus_flag =false;
 var key_flag = false;
 var upcoming_beats = [];
 var beat_shelf = [,,,,,'|',];
 var game_grid = [
-    ['O',,,'O',,,'O',,,'O',],
+    ['T',,,'T',,,'T',,,'T',],
     [,,,'P',,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
-    [,,,,,,,,,,],
-    [,,,,,,,,,,],
-    [,,,,,,,,,,]
+    ['0',,,,,,,,,'9',],
+    ['1',,,,,,,,,'8',],
+    ['O','2','3',,'4','5',,'6','7','O',]
 ];
 var player_pos = [[1,3]]
+var glasses = [0,1,2,3,4,5,6,7,8,9,]
 
 function change_bpm(){
-    fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
-    console.log(`update FRAMERATE:${FRAMERATE} fpb:${fpb}`);
+    new_bpm = document.getElementById('bpm').value;
+    if (new_bpm >= 1){
+        fpb = FRAMERATE/(parseInt(new_bpm)/60);
+        console.log(`update FRAMERATE:${FRAMERATE} fpb:${fpb}`);
+    }
 }
 
 function player_move(e){
     gridEl = document.getElementById('game_grid');
     var pressed = e.which || e.keyCode;
-    if(key_flag==false){
-        if(beat_shelf[5]=='0'){
+    //console.log(pressed)
+    if(!key_flag){
+        key_flag = true;
+        if(valid_flag){
             gridEl.style.color = 'lime';
-            key_flag=true;
-
+            if(bonus_flag){gridEl.style.color = 'yellow'}
             switch(pressed){
                 case 87:
-                    if(player_pos[0][0] > 0 && game_grid[player_pos[0][0]-1][player_pos[0][1]] != 'O'){
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                        player_pos[0][0] -= 1;
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                case 38:
+                    if(player_pos[0][0] > 0){
+                        if(game_grid[player_pos[0][0]-1][player_pos[0][1]] == null){
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                            player_pos[0][0] -= 1;
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                        }
+                        else if(!isNaN(game_grid[player_pos[0][0]-1][player_pos[0][1]])){console.log(glasses[parseInt(game_grid[player_pos[0][0]-1][player_pos[0][1]])])}
                     }
                     break;
                 case 83:
+                case 40:
                     if(player_pos[0][0] < 9){
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                        player_pos[0][0] += 1;
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                        if(game_grid[player_pos[0][0]+1][player_pos[0][1]] == null){
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                            player_pos[0][0] += 1;
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                        }
+                        else if(!isNaN(game_grid[player_pos[0][0]+1][player_pos[0][1]])){console.log(glasses[parseInt(game_grid[player_pos[0][0]+1][player_pos[0][1]])])}
                     }
                     break;
                 case 65:
-                    if(player_pos[0][1] > 0 && game_grid[player_pos[0][0]][player_pos[0][1]-1] != 'O'){
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                        player_pos[0][1] -= 1;
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                case 37:
+                    if(player_pos[0][1] > 0){
+                        if (game_grid[player_pos[0][0]][player_pos[0][1]-1] == null){
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                            player_pos[0][1] -= 1;
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                       }
+                        else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]-1])){console.log(glasses[parseInt(game_grid[player_pos[0][0]][player_pos[0][1]-1])])}
                     }
                     break;
                 case 68:
-                    if(player_pos[0][1] < 9 && game_grid[player_pos[0][0]][player_pos[0][1]+1] != 'O'){
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                        player_pos[0][1] += 1;
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                case 39:
+                    if(player_pos[0][1] < 9){
+                        if (game_grid[player_pos[0][0]][player_pos[0][1]+1] == null){
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                            player_pos[0][1] += 1;
+                            game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                        }
+                        else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]+1])){console.log(glasses[parseInt(game_grid[player_pos[0][0]][player_pos[0][1]+1])])}
                     }
                     break;
             }
             
-            setTimeout(function(){reset_conditions();}, 500);
+            setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
         }
         else{        
             gridEl.style.color = 'red';
-            key_flag=true;
-            setTimeout(function(){reset_conditions();}, 500);
+            setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
         }
     }
 }
@@ -98,9 +120,13 @@ function generate_upcoming_beats(){
         if(upcoming_beats[i]>=1){
             upcoming_beats.shift();
             --i;
+            valid_flag = false;
+            bonus_flag = false;
         }
         
         else{
+            if(upcoming_beats[i]>=0.8){valid_flag=true;}
+            if(upcoming_beats[i]>=0.9){bonus_flag=true;}
             var temp = parseInt(upcoming_beats[i]*6)
             if(temp<6){beat_shelf[temp] = 0}
         }
@@ -144,6 +170,9 @@ function reset_conditions() {
     key_flag = false;
 
 }
+
+
+
 console.log(`start FRAMERATE:${FRAMERATE} fpb:${fpb}`);
 document.onkeydown = player_move;
 
