@@ -21,8 +21,10 @@ var game_grid = [
 var player_pos = [[1,3]];
 var glasses = [0,0,0,0,0,0,0,0,0,0,];
 var filled_glasses = 0;
+var next_glass_counter = 0;
 var score = 0;
 var multiplier = 1.0;
+var player_glasses = [];
 
 function change_bpm(){
     new_bpm = document.getElementById('bpm').value;
@@ -55,7 +57,19 @@ function player_move(e){
                             player_pos[0][0] -= 1;
                             game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
                         }
-                        else if(!isNaN(game_grid[player_pos[0][0]-1][player_pos[0][1]])){console.log(glasses[parseInt(game_grid[player_pos[0][0]-1][player_pos[0][1]])])}
+                        else if(!isNaN(game_grid[player_pos[0][0]-1][player_pos[0][1]])){
+                            if(glasses[game_grid[player_pos[0][0]-1][player_pos[0][1]]] != 0){
+                                player_glasses.push(glasses[game_grid[player_pos[0][0]-1][player_pos[0][1]]]);
+                                glasses[game_grid[player_pos[0][0]-1][player_pos[0][1]]] = 0;
+                                filled_glasses -= 1;
+                            }
+                        }
+                        else if(game_grid[player_pos[0][0]-1][player_pos[0][1]] == 'T'){
+                            while(player_glasses.length != 0){
+                                score += player_glasses.pop()*10*multiplier;
+                                document.getElementById('player score').innerHTML = score.toFixed(1)
+                            }
+                        }
                     }
                     break;
                 case 83:
@@ -66,7 +80,19 @@ function player_move(e){
                             player_pos[0][0] += 1;
                             game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
                         }
-                        else if(!isNaN(game_grid[player_pos[0][0]+1][player_pos[0][1]])){console.log(glasses[parseInt(game_grid[player_pos[0][0]+1][player_pos[0][1]])])}
+                        else if(!isNaN(game_grid[player_pos[0][0]+1][player_pos[0][1]])){
+                            if(glasses[game_grid[player_pos[0][0]+1][player_pos[0][1]]] != 0){
+                                player_glasses.push(glasses[game_grid[player_pos[0][0]+1][player_pos[0][1]]]);
+                                glasses[game_grid[player_pos[0][0]+1][player_pos[0][1]]] = 0;
+                                filled_glasses -= 1;
+                            }
+                        }
+                        else if(game_grid[player_pos[0][0]+1][player_pos[0][1]] == 'T'){
+                            while(player_glasses.length != 0){
+                                score += player_glasses.pop()*10*multiplier;
+                                document.getElementById('player score').innerHTML = score.toFixed(1)
+                            }
+                        }
                     }
                     break;
                 case 65:
@@ -77,7 +103,19 @@ function player_move(e){
                             player_pos[0][1] -= 1;
                             game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
                        }
-                        else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]-1])){console.log(glasses[parseInt(game_grid[player_pos[0][0]][player_pos[0][1]-1])])}
+                        else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]-1])){
+                            if(glasses[game_grid[player_pos[0][0]][player_pos[0][1]-1]] != 0){
+                                player_glasses.push(glasses[game_grid[player_pos[0][0]][player_pos[0][1]-1]]);
+                                glasses[game_grid[player_pos[0][0]][player_pos[0][1]-1]] = 0;
+                                filled_glasses -= 1;
+                            }
+                        }
+                        else if(game_grid[player_pos[0][0]][player_pos[0][1]-1] == 'T'){
+                            while(player_glasses.length != 0){
+                                score += player_glasses.pop()*10*multiplier;
+                                document.getElementById('player score').innerHTML = score.toFixed(1)
+                            }
+                        }
                     }
                     break;
                 case 68:
@@ -88,7 +126,19 @@ function player_move(e){
                             player_pos[0][1] += 1;
                             game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
                         }
-                        else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]+1])){console.log(glasses[parseInt(game_grid[player_pos[0][0]][player_pos[0][1]+1])])}
+                        else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]+1])){
+                            if(glasses[game_grid[player_pos[0][0]][player_pos[0][1]+1]] != 0){
+                            player_glasses.push(glasses[game_grid[player_pos[0][0]][player_pos[0][1]+1]]);
+                            glasses[game_grid[player_pos[0][0]][player_pos[0][1]+1]] = 0;
+                            filled_glasses -= 1;
+                            }
+                        }
+                        else if(game_grid[player_pos[0][0]][player_pos[0][1]+1] == 'T'){
+                            while(player_glasses.length != 0){
+                                score += player_glasses.pop()*10*multiplier;
+                                document.getElementById('player score').innerHTML = score
+                            }
+                        }
                     }
                     break;
             }
@@ -137,7 +187,13 @@ function generate_upcoming_beats(){
             if(!key_flag){
                 multiplier = 1.0
             }
-            add_glass();
+            if(next_glass_counter == 3){
+                add_glass();
+                next_glass_counter = 0;
+            }
+            else{
+                next_glass_counter += 1;
+            }
         }
         
         else{
