@@ -647,4 +647,4 @@ app.get("/club/admin/:name/home", (req, res) => {
     })
 });
 
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+// app.listen(PORT, () => console.log(`Listening on ${PORT}`));
