@@ -213,15 +213,14 @@ function reset_conditions() {
     key_flag = false;
 
 }
-
+let x2 = Math.floor(Math.random()* game_grid.length);
+let y2 = Math.floor(Math.random()* game_grid[x2].length);
 let x = Math.floor(Math.random()* game_grid.length);
 let y = Math.floor(Math.random()* game_grid[x].length);
 var beats = 0;
-//let enemy = [[x,y]];
+
 function onCollisions() {
     gridEl = document.getElementById('game_grid');
-   // game_grid[x][y] = 'E';
-    //for (var i=0; i<9; i++){
         if ( beats == 20){
             beats = 0;
             if (y == 10) {
@@ -233,30 +232,25 @@ function onCollisions() {
             game_grid[x][y] ="E";
             game_grid[x][y-1]= null;
         } 
+        else if (beats == 10){
+            beats = beats+1;
+           if (y2 == 10) {
+               y2 = 0;
+           }
+           else {
+            y2 =y2+1;
+        }
+            game_grid[x2][y2] ="D";
+            game_grid[x2][y2-1]= null;
+        }
         else {
             beats = beats+1;
         }
+}
 
-   // for (var i=0; i<9; i++){
-        // if (beats == 10){
-        //     beats = 0;
-        //     if (y == 9) {
-        //         gridEl.innerHTML += '&nbsp;';
-        //         y = 0;
-        //     }
-        //     else {
-        //         gridEl.innerHTML += '&nbsp;';
-        //         y =y+1;
-        //         game_grid[x][y] =null;
-        //     }
-        // }
-        // else {
-        //     beats=beats+1;
-            
-        // }  
-        
-    }
-
+function attack() {
+    
+}
 
 console.log(`start FRAMERATE:${FRAMERATE} fpb:${fpb}`);
 document.onkeydown = player_move;
