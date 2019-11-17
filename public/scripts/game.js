@@ -8,7 +8,7 @@ var upcoming_beats = [];
 var beat_shelf = [,,,,,'|',];
 var game_grid = [
     ['T',,,'T',,,'T',,,'T',],
-    [,,,'P',,,,,,,],
+    [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
@@ -57,7 +57,7 @@ function player_move(e){
                             if(game_grid[player_pos[0][0]-1][player_pos[0][1]] == null){
                                 game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                                 player_pos[0][0] -= 1;
-                                game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                                //game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
                             }
                             else if(!isNaN(game_grid[player_pos[0][0]-1][player_pos[0][1]])){
                                 if(glasses[game_grid[player_pos[0][0]-1][player_pos[0][1]]] != 0){
@@ -80,7 +80,7 @@ function player_move(e){
                             if(game_grid[player_pos[0][0]+1][player_pos[0][1]] == null){
                                 game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                                 player_pos[0][0] += 1;
-                                game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                                //game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
                             }
                             else if(!isNaN(game_grid[player_pos[0][0]+1][player_pos[0][1]])){
                                 if(glasses[game_grid[player_pos[0][0]+1][player_pos[0][1]]] != 0){
@@ -103,7 +103,7 @@ function player_move(e){
                             if (game_grid[player_pos[0][0]][player_pos[0][1]-1] == null){
                                 game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                                 player_pos[0][1] -= 1;
-                                game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                                //game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
                         }
                             else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]-1])){
                                 if(glasses[game_grid[player_pos[0][0]][player_pos[0][1]-1]] != 0){
@@ -126,7 +126,7 @@ function player_move(e){
                             if (game_grid[player_pos[0][0]][player_pos[0][1]+1] == null){
                                 game_grid[player_pos[0][0]][player_pos[0][1]] = null;
                                 player_pos[0][1] += 1;
-                                game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                                //game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
                             }
                             else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]+1])){
                                 if(glasses[game_grid[player_pos[0][0]][player_pos[0][1]+1]] != 0){
@@ -183,7 +183,13 @@ function display_game_grid(){
     for(var i = 0; i<10; ++i){
         gridEl.innerHTML += '#';
         for(var j=0; j<10; ++j){
-            if(game_grid[i][j] == null){
+            if( (i == player_pos[0][0]) && (j == player_pos[0][1]) ){
+                gridEl.innerHTML += 'P';
+            }
+            /*else if( ( (i == x) && (j == y) ) || ( (i == x2) && (j == y2) ) || ( (i==third) && (j==thirdx) ) ){
+                gridEl.innerHTML += 'E'
+            }*/
+            else if(game_grid[i][j] == null){
                 gridEl.innerHTML += '&nbsp;'
             }
             else if(!isNaN(game_grid[i][j])){
