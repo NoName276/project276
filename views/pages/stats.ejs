@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>tHe ClUb: Your Stats</title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+  </head>
+  <body>
+    <div>
+    <h1>ThE ClUb</h1>
+	<button type="button" id= "backstats" onclick="window.location.href = '/club/<%= rows.stats.username %>/home';">BACK</button>
+  <p>Welcome, <%= rows.stats.username %>! This Stats page currently under construction!</p>
+  <br>
+
+  <script>
+	</script>
+
+  <table>
+  <tr>
+        <th><h2>Leaderboard Rank</h2></th>
+        <th><h3 id= "ranknum" style="color:<%= rows.color %>" ><%= rows.rank %> </h3></th>
+   </tr>
+      <tr>
+        <th><h2>Games Played</h2></th>
+        <th><h3 id="ranknum"><%= rows.stats.gamesplayed %></h3></th>
+      </tr>
+
+	  <tr>
+        <th><h2>Games Won</h2></th>
+        <th><h3><%= rows.stats.gameswon %></h3></th>
+      </tr>
+
+	  <tr>
+        <th><h2>Games Lost</h2></th>
+        <th><h3><%= rows.stats.gameslost %></h3></th>
+      </tr>
+
+	  <tr>
+        <th><h2>Games Drawn</h2></th>
+        <th><h3><%= rows.stats.gamesdrawn %></h3></th>
+      </tr>
+
+	  <tr>
+        <th><h2>High Score</h2></th>
+        <th><h3><%= rows.stats.highscore %></h3></th>
+      </tr>
+
+	  <tr>
+        <th><h2>Total Points</h2></th>
+        <th><h3><%= rows.stats.totalpoints %></h3></th>
+      </tr>
+</div>
+
+  </body>
+
+  <script></script>
+</html>

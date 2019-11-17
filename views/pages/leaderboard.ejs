@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>tHe ClUb: Leaderboard</title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/leaderboard.css">
+  </head>
+  <body>
+    <div>
+    <h1>ThE ClUb</h1>
+    <p>Welcome, <%= rows.player.username %>. Here is the Leaderboard:</p>
+	<button type="button" id= "backstats" onclick="window.location.href = '/club/<%= rows.player.username %>/home';">BACK</button>
+    <table align= "center">
+      <tr>
+        <th><h2>Rank</h2></th>
+		<th><h2>Username</h2></th>
+		<th><h2>High Score</h2></th>
+      </tr>
+      <% rows.topten.forEach((r) => { %>
+        <tr>
+          <th><%= r.rank %></th>
+		  <th><%= r.username %></th>
+		  <th><%= r.highscore %></th>
+        </tr>
+      <% }); %>
+    </table>
+	<br><br>
+	<p>Here is your standing:</p>
+	<table align= "center">
+      <tr>
+        <th><h2>Rank</h2></th>
+		<th><h2>Username</h2></th>
+		<th><h2>High Score</h2></th>
+      </tr>
+	  <tr>
+          <th><%= rows.player.rank %></th>
+		  <th><%= rows.player.username %></th>
+		  <th><%= rows.player.highscore %></th>
+        </tr>
+</div>
+  </body>
+
+  <script></script>
+</html>
