@@ -1,4 +1,4 @@
-var FRAMERATE = 30;
+var FRAMERATE = 5;
 var fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
 var beat_offset = 0;
 var valid_flag = false;
@@ -26,6 +26,22 @@ var score = 0;
 var multiplier = 1.0;
 var player_glasses = [];
 var last_player_move = 0;
+let x2 = Math.floor(Math.random()* 4) + 2;
+let y2 = Math.floor(Math.random()* game_grid[x2].length);
+let x = Math.floor(Math.random()* 4) + 2;
+let y = Math.floor(Math.random()* game_grid[x].length);
+let third = Math.floor(Math.random()*1)+7;
+let thirdx = Math.floor(Math.random()*7)+2;
+
+var beats = 0;
+if (x == x2){
+    if (x<=6){
+        x =x+1;
+    }
+    else{
+        x2=x2+1;
+    }
+}
 
 function change_bpm(){
     new_bpm = document.getElementById('bpm').value;
@@ -204,6 +220,7 @@ function generate_upcoming_beats(){
     for(var i=0; i<upcoming_beats.length; ++i){
         upcoming_beats[i] += 1/fpb;
         if(upcoming_beats[i]>=1){
+            onCollisions();
             upcoming_beats.shift();
             --i;
             valid_flag = false;
@@ -256,9 +273,9 @@ function generate_upcoming_beats(){
 }
 
 function game_loop(){
+    attack();
     display_game_grid();
     generate_upcoming_beats();
-    onCollisions();
     document.getElementById('player mult').innerHTML = 'x' + multiplier.toFixed(1);
     beat_offset += 1;
     while(beat_offset>=fpb){beat_offset -= fpb;}
@@ -293,52 +310,60 @@ function reset_conditions() {
     key_flag = false;
 
 }
-let x2 = Math.floor(Math.random()* 4) + 2;
-let y2 = Math.floor(Math.random()* game_grid[x2].length);
-let x = Math.floor(Math.random()* 4) + 2;
-let y = Math.floor(Math.random()* game_grid[x].length);
-if (x == x2){
-    if (x<=6){
-        x =x+1;
-    }
-    else{
-        x2=x2+1;
-    }
-}
-var beats = 0;
-//range 2-6
+
 function onCollisions() {
     gridEl = document.getElementById('game_grid');
-        if ( beats == 25){
-            beats = 0;
-            if (y == 10) {
-                y = 0;
-            }
-            else {
-                y =y+1;
-            }
-            game_grid[x][y] ="E";
-            game_grid[x][y-1]= null;
-        } 
-        else if (beats == 10){
-            beats = beats+1;
-           if (y2 == 10) {
-               y2 = 0;
-           }
-           else {
-            y2 =y2+1;
-        }
-            game_grid[x2][y2] ="D";
-            game_grid[x2][y2-1]= null;
+    if (y2 == 10) {
+        y2 = 0;
+    }
+    else {
+    y2 =y2+1;
+    }
+    game_grid[x2][y2] ="E";
+    game_grid[x2][y2-1]= null;
+    if (thirdx == 8){
+        game_grid[third][thirdx]=null;
+        thirdx = 1;
+    }
+    else{
+        thirdx = thirdx +1;
+    }
+    game_grid[third][thirdx] ="E";
+    if (thirdx != 1){
+        game_grid[third][thirdx-1]= null;
+    }
+
+    if ( beats == 1){
+        beats = 0;
+        if (y == 10) {
+            y = 0;
         }
         else {
-            beats = beats+1;
+            y =y+1;
         }
+        game_grid[x][y] ="E";
+        game_grid[x][y-1]= null;
+    } 
+    else {
+        beats = beats+1;
+    }    
 }
 
 function attack() {
-    if (player_pos == game_grid[x][y] || player_pos == game_grid[x2][y2]){
+  //  console.log(player_pos[0], [x,y])
+    if (player_pos[0][0] == x && player_pos[0][1] == y){
+        player_pos[0] = [x+1, y];
+      //  console.log('fight me');
         
+    }
+    if (player_pos[0][0] == x2 && player_pos[0][1] == y2){
+        player_pos[0] = [x2+1,y2];
+
+    }
+    if (player_pos[0][0] == third && player_pos[0][1] == thirdx){
+        player_pos[0] = [third+1 ,thirdx];
+
+
     }
 
 }

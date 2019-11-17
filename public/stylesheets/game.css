@@ -11,7 +11,7 @@ h1 {
 }   
 #game_grid {
     color: blue;
-    font-size: 120%;
+    font-size: 150%;
     font-family: monospace !important;
     letter-spacing: 4em;
     line-height: 170%;
@@ -37,13 +37,13 @@ p {
     margin: .5%;
 }
 #score{
-    margin-left: 12%;
+    margin-left: 10%;
 }
 #m {
     margin-left: 6%;
 }
 #bpm {
-    margin-left: 6%;
+    margin-left: 4%;
 }
 .button{
     border: 6px solid  #183E61;
