@@ -9,12 +9,12 @@
   <body>
   <div>
     <h1>ThE ClUb</h1>
-    <p>Delete a user?</p>
+    <p>Delete a user? <%=user.name%> </p>
 
-<form action="/deleted" method="POST">
+<form action="/<%=user.name%>/deleted" method="POST">
   <input type="text" placeholder="Username" name="username">
 </div>
-  <button class="button" type ="submit" onclick="window.location = '/deleted';">DONE</button>
+  <button class="button" type ="submit" onclick="window.location = '/<%=user.name%>/deleted';">DONE</button>
 </form>
 
   </body>
