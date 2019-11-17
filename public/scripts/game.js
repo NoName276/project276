@@ -1,4 +1,4 @@
-var FRAMERATE = 2;
+var FRAMERATE = 30;
 var fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
 var beat_offset = 0;
 var valid_flag = false;
@@ -100,7 +100,8 @@ function player_move(e){
             multiplier = 1.0;
             setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
         }
-    }
+   }
+   e.preventDefault();
 }
 
 function display_game_grid(){
@@ -213,15 +214,23 @@ function reset_conditions() {
     key_flag = false;
 
 }
-let x2 = Math.floor(Math.random()* game_grid.length);
+let x2 = Math.floor(Math.random()* 4) + 2;
 let y2 = Math.floor(Math.random()* game_grid[x2].length);
-let x = Math.floor(Math.random()* game_grid.length);
+let x = Math.floor(Math.random()* 4) + 2;
 let y = Math.floor(Math.random()* game_grid[x].length);
+if (x == x2){
+    if (x<=6){
+        x =x+1;
+    }
+    else{
+        x2=x2+1;
+    }
+}
 var beats = 0;
-
+//range 2-6
 function onCollisions() {
     gridEl = document.getElementById('game_grid');
-        if ( beats == 20){
+        if ( beats == 25){
             beats = 0;
             if (y == 10) {
                 y = 0;
