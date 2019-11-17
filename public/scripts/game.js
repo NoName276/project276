@@ -258,6 +258,9 @@ function onCollisions() {
 }
 
 function attack() {
+    if (player_pos == game_grid[x][y] || player_pos == game_grid[x2][y2]){
+        
+    }
 
 }
 
