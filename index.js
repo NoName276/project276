@@ -10,10 +10,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
-app.get('/', (req, res) => res.render('pages/index'))
+// app.get('/', (req, res) => res.render('pages/index'))
 app.get('/hello', (req, res) => res.send('Hello There!'))
 app.get('/test', (req, res) => res.send('test'))
-app.listen(PORT, () => console.log(`Listening on ${PORT}`))
+// app.listen(PORT, () => console.log(`Listening on ${PORT}`))
 
 app.get('/register', async (req, res) => {  //loads registerform
     try {
@@ -22,15 +22,17 @@ app.get('/register', async (req, res) => {  //loads registerform
         console.error(err);
         res.send("Error " + err);
     }
+})    
 var pool = new Pool({
     ssl: true,
-    connectionString: process.env.DATABASE_URL
+    // connectionString: process.env.DATABASE_URL
+    connectionString:"postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
 });
-var app = express();
-app.use(express.urlencoded());
-app.use(express.static(path.join(__dirname, 'public')));
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+// var app = express();
+// app.use(express.urlencoded());
+// app.use(express.static(path.join(__dirname, 'public')));
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'ejs');
 app.get('/', (req, res) => res.render("pages/club", {"props": {loginFailed: false}}));
 app.get('/hello', (req, res) => res.send('Hello There!'));
 
@@ -302,7 +304,9 @@ app.post('/playing', (req,res) => {
             queryData.duration = data.body.track.duration;
             queryData.tempo = data.body.track.tempo;
             // res.send(queryData)
-            res.render('pages/playing', queryData)
+
+            // res.render('pages/playing', queryData)
+            res.render('pages/game', queryData)
         }, function(err) {
             // done(err);
             console.log(err)
@@ -647,4 +651,6 @@ app.get("/club/admin/:name/home", (req, res) => {
     })
 });
 
-// app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+// })

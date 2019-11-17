@@ -10,6 +10,13 @@
 	</head>
 
 	<body>
+            <h1>Now Playing: </h1>
+            <p> Title: <%= name %> </p>
+            <p> Artist: <%= artist %> </p>
+            <p> Tempo: <%= tempo %> </p>
+            <p> Duration: <%= duration %> </p>
+            <p> Song Uri: <%= uri %> </p>
+            <p> Token: <%= accessToken %> </p>
             <div>
                 <h1 id="game_grid">
                     ############<br>
@@ -32,7 +39,7 @@
                 </h1>
             </div>
             <form>
-                <input type="number" id="bpm" value='60'/>
+                <input type="number" id="bpm" value='<%= tempo %>'/>
                 <input type="button" value="change bpm" onclick="change_bpm()" />
             </form>
 	</body>
