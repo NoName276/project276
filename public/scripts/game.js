@@ -44,7 +44,7 @@ function player_move(e){
         if(valid_flag){
             gridEl.style.color = 'lime';
             if(bonus_flag){
-                gridEl.style.color = 'yellow';                
+                gridEl.style.color = 'orange';                
                 if(multiplier < 2.0){
                     multiplier += 0.1;
                 }
@@ -173,7 +173,8 @@ function player_move(e){
             }
             setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
         }
-    }
+   }
+   e.preventDefault();
 }
 
 function display_game_grid(){
@@ -257,6 +258,7 @@ function generate_upcoming_beats(){
 function game_loop(){
     display_game_grid();
     generate_upcoming_beats();
+    onCollisions();
     document.getElementById('player mult').innerHTML = 'x' + multiplier.toFixed(1);
     beat_offset += 1;
     while(beat_offset>=fpb){beat_offset -= fpb;}
@@ -291,8 +293,55 @@ function reset_conditions() {
     key_flag = false;
 
 }
+let x2 = Math.floor(Math.random()* 4) + 2;
+let y2 = Math.floor(Math.random()* game_grid[x2].length);
+let x = Math.floor(Math.random()* 4) + 2;
+let y = Math.floor(Math.random()* game_grid[x].length);
+if (x == x2){
+    if (x<=6){
+        x =x+1;
+    }
+    else{
+        x2=x2+1;
+    }
+}
+var beats = 0;
+//range 2-6
+function onCollisions() {
+    gridEl = document.getElementById('game_grid');
+        if ( beats == 25){
+            beats = 0;
+            if (y == 10) {
+                y = 0;
+            }
+            else {
+                y =y+1;
+            }
+            game_grid[x][y] ="E";
+            game_grid[x][y-1]= null;
+        } 
+        else if (beats == 10){
+            beats = beats+1;
+           if (y2 == 10) {
+               y2 = 0;
+           }
+           else {
+            y2 =y2+1;
+        }
+            game_grid[x2][y2] ="D";
+            game_grid[x2][y2-1]= null;
+        }
+        else {
+            beats = beats+1;
+        }
+}
 
+function attack() {
+    if (player_pos == game_grid[x][y] || player_pos == game_grid[x2][y2]){
+        
+    }
 
+}
 
 console.log(`start FRAMERATE:${FRAMERATE} fpb:${fpb}`);
 document.onkeydown = player_move;
