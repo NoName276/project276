@@ -69,7 +69,7 @@ function player_move(e){
                             else if(game_grid[player_pos[0][0]-1][player_pos[0][1]] == 'T'){
                                 while(player_glasses.length != 0){
                                     score += player_glasses.pop()*10*multiplier;
-                                    document.getElementById('player score').innerHTML = score.toFixed(1)
+                                    document.getElementById('player score').innerHTML = score.toFixed(0)
                                 }
                             }
                         }
@@ -92,7 +92,7 @@ function player_move(e){
                             else if(game_grid[player_pos[0][0]+1][player_pos[0][1]] == 'T'){
                                 while(player_glasses.length != 0){
                                     score += player_glasses.pop()*10*multiplier;
-                                    document.getElementById('player score').innerHTML = score.toFixed(1)
+                                    document.getElementById('player score').innerHTML = score.toFixed(0)
                                 }
                             }
                         }
@@ -115,7 +115,7 @@ function player_move(e){
                             else if(game_grid[player_pos[0][0]][player_pos[0][1]-1] == 'T'){
                                 while(player_glasses.length != 0){
                                     score += player_glasses.pop()*10*multiplier;
-                                    document.getElementById('player score').innerHTML = score.toFixed(1)
+                                    document.getElementById('player score').innerHTML = score.toFixed(0)
                                 }
                             }
                         }
@@ -138,7 +138,7 @@ function player_move(e){
                             else if(game_grid[player_pos[0][0]][player_pos[0][1]+1] == 'T'){
                                 while(player_glasses.length != 0){
                                     score += player_glasses.pop()*10*multiplier;
-                                    document.getElementById('player score').innerHTML = score
+                                    document.getElementById('player score').innerHTML = score.toFixed(0)
                                 }
                             }
                         }
