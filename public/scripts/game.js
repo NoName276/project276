@@ -42,7 +42,7 @@ function player_move(e){
     if(!key_flag){
         key_flag = true;
         if(valid_flag){
-            gridEl.style.color = 'lime';
+            gridEl.style.color = 'green';
             if(bonus_flag){
                 gridEl.style.color = 'orange';                
                 if(multiplier < 2.0){
