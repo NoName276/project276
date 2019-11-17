@@ -1,4 +1,4 @@
-var FRAMERATE = 30;
+var FRAMERATE = 2;
 var fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
 var beat_offset = 0;
 var valid_flag = false;
@@ -41,7 +41,7 @@ function player_move(e){
         if(valid_flag){
             gridEl.style.color = 'lime';
             if(bonus_flag){
-                gridEl.style.color = 'yellow';                
+                gridEl.style.color = 'orange';                
                 if(multiplier < 2.0){
                     multiplier += 0.1;
                 }
@@ -249,7 +249,7 @@ function onCollisions() {
 }
 
 function attack() {
-    
+
 }
 
 console.log(`start FRAMERATE:${FRAMERATE} fpb:${fpb}`);

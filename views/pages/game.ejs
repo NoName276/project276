@@ -2,7 +2,8 @@
 
 <html>
 	<head>
-		<title>Club Game Prototype</title>
+        <title>Club Game Prototype</title>
+        <link href='https://fonts.googleapis.com/css?family=Monofett' rel='stylesheet'>        
 
 		<link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
 
@@ -10,34 +11,37 @@
 	</head>
 
 	<body>
-            <div>
-                <h1 class ="row" id="game_grid">
-                    <div class="top ">############<br></div>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    <div class="bottom">############<br>
-                    <br></div>
-                    <div>------------<br></div>
-                    <div>00000||00000<br></div>
-                    <div>------------<br></div>
-                
-                </h1>
-            </div>
-            <form>
-                <input type="number" id="bpm" value='60'/>
-                <input type="button" value="change bpm" onclick="change_bpm()" />
-                <p>Score:</p>
+        <h1>The Club</h1>
+        <form class= "form">
+               
+                <p id="score">Score:</p>
                 <p id="player score">0</p>
-                <p>Multiplier:</p>
+                <p id="m">Multiplier:</p>
                 <p id="player mult">x1.0</p>
+                <input type="number" class ="bpm" id="bpm" value='60'/>
+                <input class="button" type="button" value="change bpm" onclick="change_bpm()" />
             </form>
+        <div class= "main">
+            <div class ="row" id="game_grid">
+                    <div id= "col1"class="top ">############</div><br>
+                    #<div id= "col1">0000000000</div>#<br>
+                    #<div id= "col1">0000000000</div>#<br>
+                    #<div id= "col1">0000000000</div>#<br>
+                    #<div id= "col1">0000000000</div>#<br>
+                    #<div id= "col1">0000000000</div>#<br>  
+                    #<div id= "col1">0000000000</div>#<br>
+                    #<div id= "col1">0000000000</div>#<br>
+                    #<div id= "col1">0000000000</div>#<br>
+                    #<div id= "col1">0000000000</div>#<br>
+                    #<div id= "col1">0000000000</div>#<br>
+                    <div id= "col1" class="bottom">############<br>
+                    <br id= "col1" ></div>
+                    <div id= "col1" >------------<br></div>
+                    <div id= "col1"> 00000||00000<br></div>
+                    <div id= "col1">------------<br></div>
+                </div>
+            </div>
+
+
 	</body>
 </html>
