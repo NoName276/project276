@@ -6,19 +6,27 @@
 
 		<link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
 
-		<script async type="text/javascript" src="/scripts/game.js"></script> 
+        <script async type="text/javascript" src="/scripts/game.js"></script> 
+        <style>
+            #gamediv {
+                display: inline-block;
+            }
+            #musicdiv{
+                display: inline-block;
+            }
+        </style>
 	</head>
 
 	<body>
             <h1>Now Playing: <%= name %> by <%= artist %></h1>
-            <iframe src="https://open.spotify.com/embed/track/<%= uri %>" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+            
             <!-- <p> Title: <%= name %> </p>
             <p> Artist: <%= artist %> </p>
             <p> Tempo: <%= tempo %> </p> -->
             <p> Duration: <%= duration %> </p>
             <p> Song Uri: <%= uri %> </p>
             <p> Token: <%= accessToken %> </p>
-            <div>
+            <div id="gamediv">
                 <h1 id="game_grid">
                     ############<br>
                     #0000000000#<br>
@@ -39,6 +47,10 @@
                 
                 </h1>
             </div>
+            <div id="musicdiv">
+                <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeID" width="350" height="470" align="right" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+            </div>
+
             <form>
                 <input type="number" id="bpm" value='<%= tempo %>'/>
                 <input type="button" value="change bpm" onclick="change_bpm()" />
@@ -47,58 +59,6 @@
 
             <script src="https://sdk.scdn.co/spotify-player.js"></script>
             <script>
-                    // Called when the Spotify Web Playback SDK is ready to use
-                    window.onSpotifyWebPlaybackSDKReady = () => {
-                  
-                      // Define the Spotify Connect device, getOAuthToken has an actual token 
-                      // hardcoded for the sake of simplicity
-                      var player = new Spotify.Player({
-                        name: 'Game Music Player',
-                        getOAuthToken: callback => {
-                          callback('<%= accessToken %>');
-                        },
-                        volume: 1.0
-                      });
-                  
-                      // Called when connected to the player created beforehand successfully
-                      player.addListener('ready', ({ device_id }) => {
-                        console.log('Ready with Device ID', device_id);
-                  
-                        const play = ({
-                          spotify_uri,
-                          playerInstance: {
-                            _options: {
-                              getOAuthToken,
-                              id
-                            }
-                          }
-                        }) => {
-                          getOAuthToken(access_token => {
-                            fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-                              method: 'PUT',
-                              body: JSON.stringify({ uris: [spotify_uri] }),
-                              headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${access_token}`
-                              },
-                            });
-                          });
-                        };
-                  
-                        play({
-                          playerInstance: player,
-                          spotify_uri: 'spotify:track:<%= accessToken %>',
-                        //   spotify_uri: 'spotify:track:7xGfFoTpQ2E7fRF5lN10tr',
-                        });
-                      });
-                  
-                      // Connect to the player created beforehand, this is equivalent to 
-                      // creating a new device which will be visible for Spotify Connect
-                      player.connect();
-                    };
-            </script>
-
-            <!-- <script>
                 window.onSpotifyWebPlaybackSDKReady = () => {
                     const token = '<%= accessToken %>';
                     console.log(token)
@@ -144,7 +104,6 @@
                             spotify_uri: 'spotify:track:7xGfFoTpQ2E7fRF5lN10tr',
                         });
                     });
-                
 
                     // Not Ready
                     player.addListener('not_ready', ({ device_id }) => {
@@ -154,7 +113,21 @@
                     // Connect to the player!
                     player.connect();
                 };
-            </script> -->
+            </script>
 
+            <script>
+                var iframe = document.getElementById('iframeID');
+                var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                console.log(iframe)
+                console.log(innerDoc)
+
+                // var innerDoc = iframe.contentDocument.document.getElementByClassName("b8 b9 ba ao bb bc bd be bf bg bh bi bj").addEventListener('click', function() {
+                //     console.log("START GAME")
+                // })
+                // console.log(innerDoc)
+                // innerDoc.getElementByClassName("b8 b9 ba ao bb bc bd be bf bg bh bi bj").addEventListener('click', function() {
+                //     console.log("START GAME")
+                // })
+            </script>
 	</body>
 </html>
