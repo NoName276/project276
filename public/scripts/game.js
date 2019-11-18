@@ -1,4 +1,4 @@
-var FRAMERATE = 30;
+var FRAMERATE = 1;
 var fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
 var beat_offset = 0;
 var valid_flag = false;
