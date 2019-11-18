@@ -325,4 +325,21 @@ app.get("/club/admin/:name/home", (req, res) => {
     })
 });
 
+app.get("/club/admin/:name/leaderboard", (req, res) => {
+    var name = req.params.name;
+    let loadLeaderboard = `SELECT *, RANK() OVER (ORDER BY highscore DESC) FROM stats;`;
+    pool.query(loadLeaderboard, (error, result) => {
+        if (error) {
+            res.send(error);
+            console.log(error);
+        }
+        //var results = { 'rows': result.rows };
+        var results = {};
+        results.player = name;
+        results.board = result.rows;
+        console.log(results.board);
+        res.render('pages/adminleaderboard', { 'rows': results });
+    })
+});
+
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
