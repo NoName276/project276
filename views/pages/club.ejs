@@ -7,6 +7,19 @@
 </head>
 <title>The Club</title>
     <body> 
+        <div class ="outter">
+            <ul class="box">
+            <li> </li>
+            <li> </li>
+            <li> </li>
+            <li> </li>
+            <li> </li>
+            <li> </li>
+            <li> </li>
+            <li> </li>
+            <li> </li>
+        </ul>
+        </div>
         <h1 >The Club</h1>
         <form type="submit" action="/club/home" method="POST" id="homeForm" class="<%= props.loginFailed || props.regFailed || props.login ? 'hide' : '';  %>">
             <button type="button" class="button" id="button1" onclick="showForm('loginForm');" onclick="hideForm('homeForm');">Login </button>
@@ -14,7 +27,7 @@
         </form>
             <p class="error"><%= props.loginFailed ? 'Invalid Username or Password.' : ''; %></p>
             <p class="notice"><%= props.login ? 'registration successful' : ''; %></p>
-        <form type="submit" action="/club/login" method="GET" id="loginForm" class="<%= props.loginFailed || props.login ? '' : 'hide';  %>">
+        <form type="submit" action="/club/login" method="POST" id="loginForm" class="<%= props.loginFailed || props.login ? '' : 'hide';  %>">
             <div id="input">
                 <table id="table1">
                     <tbody id="logintable">
