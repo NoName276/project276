@@ -202,9 +202,9 @@ function display_game_grid(){
             if( (i == player_pos[0][0]) && (j == player_pos[0][1]) ){
                 gridEl.innerHTML += 'P';
             }
-            /*else if( ( (i == x) && (j == y) ) || ( (i == x2) && (j == y2) ) || ( (i==third) && (j==thirdx) ) ){
+            else if( ( (i == x) && (j == y) ) || ( (i == x2) && (j == y2) ) || ( (i==third) && (j==thirdx) ) ){
                 gridEl.innerHTML += 'E'
-            }*/
+            }
             else if(game_grid[i][j] == null){
                 gridEl.innerHTML += '&nbsp;'
             }
@@ -325,8 +325,8 @@ function onCollisions() {
     else {
     y2 =y2+1;
     }
-    game_grid[x2][y2] ="E";
-    game_grid[x2][y2-1]= null;
+    /*game_grid[x2][y2] ="E";
+    game_grid[x2][y2-1]= null;*/
     if (thirdx == 8){
         game_grid[third][thirdx]=null;
         thirdx = 1;
@@ -334,10 +334,10 @@ function onCollisions() {
     else{
         thirdx = thirdx +1;
     }
-    game_grid[third][thirdx] ="E";
+    /*game_grid[third][thirdx] ="E";
     if (thirdx != 1){
         game_grid[third][thirdx-1]= null;
-    }
+    }*/
 
     if ( beats == 1){
         beats = 0;
@@ -347,8 +347,8 @@ function onCollisions() {
         else {
             y =y+1;
         }
-        game_grid[x][y] ="E";
-        game_grid[x][y-1]= null;
+        /*game_grid[x][y] ="E";
+        game_grid[x][y-1]= null;*/
     } 
     else {
         beats = beats+1;
