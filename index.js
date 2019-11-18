@@ -39,9 +39,9 @@ app.get('/hello', (req, res) => res.send('Hello There!'));
 app.get('/play', (req,res) => {
   res.render("pages/play")
 })
-app.get('/game', (req,res) => {
-  res.render("pages/game")
-})
+// app.get('/game', (req,res) => {
+//   res.render("pages/game")
+// })
 
 /*  IN CASE WE WANT TO REVERT BACK TO THESE DELETE VERSIONS
  * 
@@ -329,7 +329,7 @@ var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Y
 // var redirect_uri =  'http://localhost:8888/callback'; // 'REDIRECT_URI'; // Your redirect uri
 var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
 // var redirect_uri =  'https://server-simulator.herokuapp.com/callback'; // 'REDIRECT_URI'; // Your redirect uri
-
+var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
 
 /**
  * Generates a random string containing numbers and letters
