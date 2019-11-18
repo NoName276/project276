@@ -7,40 +7,143 @@
 
 		<link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
 
-		<script async type="text/javascript" src="/scripts/game.js"></script> 
+        <script async type="text/javascript" src="/scripts/game.js"></script> 
+        <style>
+            /* #musicdiv{
+                margin: auto;
+                width: 50%;
+            } */
+        </style>
 	</head>
 
 	<body>
-        <h1>The Club</h1>
-        <form class= "form">
-               
-                <p id="score">Score:</p>
-                <p id="player score">0</p>
-                <p id="m">Multiplier:</p>
-                <p id="player mult">x1.0</p>
-                <input type="number" class ="bpm" id="bpm" value='60'/>
-                <input class="button" type="button" value="change bpm" onclick="change_bpm()" />
-            </form>
-        <div class= "main">
-            <div class ="row" id="game_grid">
-                    <div id= "col1"class="top ">############</div><br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>  
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    #<div id= "col1">0000000000</div>#<br>
-                    <div id= "col1" class="bottom">############<br>
-                    <br id= "col1" ></div>
-                    <div id= "col1" >------------<br></div>
-                    <div id= "col1"> 00000||00000<br></div>
-                    <div id= "col1">------------<br></div>
+            <h1>The Club</h1>
+            <h1>Now Playing: <%= name %> by <%= artist %></h1>
+            <p> Duration: <%= duration %> </p>
+            <p> Song Uri: <%= uri %> </p>
+            <p> Token: <%= accessToken %> </p>
+
+            <form class= "form">
+                   
+                    <p id="score">Score:</p>
+                    <p id="player score">0</p>
+                    <p id="m">Multiplier:</p>
+                    <p id="player mult">x1.0</p>
+                    <input type="number" class ="bpm" id="bpm" value='<%= tempo %>'/>
+                    <input class="button" type="button" value="change bpm" onclick="change_bpm()" />
+                </form>
+
+            <div class= "main" id="gamediv">
+                <div class ="row" id="game_grid">
+                        <div id= "col1"class="top ">############</div><br>
+                        #<div id= "col1">0000000000</div>#<br>
+                        #<div id= "col1">0000000000</div>#<br>
+                        #<div id= "col1">0000000000</div>#<br>
+                        #<div id= "col1">0000000000</div>#<br>
+                        #<div id= "col1">0000000000</div>#<br>  
+                        #<div id= "col1">0000000000</div>#<br>
+                        #<div id= "col1">0000000000</div>#<br>
+                        #<div id= "col1">0000000000</div>#<br>
+                        #<div id= "col1">0000000000</div>#<br>
+                        #<div id= "col1">0000000000</div>#<br>
+                        <div id= "col1" class="bottom">############<br>
+                        <br id= "col1" ></div>
+                        <div id= "col1" >------------<br></div>
+                        <div id= "col1"> 00000||00000<br></div>
+                        <div id= "col1">------------<br></div>
+                    </div>
                 </div>
+            <div id="musicdiv" align="center">
+                    <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()"></iframe>
             </div>
+
+ 
+            <!-- <form>
+                <input type="number" id="bpm" value='<%= tempo %>'/>
+                <input type="button" value="change bpm" onclick="change_bpm()" />
+            </form> -->
+            
+            <script src="https://sdk.scdn.co/spotify-player.js"></script>
+            <script>
+                window.onSpotifyWebPlaybackSDKReady = () => {
+                    const token = '<%= accessToken %>';
+                    console.log(token)
+                    const player = new Spotify.Player({
+                        name: 'Game Music Player',
+                        getOAuthToken: cb => { cb(token); }
+                    });
+
+                    // Error handling
+                    player.addListener('initialization_error', ({ message }) => { console.error(message); });
+                    player.addListener('authentication_error', ({ message }) => { console.error(message); });
+                    player.addListener('account_error', ({ message }) => { console.error(message); });
+                    player.addListener('playback_error', ({ message }) => { console.error(message); });
+
+                    // Playback status updates
+                    player.addListener('player_state_changed', state => { console.log(state); });
+
+                    // Ready
+                    player.addListener('ready', ({ device_id }) => {
+                        console.log('Ready with Device ID', device_id);
+                        const play = ({
+                            spotify_uri,
+                            playerInstance: {
+                                _options: {
+                                    getOAuthToken,
+                                    id
+                                }
+                            }
+                        }) => {
+                            getOAuthToken(access_token => {
+                                fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
+                                    method: 'PUT',
+                                    body: JSON.stringify({ uris: [spotify_uri] }),
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${access_token}`
+                                    },
+                                });
+                            });
+                        };
+                        play({
+                            playerInstance: player,
+                            spotify_uri: 'spotify:track:7xGfFoTpQ2E7fRF5lN10tr',
+                        });
+                    });
+
+                    // Not Ready
+                    player.addListener('not_ready', ({ device_id }) => {
+                        console.log('Device ID has gone offline', device_id);
+                    });
+
+                    // Connect to the player!
+                    player.connect();
+                };
+            </script>
+
+            <script>
+                function access() {
+                    // console.log("hello")
+                    var iframe = document.getElementById('iframeId');
+                    var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    console.log(innerDoc)
+                }
+
+                // var iframe = document.getElementById('iframeId');
+                // var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                // console.log(iframe)
+                // console.log(innerDoc)
+                // console.log(innerDoc.getElementByClassName("b8 b9 ba ao bb bc bd be bf bg bh bi bj"))
+
+                // var innerDoc = iframe.contentDocument.document.getElementByClassName("b8 b9 ba ao bb bc bd be bf bg bh bi bj").addEventListener('click', function() {
+                //     console.log("START GAME")
+                // })
+                // console.log(innerDoc)
+                // innerDoc.getElementByClassName("b8 b9 ba ao bb bc bd be bf bg bh bi bj").addEventListener('click', function() {
+                //     console.log("START GAME")
+                // })
+            </script>
+        
 
 
 	</body>
