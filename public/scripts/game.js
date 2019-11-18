@@ -360,21 +360,16 @@ function attack() {
     if (player_pos[0][0] == x && player_pos[0][1] == y){
         player_pos[0] = [x+1, y];
         if(player_glasses.length > 0){player_glasses.pop();}
-      //  console.log('fight me');
-        
+      //  console.log('fight me');       
     }
     if (player_pos[0][0] == x2 && player_pos[0][1] == y2){
         player_pos[0] = [x2+1,y2];
         if(player_glasses.length > 0){player_glasses.pop();}
-
     }
     if (player_pos[0][0] == third && player_pos[0][1] == thirdx){
         player_pos[0] = [third+1 ,thirdx];
         if(player_glasses.length > 0){player_glasses.pop();}
-
-
     }
-
 }
 
 console.log(`start FRAMERATE:${FRAMERATE} fpb:${fpb}`);
