@@ -3,6 +3,11 @@ const path = require('path')
 var SpotifyWebApi = require('spotify-web-api-node');
 const PORT = process.env.PORT || 5000
 const { Pool } = require('pg');
+var app = express();
+// variables for socket.io
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+server.listen(80);
 
 var app = express()
 app.use(express.static(path.join(__dirname, 'public')))
@@ -22,7 +27,7 @@ app.get('/register', async (req, res) => {  //loads registerform
         console.error(err);
         res.send("Error " + err);
     }
-})    
+})
 var pool = new Pool({
     ssl: true,
     connectionString: process.env.DATABASE_URL
@@ -44,8 +49,8 @@ app.get('/game', (req,res) => {
 })
 
 /*  IN CASE WE WANT TO REVERT BACK TO THESE DELETE VERSIONS
- * 
- * 
+ *
+ *
 app.get('/delete', (req, res) => res.render('pages/delete'))
 app.get('/deleted', (req, res) => res.render('pages/admin'))
 app.post('/deleted', (req, res) => {
@@ -69,8 +74,8 @@ app.post('/deleted', (req, res) => {
         });
     });
 });
- * 
- * 
+ *
+ *
  */
 
 
@@ -111,6 +116,26 @@ app.post('/:name/deleted', (req, res) => {
     });
 });
 
+// creating and joining rooms
+const rooms = { name:{} }
+const users = {  }
+app.get('/lobby', (req, res) => {
+  res.render('pages/lobby', { rooms: rooms })
+})
+app.post('/room', (req, res) => {
+  if(rooms[req.body.room] != null) {
+    return res.redirect('pages/lobby')
+  }
+  rooms[req.body.room] = { users: {} }
+  res.redirect(req.body.room)
+  io.emit('room-created', req.body.room)
+})
+app.get('/:room', (req, res) => {
+  io.emit('user-joined', "hello")
+  res.render('pages/room', { roomName: req.params.room, users: users })
+})
+
+//registration and login
 app.post('/club/reg', (req,res) => {        // loads new reg to database +check if username already exist
   console.log(req.body);
   let body = req.body;
@@ -462,7 +487,7 @@ request.post(authOptions, function(error, response, body) {
 });
 
 // app.get('/playing', (req,res) => {
-    
+
 //     var spotifyApi = new SpotifyWebApi({
 //         clientId: '76399d6d66784fbd9b089a5363553e47',
 //         clientSecret: '5d6ec7245f5a4902af2f5b40c6315a63',
@@ -541,7 +566,7 @@ request.post(authOptions, function(error, response, body) {
 //   }, function(err) {
 //     done(err);
 // });
-  
+
 // spotifyApi.getTrack('0rKtyWc8bvkriBthvHKY8d')
 //   .then(function(data) {
 //     console.log(data.body.name);
@@ -559,7 +584,7 @@ request.post(authOptions, function(error, response, body) {
 //   }, function(err) {
 //     done(err);
 // });
-  
+
 // spotifyApi.getTrack(trackURIFormatted)
 //   .then(function(data) {
 //     console.log(data.body.name);
