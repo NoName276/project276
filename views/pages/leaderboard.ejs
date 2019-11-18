@@ -10,14 +10,14 @@
     <div>
     <h1>ThE ClUb</h1>
     <p>Welcome, <%= rows.player.username %>. Here is the Leaderboard:</p>
-	<button type="button" id= "backstats" onclick="window.location.href = '/club/<%= rows.player.username %>/home';">BACK</button>
+	<button type="button" id= "backlead" onclick="window.location.href = '/club/<%= rows.player.username %>/home';">BACK</button>
     <table align= "center">
       <tr>
         <th><h2>Rank</h2></th>
 		<th><h2>Username</h2></th>
 		<th><h2>High Score</h2></th>
       </tr>
-      <% rows.forEach((r) => { %>
+      <% rows.topten.forEach((r) => { %>
         <tr>
           <th><%= r.rank %></th>
 		  <th><%= r.username %></th>
