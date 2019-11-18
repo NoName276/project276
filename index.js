@@ -647,7 +647,7 @@ app.get("/club/admin/:name/home", (req, res) => {
         var results = {};
         results.users = result.rows;
         results.name = name;
-        res.render('pages/admin', { 'rows' : results })  // load admin page for admins
+        res.render('pages/admin', { 'rows': results })  // load admin page for admins
     })
 });
 

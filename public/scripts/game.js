@@ -1,75 +1,196 @@
 var FRAMERATE = 30;
 var fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
 var beat_offset = 0;
+var valid_flag = false;
+var bonus_flag =false;
 var key_flag = false;
 var upcoming_beats = [];
 var beat_shelf = [,,,,,'|',];
 var game_grid = [
-    ['O',,,'O',,,'O',,,'O',],
-    [,,,'P',,,,,,,],
+    ['T',,,'T',,,'T',,,'T',],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
     [,,,,,,,,,,],
-    [,,,,,,,,,,],
-    [,,,,,,,,,,]
+    ['0',,,,,,,,,'9',],
+    ['1',,,,,,,,,'8',],
+    ['O','2','3',,'4','5',,'6','7','O',]
 ];
-var player_pos = [[1,3]]
+var player_pos = [[1,3]];
+var glasses = [0,0,0,0,0,0,0,0,0,0,];
+var filled_glasses = 0;
+var next_glass_counter = 0;
+var score = 0;
+var multiplier = 1.0;
+var player_glasses = [];
+var last_player_move = 0;
+let x2 = Math.floor(Math.random()* 4) + 2;
+let y2 = Math.floor(Math.random()* game_grid[x2].length);
+let x = Math.floor(Math.random()* 4) + 2;
+let y = Math.floor(Math.random()* game_grid[x].length);
+let third = Math.floor(Math.random()*1)+7;
+let thirdx = Math.floor(Math.random()*7)+2;
+
+var beats = 0;
+if (x == x2){
+    if (x<=6){
+        x =x+1;
+    }
+    else{
+        x2=x2+1;
+    }
+}
 
 function change_bpm(){
-    fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
-    console.log(`update FRAMERATE:${FRAMERATE} fpb:${fpb}`);
+    new_bpm = document.getElementById('bpm').value;
+    if (new_bpm >= 1){
+        fpb = FRAMERATE/(parseInt(new_bpm)/60);
+        console.log(`update FRAMERATE:${FRAMERATE} fpb:${fpb}`);
+    }
 }
 
 function player_move(e){
     gridEl = document.getElementById('game_grid');
     var pressed = e.which || e.keyCode;
-    if(key_flag==false){
-        if(beat_shelf[5]=='0'){
-            gridEl.style.color = 'lime';
-            key_flag=true;
-
-            switch(pressed){
-                case 87:
-                    if(player_pos[0][0] > 0 && game_grid[player_pos[0][0]-1][player_pos[0][1]] != 'O'){
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                        player_pos[0][0] -= 1;
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
-                    }
-                    break;
-                case 83:
-                    if(player_pos[0][0] < 9){
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                        player_pos[0][0] += 1;
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
-                    }
-                    break;
-                case 65:
-                    if(player_pos[0][1] > 0 && game_grid[player_pos[0][0]][player_pos[0][1]-1] != 'O'){
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                        player_pos[0][1] -= 1;
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
-                    }
-                    break;
-                case 68:
-                    if(player_pos[0][1] < 9 && game_grid[player_pos[0][0]][player_pos[0][1]+1] != 'O'){
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                        player_pos[0][1] += 1;
-                        game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
-                    }
-                    break;
+    //console.log(pressed)
+    if(!key_flag){
+        key_flag = true;
+        if(valid_flag){
+            gridEl.style.color = 'green';
+            if(bonus_flag){
+                gridEl.style.color = 'orange';                
+                if(multiplier < 2.0){
+                    multiplier += 0.1;
+                }
+            }
+            if( (pressed == last_player_move) || (player_glasses.length < 4) ){
+                switch(pressed){
+                    case 87:
+                    case 38:
+                        if(player_pos[0][0] > 0){
+                            if(game_grid[player_pos[0][0]-1][player_pos[0][1]] == null){
+                                game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                                player_pos[0][0] -= 1;
+                                //game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                            }
+                            else if(!isNaN(game_grid[player_pos[0][0]-1][player_pos[0][1]])){
+                                if(glasses[game_grid[player_pos[0][0]-1][player_pos[0][1]]] != 0){
+                                    player_glasses.push(glasses[game_grid[player_pos[0][0]-1][player_pos[0][1]]]);
+                                    glasses[game_grid[player_pos[0][0]-1][player_pos[0][1]]] = 0;
+                                    filled_glasses -= 1;
+                                }
+                            }
+                            else if(game_grid[player_pos[0][0]-1][player_pos[0][1]] == 'T'){
+                                while(player_glasses.length != 0){
+                                    score += player_glasses.pop()*10*multiplier;
+                                    document.getElementById('player score').innerHTML = score.toFixed(0)
+                                }
+                            }
+                        }
+                        break;
+                    case 83:
+                    case 40:
+                        if(player_pos[0][0] < 9){
+                            if(game_grid[player_pos[0][0]+1][player_pos[0][1]] == null){
+                                game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                                player_pos[0][0] += 1;
+                                //game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                            }
+                            else if(!isNaN(game_grid[player_pos[0][0]+1][player_pos[0][1]])){
+                                if(glasses[game_grid[player_pos[0][0]+1][player_pos[0][1]]] != 0){
+                                    player_glasses.push(glasses[game_grid[player_pos[0][0]+1][player_pos[0][1]]]);
+                                    glasses[game_grid[player_pos[0][0]+1][player_pos[0][1]]] = 0;
+                                    filled_glasses -= 1;
+                                }
+                            }
+                            else if(game_grid[player_pos[0][0]+1][player_pos[0][1]] == 'T'){
+                                while(player_glasses.length != 0){
+                                    score += player_glasses.pop()*10*multiplier;
+                                    document.getElementById('player score').innerHTML = score.toFixed(0)
+                                }
+                            }
+                        }
+                        break;
+                    case 65:
+                    case 37:
+                        if(player_pos[0][1] > 0){
+                            if (game_grid[player_pos[0][0]][player_pos[0][1]-1] == null){
+                                game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                                player_pos[0][1] -= 1;
+                                //game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                        }
+                            else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]-1])){
+                                if(glasses[game_grid[player_pos[0][0]][player_pos[0][1]-1]] != 0){
+                                    player_glasses.push(glasses[game_grid[player_pos[0][0]][player_pos[0][1]-1]]);
+                                    glasses[game_grid[player_pos[0][0]][player_pos[0][1]-1]] = 0;
+                                    filled_glasses -= 1;
+                                }
+                            }
+                            else if(game_grid[player_pos[0][0]][player_pos[0][1]-1] == 'T'){
+                                while(player_glasses.length != 0){
+                                    score += player_glasses.pop()*10*multiplier;
+                                    document.getElementById('player score').innerHTML = score.toFixed(0)
+                                }
+                            }
+                        }
+                        break;
+                    case 68:
+                    case 39:
+                        if(player_pos[0][1] < 9){
+                            if (game_grid[player_pos[0][0]][player_pos[0][1]+1] == null){
+                                game_grid[player_pos[0][0]][player_pos[0][1]] = null;
+                                player_pos[0][1] += 1;
+                                //game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                            }
+                            else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]+1])){
+                                if(glasses[game_grid[player_pos[0][0]][player_pos[0][1]+1]] != 0){
+                                player_glasses.push(glasses[game_grid[player_pos[0][0]][player_pos[0][1]+1]]);
+                                glasses[game_grid[player_pos[0][0]][player_pos[0][1]+1]] = 0;
+                                filled_glasses -= 1;
+                                }
+                            }
+                            else if(game_grid[player_pos[0][0]][player_pos[0][1]+1] == 'T'){
+                                while(player_glasses.length != 0){
+                                    score += player_glasses.pop()*10*multiplier;
+                                    document.getElementById('player score').innerHTML = score.toFixed(0)
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        key_flag = false;
+                        gridEl.style.color = 'blue';
+                }
+                last_player_move = 0;
+            }
+            else{
+                last_player_move = pressed;
             }
             
-            setTimeout(function(){reset_conditions();}, 500);
+            setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
         }
         else{        
-            gridEl.style.color = 'red';
-            key_flag=true;
-            setTimeout(function(){reset_conditions();}, 500);
+            switch(pressed){
+                case 37:
+                case 38:
+                case 39:
+                case 40:
+                case 65:
+                case 68:
+                case 83:
+                case 87:
+                    gridEl.style.color = 'red';
+                    multiplier = 1.0;
+                    break;
+                default:
+                    key_flag = false;
+            }
+            setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
         }
-    }
+   }
+   e.preventDefault();
 }
 
 function display_game_grid(){
@@ -78,8 +199,17 @@ function display_game_grid(){
     for(var i = 0; i<10; ++i){
         gridEl.innerHTML += '#';
         for(var j=0; j<10; ++j){
-            if(game_grid[i][j] == null){
+            if( (i == player_pos[0][0]) && (j == player_pos[0][1]) ){
+                gridEl.innerHTML += 'P';
+            }
+            else if( ( (i == x) && (j == y) ) || ( (i == x2) && (j == y2) ) || ( (i==third) && (j==thirdx) ) ){
+                gridEl.innerHTML += 'E'
+            }
+            else if(game_grid[i][j] == null){
                 gridEl.innerHTML += '&nbsp;'
+            }
+            else if(!isNaN(game_grid[i][j])){
+                gridEl.innerHTML += glasses[game_grid[i][j]];
             }
             else{
                 gridEl.innerHTML += game_grid[i][j];
@@ -92,15 +222,34 @@ function display_game_grid(){
 
 function generate_upcoming_beats(){
     beat_shelf = [,,,,,'|',];
-
+    //console.log(upcoming_beats)
     for(var i=0; i<upcoming_beats.length; ++i){
         upcoming_beats[i] += 1/fpb;
         if(upcoming_beats[i]>=1){
+            onCollisions();
             upcoming_beats.shift();
             --i;
+            valid_flag = false;
+            bonus_flag = false;
+            if(!key_flag){
+                multiplier = 1.0
+            }
+            if(next_glass_counter == 3){
+                add_glass();
+                next_glass_counter = 0;
+            }
+            else{
+                next_glass_counter += 1;
+            }
         }
         
         else{
+            if(upcoming_beats[i]>=0.8){
+                valid_flag=true;
+            }
+            if(upcoming_beats[i]>=0.9){
+                bonus_flag=true;
+            }
             var temp = parseInt(upcoming_beats[i]*6)
             if(temp<6){beat_shelf[temp] = 0}
         }
@@ -125,17 +274,40 @@ function generate_upcoming_beats(){
             gridEl.innerHTML += beat_shelf[i];
         }
     }
-    gridEl.innerHTML += '<br>------------<br>'
+    gridEl.innerHTML += '<br>------------<br>';
     //
 }
 
 function game_loop(){
+    attack();
     display_game_grid();
     generate_upcoming_beats();
+    document.getElementById('player mult').innerHTML = 'x' + multiplier.toFixed(1);
     beat_offset += 1;
     while(beat_offset>=fpb){beat_offset -= fpb;}
     
     setTimeout(function(){game_loop();}, 1000/FRAMERATE);
+}
+
+function add_glass() {
+    if(filled_glasses<10){
+        glass_pos = parseInt(Math.random()*10);
+        while( glasses[glass_pos] != 0){
+            glass_pos = (glass_pos+1) % 10
+        }
+        glass_value = Math.random();
+        if(glass_value<=0.5){
+            glasses[glass_pos] = 1;
+        }
+        else if(glass_value<=0.9){
+            glasses[glass_pos] = 2;
+        }
+        else {
+            glasses[glass_pos] = 3;
+        }
+        filled_glasses += 1;
+    }
+
 }
 
 function reset_conditions() {
@@ -144,6 +316,67 @@ function reset_conditions() {
     key_flag = false;
 
 }
+
+function onCollisions() {
+    gridEl = document.getElementById('game_grid');
+    if (y2 == 10) {
+        y2 = 0;
+    }
+    else {
+    y2 =y2+1;
+    }
+    /*game_grid[x2][y2] ="E";
+    game_grid[x2][y2-1]= null;*/
+    if (thirdx == 8){
+        game_grid[third][thirdx]=null;
+        thirdx = 1;
+    }
+    else{
+        thirdx = thirdx +1;
+    }
+    /*game_grid[third][thirdx] ="E";
+    if (thirdx != 1){
+        game_grid[third][thirdx-1]= null;
+    }*/
+
+    if ( beats == 1){
+        beats = 0;
+        if (y == 10) {
+            y = 0;
+        }
+        else {
+            y =y+1;
+        }
+        /*game_grid[x][y] ="E";
+        game_grid[x][y-1]= null;*/
+    } 
+    else {
+        beats = beats+1;
+    }    
+}
+
+function attack() {
+  //  console.log(player_pos[0], [x,y])
+    if (player_pos[0][0] == x && player_pos[0][1] == y){
+        player_pos[0] = [x+1, y];
+        if(player_glasses.length > 0){player_glasses.pop();}
+      //  console.log('fight me');
+        
+    }
+    if (player_pos[0][0] == x2 && player_pos[0][1] == y2){
+        player_pos[0] = [x2+1,y2];
+        if(player_glasses.length > 0){player_glasses.pop();}
+
+    }
+    if (player_pos[0][0] == third && player_pos[0][1] == thirdx){
+        player_pos[0] = [third+1 ,thirdx];
+        if(player_glasses.length > 0){player_glasses.pop();}
+
+
+    }
+
+}
+
 console.log(`start FRAMERATE:${FRAMERATE} fpb:${fpb}`);
 document.onkeydown = player_move;
 
