@@ -26,7 +26,7 @@ app.get('/register', async (req, res) => {  //loads registerform
 var pool = new Pool({
     ssl: true,
     connectionString: process.env.DATABASE_URL
-    // connectionString:"postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
+    //connectionString:"postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
 });
 // var app = express();
 // app.use(express.urlencoded());
@@ -170,7 +170,7 @@ app.post("/club/login", (req, res) => {
         res.render('pages/club', {'props': {loginFailed: true}});
     })
 
-})
+})  
 
 app.get("/club/:name/stats", (req, res) => {
     let name = req.params.name;
@@ -306,7 +306,7 @@ app.post('/playing', (req,res) => {
             // res.send(queryData)
 
             // res.render('pages/playing', queryData)
-            res.render('pages/game', queryData)
+           res.render('pages/game', queryData)
         }, function(err) {
             // done(err);
             console.log(err)
