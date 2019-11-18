@@ -163,7 +163,8 @@ app.post("/club/login", (req, res) => {
                       res.end(error);
                   var results = {};
                   results.users = result.rows;
-                  results.name = req.query.username;
+                  results.name = req.body.username;
+                  console.log(results);
                   res.render('pages/admin', { 'rows': results })  // load admin page for admins
               })
               return;
@@ -242,7 +243,7 @@ app.get("/club/:name/leaderboard", (req, res) => {
         results.topten = leaderboard;
         if (foundplayer == true) {
             results.player = player;
-            console.log(results.player);
+            console.log(results);
             res.render('pages/leaderboard', { 'rows': results });
         }
         else {
@@ -260,11 +261,28 @@ app.get("/club/:name/leaderboard", (req, res) => {
                     }
                 });
                 results.player = player;
-                console.log(results.player);
+                console.log(results);
                 res.render('pages/leaderboard', { 'rows': results })
             });
         }
     });
+});
+
+app.get("/club/admin/:name/leaderboard", (req, res) => {
+    var name = req.params.name;
+    let loadLeaderboard = `SELECT *, RANK() OVER (ORDER BY highscore DESC) FROM stats;`;
+    pool.query(loadLeaderboard, (error, result) => {
+        if (error) {
+            res.send(error);
+            console.log(error);
+        }
+        //var results = { 'rows': result.rows };
+        var results = {};
+        results.player = name;
+        results.board = result.rows;
+        console.log(results.board);
+        res.render('pages/adminleaderboard', { 'rows': results });
+    })
 });
 
 app.get('/music-client', function (req, res) {
