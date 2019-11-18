@@ -22,10 +22,10 @@
     "pg": "^7.12.1",
     "querystring": "^0.2.0",
     "request": "^2.88.0",
-    "spotify-web-api-node": "^4.0.0",
-    "parser": "^0.1.4"
     "socket.io": "^2.3.0",
-    "socket.io-client": "^2.3.0"
+    "socket.io-client": "^2.3.0",
+    "spotify": "^0.3.0",
+    "spotify-web-api-node": "^4.0.0"
   },
   "devDependencies": {
     "request": "^2.88.0",
