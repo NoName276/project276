@@ -44,6 +44,7 @@ p {
 }
 #bpm {
     margin-left: 4%;
+    width: 13%;
 }
 .button{
     border: 6px solid  #183E61;
@@ -98,4 +99,8 @@ form input {
     font-family:"Monofett";
     width: 10% ;
   }
-
+#p {
+    text-align: center;
+    font-family: monospace;
+    font-size: 20px;
+}
