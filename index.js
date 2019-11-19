@@ -176,7 +176,7 @@ app.post("/club/login", (req, res) => {
         res.render('pages/club', {'props': {loginFailed: true}});
     })
 
-})
+})  
 
 app.get("/club/:name/stats", (req, res) => {
     let name = req.params.name;
@@ -312,7 +312,7 @@ app.post('/playing', (req,res) => {
             // res.send(queryData)
 
             // res.render('pages/playing', queryData)
-            res.render('pages/game', queryData)
+           res.render('pages/game', queryData)
         }, function(err) {
             // done(err);
             console.log(err)

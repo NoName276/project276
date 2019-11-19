@@ -18,10 +18,7 @@
 
 	<body>
             <h1>The Club</h1>
-            <h1>Now Playing: <%= name %> by <%= artist %></h1>
-            <p> Duration: <%= duration %> </p>
-            <p> Song Uri: <%= uri %> </p>
-            <p> Token: <%= accessToken %> </p>
+            <p id="p" >Now Playing: <%= name %> by <%= artist %></>
 
             <form class= "form">
 
@@ -55,6 +52,9 @@
                 </div>
             <div id="musicdiv" align="center">
                     <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()"></iframe>
+                    <p> Duration: <%= duration %> </p>
+                    <p id="p"> Song Uri: <%= uri %> </p>
+                    <p id="p"> Token: <%= accessToken %> </p>
             </div>
 
 
