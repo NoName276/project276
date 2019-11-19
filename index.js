@@ -176,7 +176,7 @@ app.post("/club/login", (req, res) => {
         res.render('pages/club', {'props': {loginFailed: true}});
     })
 
-})  
+})
 
 app.get("/club/:name/stats", (req, res) => {
     let name = req.params.name;
