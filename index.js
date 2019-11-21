@@ -6,7 +6,7 @@ const { Pool } = require('pg');
 var app = express();
 // variables for socket.io
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var io = require('socket.io').listen(server);
 // server.listen(PORT);
 
 app.use(express.static(path.join(__dirname, 'public')))
@@ -29,8 +29,8 @@ app.get('/register', async (req, res) => {  //loads registerform
 })
 var pool = new Pool({
     ssl: true,
-    connectionString: process.env.DATABASE_URL
-    //connectionString:"postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
+    //connectionString: process.env.DATABASE_URL
+    connectionString:"postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
 });
 // var app = express();
 // app.use(express.urlencoded());
@@ -695,4 +695,55 @@ app.get('/:room', (req, res) => {
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-// })
+//})
+
+//sockets
+var playerCount = 0;
+var players = {};
+
+io.on('connection', function (socket) {
+playerCount++;
+console.log('a user has now connected');
+io.sockets.emit('numPlayers', playerCount);
+// create a new player and add it to the players object
+players[socket.id] = {
+//add position
+    colour: "blue",
+    playerId: socket.id,
+    username: socket.username,
+}
+socket.on('updateColour', function (colourData) {
+    players[socket.id].colour = colourData.colour;
+    socket.broadcast.emit('updateSprite', players[socket.id]);
+    });
+
+    //send players object to new player
+socket.emit('currentPlayers', players);
+
+//update all other players of new player
+socket.broadcast.emit('newPlayer', players[socket.id]);
+
+socket.on('disconnect', function () {
+playerCount--;
+console.log('user disconnected');
+delete players[socket.id];
+io.emit('disconnect', socket.id);
+});
+
+socket.on('playerMovement', function (movementData) {
+players[socket.id].x = movementData.x;
+players[socket.id].y = movementData.y;
+players[socket.id].rotation = movementData.rotation;
+socket.broadcast.emit('playerMoved', players[socket.id]);
+});
+
+
+socket.on('message', function(data){
+console.log("catched")
+console.log(data);
+io.emit('message', data);
+})
+socket.on('disconnect', function () {
+io.sockets.emit('numPlayers', playerCount);
+io.emit('disconnect');
+});
