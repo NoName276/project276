@@ -15,6 +15,22 @@
       socket.on('user-joined', user => {
         console.log("new user")
       })
+      $(function(){
+        var socket = io.connect();
+        var $form =$('form');
+        var $message =$('message');
+        var $chat =$('chat');
+        $message.submit(function(e){
+          e.preventDefault();
+          socket.emit('send message', $message.val());
+          $message.val('');
+          console.log("sent");
+        });
+      });
+
+      socket.on('new message', function(data){
+        $chat.append('<div class= "chatbox" >'=data.msg='</div>');
+      }
     </script>
   </head>
 
@@ -27,7 +43,17 @@
       <p><%= user %></p>
       <% }) %>
     </div>
-    <button type="button" onclick="window.location.href = '/lobby';">READY</button
+    <button type="button" onclick="window.location.href = '/lobby';">READY</button>
+     <form id="message">
+      <div class = "chatbox">
+          <label> Enter message</label>
+          <textarea class ="form">
+          </textarea>
+          <br/>
+          <input type="submit"/>
+          
 
+        </div>
+      </form>
   </body>
 </html>

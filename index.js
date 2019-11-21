@@ -698,11 +698,11 @@ app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 //})
 
 //sockets
-var playerCount = 0;
-var players = {};
+var connections = [];
+var players = [];
 
-io.on('connection', function (socket) {
-playerCount++;
+io.sockets.on('connection', function (socket) {
+connections.push(socket);
 console.log('a user has now connected');
 io.sockets.emit('numPlayers', playerCount);
 // create a new player and add it to the players object
@@ -712,38 +712,40 @@ players[socket.id] = {
     playerId: socket.id,
     username: socket.username,
 }
-socket.on('updateColour', function (colourData) {
+io.on('updateColour', function (colourData) {
     players[socket.id].colour = colourData.colour;
     socket.broadcast.emit('updateSprite', players[socket.id]);
     });
 
     //send players object to new player
-socket.emit('currentPlayers', players);
+io.emit('currentPlayers', players);
 
 //update all other players of new player
-socket.broadcast.emit('newPlayer', players[socket.id]);
-
-socket.on('disconnect', function () {
-playerCount--;
-console.log('user disconnected');
-delete players[socket.id];
-io.emit('disconnect', socket.id);
+io.broadcast.emit('newPlayer', players[socket.id]);
 });
 
-socket.on('playerMovement', function (movementData) {
-players[socket.id].x = movementData.x;
-players[socket.id].y = movementData.y;
-players[socket.id].rotation = movementData.rotation;
-socket.broadcast.emit('playerMoved', players[socket.id]);
+//disconnect
+
+io.on('disconnect', function () {
+  playerCount--;
+  console.log('user disconnected');
+  delete players[socket.id];
+  io.emit('disconnect', socket.id);
 });
 
+io.on('playerMovement', function (movementData) {
+  players[socket.id].x = movementData.x;
+  players[socket.id].y = movementData.y;
+  players[socket.id].rotation = movementData.rotation;
+  socket.broadcast.emit('playerMoved', players[socket.id]);
+});
 
-socket.on('message', function(data){
-console.log("catched")
-console.log(data);
-io.emit('message', data);
-})
-socket.on('disconnect', function () {
-io.sockets.emit('numPlayers', playerCount);
-io.emit('disconnect');
+io.on('send message', function(data){
+  console.log("catched")
+  console.log(data);
+  io.emit('new message', {msg: data});
+});
+io.on('disconnect', function () {
+  io.sockets.emit('numPlayers', playerCount);
+  io.emit('disconnect');
 });
