@@ -57,7 +57,28 @@
                     <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()"></iframe>
             </div>
 
- 
+            <script>
+                    var title = document.getElementById("countTitle");
+                    var display = document.getElementById("countDown");
+                    var interval = setInterval(countDown,1000);
+                    var seconds = 3;
+                    function countDown() {
+                        if (seconds == 0) {
+                            title.innerHTML = "Play"
+                            display.innerHTML = "Now";
+                            clearInterval(interval)
+                            console.log("Play Now")
+                        } else {
+                            // console.log(seconds)
+                            display.innerHTML = seconds
+                            seconds = seconds - 1;
+                        }
+                    }
+                    window.onload = countDown();
+    
+                    
+                </script>
+
             <!-- <form>
                 <input type="number" id="bpm" value='<%= tempo %>'/>
                 <input type="button" value="change bpm" onclick="change_bpm()" />
