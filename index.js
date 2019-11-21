@@ -3,8 +3,12 @@ const path = require('path')
 var SpotifyWebApi = require('spotify-web-api-node');
 const PORT = process.env.PORT || 5000
 const { Pool } = require('pg');
+var app = express();
+// variables for socket.io
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+// server.listen(PORT);
 
-var app = express()
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -22,11 +26,11 @@ app.get('/register', async (req, res) => {  //loads registerform
         console.error(err);
         res.send("Error " + err);
     }
-})    
+})
 var pool = new Pool({
     ssl: true,
     connectionString: process.env.DATABASE_URL
-    // connectionString:"postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
+    //connectionString:"postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
 });
 // var app = express();
 // app.use(express.urlencoded());
@@ -44,8 +48,8 @@ app.get('/play', (req,res) => {
 // })
 
 /*  IN CASE WE WANT TO REVERT BACK TO THESE DELETE VERSIONS
- * 
- * 
+ *
+ *
 app.get('/delete', (req, res) => res.render('pages/delete'))
 app.get('/deleted', (req, res) => res.render('pages/admin'))
 app.post('/deleted', (req, res) => {
@@ -69,8 +73,8 @@ app.post('/deleted', (req, res) => {
         });
     });
 });
- * 
- * 
+ *
+ *
  */
 
 
@@ -111,6 +115,7 @@ app.post('/:name/deleted', (req, res) => {
     });
 });
 
+//registration and login
 app.post('/club/reg', (req,res) => {        // loads new reg to database +check if username already exist
   console.log(req.body);
   let body = req.body;
@@ -158,7 +163,8 @@ app.post("/club/login", (req, res) => {
                       res.end(error);
                   var results = {};
                   results.users = result.rows;
-                  results.name = req.query.username;
+                  results.name = req.body.username;
+                  console.log(results);
                   res.render('pages/admin', { 'rows': results })  // load admin page for admins
               })
               return;
@@ -237,7 +243,7 @@ app.get("/club/:name/leaderboard", (req, res) => {
         results.topten = leaderboard;
         if (foundplayer == true) {
             results.player = player;
-            console.log(results.player);
+            console.log(results);
             res.render('pages/leaderboard', { 'rows': results });
         }
         else {
@@ -255,11 +261,28 @@ app.get("/club/:name/leaderboard", (req, res) => {
                     }
                 });
                 results.player = player;
-                console.log(results.player);
+                console.log(results);
                 res.render('pages/leaderboard', { 'rows': results })
             });
         }
     });
+});
+
+app.get("/club/admin/:name/leaderboard", (req, res) => {
+    var name = req.params.name;
+    let loadLeaderboard = `SELECT *, RANK() OVER (ORDER BY highscore DESC) FROM stats;`;
+    pool.query(loadLeaderboard, (error, result) => {
+        if (error) {
+            res.send(error);
+            console.log(error);
+        }
+        //var results = { 'rows': result.rows };
+        var results = {};
+        results.player = name;
+        results.board = result.rows;
+        console.log(results.board);
+        res.render('pages/adminleaderboard', { 'rows': results });
+    })
 });
 
 app.get('/music-client', function (req, res) {
@@ -306,7 +329,7 @@ app.post('/playing', (req,res) => {
             // res.send(queryData)
 
             // res.render('pages/playing', queryData)
-            res.render('pages/game', queryData)
+           res.render('pages/game', queryData)
         }, function(err) {
             // done(err);
             console.log(err)
@@ -329,6 +352,7 @@ var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Y
 // var redirect_uri =  'http://localhost:8888/callback'; // 'REDIRECT_URI'; // Your redirect uri
 var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
 // var redirect_uri =  'https://server-simulator.herokuapp.com/callback'; // 'REDIRECT_URI'; // Your redirect uri
+// var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
 
 /**
  * Generates a random string containing numbers and letters
@@ -461,7 +485,7 @@ request.post(authOptions, function(error, response, body) {
 });
 
 // app.get('/playing', (req,res) => {
-    
+
 //     var spotifyApi = new SpotifyWebApi({
 //         clientId: '76399d6d66784fbd9b089a5363553e47',
 //         clientSecret: '5d6ec7245f5a4902af2f5b40c6315a63',
@@ -540,7 +564,7 @@ request.post(authOptions, function(error, response, body) {
 //   }, function(err) {
 //     done(err);
 // });
-  
+
 // spotifyApi.getTrack('0rKtyWc8bvkriBthvHKY8d')
 //   .then(function(data) {
 //     console.log(data.body.name);
@@ -558,7 +582,7 @@ request.post(authOptions, function(error, response, body) {
 //   }, function(err) {
 //     done(err);
 // });
-  
+
 // spotifyApi.getTrack(trackURIFormatted)
 //   .then(function(data) {
 //     console.log(data.body.name);
@@ -649,6 +673,25 @@ app.get("/club/admin/:name/home", (req, res) => {
         res.render('pages/admin', { 'rows': results })  // load admin page for admins
     })
 });
+
+// creating and joining rooms
+const rooms = { name:{} }
+const users = {  }
+app.get('/lobby', (req, res) => {
+  res.render('pages/lobby', { rooms: rooms })
+})
+app.post('/room', (req, res) => {
+  if(rooms[req.body.room] != null) {
+    return res.redirect('pages/lobby')
+  }
+  rooms[req.body.room] = { users: {} }
+  res.redirect(req.body.room)
+  io.emit('room-created', req.body.room)
+})
+app.get('/:room', (req, res) => {
+  io.emit('user-joined', "hello")
+  res.render('pages/room', { roomName: req.params.room, users: users })
+})
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 

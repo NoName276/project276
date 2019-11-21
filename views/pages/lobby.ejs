@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>tHe ClUb</title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+  </head>
+
+  <script src="/scripts/socket.io.js"></script>
+  <script>
+    var socket = io('http://localhost')
+    roomContainer = document.getElementById('room-container')
+    socket.on('room-created', room => {
+      const roomElement = document.createElement('div')
+      roomElement.innerText = room
+      const roomLink = document.createElement('a')
+      roomLink.href = `/${room}`
+      roomLink.innerText = 'join'
+      roomContainer.append(roomElement)
+      roomContainer.append(roomLink)
+    })
+  </script>
+
+  <body>
+    <div id="room-container">
+    <h1>ThE ClUb</h1>
+    <p>Welcome, Choose a room to join, or create your own and invite your friends!</p>
+    <h2>Current Rooms</h2>
+      <% Object.keys(rooms).forEach(room => { %>
+      <p><%= room %> - <a href="/<%= room %>">Join</a></p>
+      <% }) %>
+    <form action="/room" method="POST">
+      <input name="room" type="text" required>
+      <button type="submit">Create</button>
+    </form>
+    </div>
+    <button type="button" onclick="window.location.href = '/lobby';">READY</button
+
+  </body>
+</html>
