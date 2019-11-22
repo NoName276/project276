@@ -674,12 +674,14 @@ app.get("/club/admin/:name/home", (req, res) => {
     })
 });
 
+
 // creating and joining rooms
+
+app.get('/club/:name/lobby', (req, res) => {
+    res.render('pages/lobby', { rooms: rooms, props: {username: req.params.name}})
+  })
 const rooms = { name:{} }
 const users = {  }
-app.get('/club/:name/lobby', (req, res) => {
-  res.render('pages/lobby', { rooms: rooms, props: {username: req.params.name}})
-})
 app.post('/room', (req, res) => {
   if(rooms[req.body.room] != null) {
     return res.redirect('pages/lobby')
@@ -698,11 +700,11 @@ app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 //})
 
 //sockets
-var connections = [];
-var players = [];
+var playerCount = 0;
+var players = {};
 
-io.sockets.on('connection', function (socket) {
-connections.push(socket);
+io.on('connection', function (socket) {
+playerCount++;
 console.log('a user has now connected');
 io.sockets.emit('numPlayers', playerCount);
 // create a new player and add it to the players object
@@ -712,44 +714,34 @@ players[socket.id] = {
     playerId: socket.id,
     username: socket.username,
 }
-io.on('updateColour', function (colourData) {
+socket.on('updateColour', function (colourData) {
     players[socket.id].colour = colourData.colour;
     socket.broadcast.emit('updateSprite', players[socket.id]);
     });
 
     //send players object to new player
-io.emit('currentPlayers', players);
+socket.emit('currentPlayers', players);
 
 //update all other players of new player
-io.broadcast.emit('newPlayer', players[socket.id]);
-});
+socket.broadcast.emit('newPlayer', players[socket.id]);
 
-//disconnect
-io.on("connect", () => {
-  console.log('t');
+socket.on('disconnect', function () {
+playerCount--;
+console.log('user disconnected');
+delete players[socket.id];
+io.emit('disconnect', socket.id);
+});
+app.get('/club/:name/lobby', (req, res) => {
+  res.render('pages/lobby', { rooms: rooms, props: {username: req.params.name}})
 })
 
 
-io.on('disconnect', function () {
-  playerCount--;
-  console.log('user disconnected');
-  delete players[socket.id];
-  io.emit('disconnect', socket.id);
-});
-
-io.on('playerMovement', function (movementData) {
-  players[socket.id].x = movementData.x;
-  players[socket.id].y = movementData.y;
-  players[socket.id].rotation = movementData.rotation;
-  socket.broadcast.emit('playerMoved', players[socket.id]);
-});
-
-io.on('send message', function(data){
-  console.log("catched")
-  console.log(data);
-  io.emit('new message', {msg: data});
-});
-io.on('disconnect', function () {
-  io.sockets.emit('numPlayers', playerCount);
-  io.emit('disconnect');
+socket.on('message', function(data){
+    console.log("catched")
+    console.log(data);
+i  o.emit('message', data);
+})
+socket.on('disconnect', function () {
+io.sockets.emit('numPlayers', playerCount);
+io.emit('disconnect');
 });

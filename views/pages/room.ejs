@@ -41,13 +41,14 @@
       <p><%= user %></p>
       <% }) %>
     </div>
-    <form id="message">
+
     <div class = "chatbox">
+        <form id="message">
         <label> Enter message</label>
-        <textarea rows="8" cols ="80" class ="form">
+        <textarea placeholder =" Type message.." name="msg" class ="form" required>
         </textarea>
-        <br/>
-        <input type="submit"/>
+        <button type= "submit" class ="button">Send</button>
+        <button type="button" class="cancel" onclick="closeForm()">Close</button>
       </div>
     </form>
     <div class="chat">
