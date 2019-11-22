@@ -5,9 +5,11 @@ const PORT = process.env.PORT || 5000
 const { Pool } = require('pg');
 var app = express();
 // variables for socket.io
-var server = require('http').Server(app);
+var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
-// server.listen(PORT);
+server.listen(PORT, () => {
+  console.log(`Express App and Socket IO server listing on PORT ${PORT}`)
+});
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
@@ -693,7 +695,7 @@ app.get('/:room', (req, res) => {
   res.render('pages/room', { roomName: req.params.room, users: users })
 })
 
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+// app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 //})
 
@@ -702,32 +704,29 @@ var connections = [];
 var players = [];
 
 io.sockets.on('connection', function (socket) {
-connections.push(socket);
-console.log('a user has now connected');
-io.sockets.emit('numPlayers', playerCount);
-// create a new player and add it to the players object
-players[socket.id] = {
-//add position
-    colour: "blue",
-    playerId: socket.id,
-    username: socket.username,
-}
-io.on('updateColour', function (colourData) {
-    players[socket.id].colour = colourData.colour;
-    socket.broadcast.emit('updateSprite', players[socket.id]);
-    });
+  connections.push(socket);
+  console.log('a user has now connected');
+  io.sockets.emit('numPlayers', playerCount);
+  // create a new player and add it to the players object
+  players[socket.id] = {
+  //add position
+      colour: "blue",
+      playerId: socket.id,
+      username: socket.username,
+  }
+  io.on('updateColour', function (colourData) {
+      players[socket.id].colour = colourData.colour;
+      socket.broadcast.emit('updateSprite', players[socket.id]);
+      });
 
-    //send players object to new player
-io.emit('currentPlayers', players);
+      //send players object to new player
+  io.emit('currentPlayers', players);
 
-//update all other players of new player
-io.broadcast.emit('newPlayer', players[socket.id]);
+  //update all other players of new player
+  io.broadcast.emit('newPlayer', players[socket.id]);
 });
 
 //disconnect
-io.on("connect", () => {
-  console.log('t');
-})
 
 
 io.on('disconnect', function () {

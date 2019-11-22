@@ -11,7 +11,7 @@
     </script>
     <script src="/scripts/socket.io.js"></script>
     <script>
-      var socket = io('/')
+      var socket = io()
       userContainer = document.getElementById('user-container')
       socket.on('user-joined', user => {
         console.log("new user")
