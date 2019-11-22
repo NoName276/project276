@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+      <h1>Now Playing: </h1>
+      <h2>Waving Through a Window</h2>
+      <h2>DEAR EVAN HANSEN Original Broadway Cast</h2>
+      <h2>BPM: 144</h2>
+      <h2>Duration: 236 seconds</h2>
+
+      <audio id="audio" src="waving-through-a-window-from-the-dear-evan-hansen-original-broadway-cast-recording.mp3" ></audio>
+      <script>
+        function play() {
+            var audio = document.getElementById("audio");
+            audio.play();
+        }
+      </script>
+      <input id = "playButton" type="button" value="PLAY" onclick="play()">
+      
+  </body>
+</html>

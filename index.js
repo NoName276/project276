@@ -326,6 +326,18 @@ app.get('/joji', (req,res) => {
 app.get('/slow-dancing-in-the-dark.mp3', (req,res) => {
     res.sendFile(__dirname + '/audio/slow-dancing-in-the-dark.mp3')
 })
+app.get('/hadestown', (req, res) => {
+    res.render('pages/way-down-hadestown-ii');
+})
+app.get('/hadestown-original-broadway-cast-way-down-hadestown-ii-lyrics.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/hadestown-original-broadway-cast-way-down-hadestown-ii-lyrics.mp3')
+})
+app.get('/dear-evan-hansen', (req,res) => {
+    res.render('pages/waving-through-a-window');
+})
+app.get('/waving-through-a-window-from-the-dear-evan-hansen-original-broadway-cast-recording.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/waving-through-a-window-from-the-dear-evan-hansen-original-broadway-cast-recording.mp3')
+})
 
 var request = require('request'); // "Request" library
 var cors = require('cors');
