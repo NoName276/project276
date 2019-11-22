@@ -677,8 +677,8 @@ app.get("/club/admin/:name/home", (req, res) => {
 // creating and joining rooms
 const rooms = { name:{} }
 const users = {  }
-app.get('/lobby', (req, res) => {
-  res.render('pages/lobby', { rooms: rooms })
+app.get('/club/:name/lobby', (req, res) => {
+  res.render('pages/lobby', { rooms: rooms, props: {username: req.params.name}})
 })
 app.post('/room', (req, res) => {
   if(rooms[req.body.room] != null) {
@@ -725,6 +725,10 @@ io.broadcast.emit('newPlayer', players[socket.id]);
 });
 
 //disconnect
+io.on("connect", () => {
+  console.log('t');
+})
+
 
 io.on('disconnect', function () {
   playerCount--;
