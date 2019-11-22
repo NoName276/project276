@@ -706,7 +706,6 @@ var playerCount = 0;
 var players = {};
 
 io.sockets.on('connection', function (socket) {
-  connections.push(socket);
   console.log('a user has now connected');
   io.sockets.emit('numPlayers', playerCount);
   // create a new player and add it to the players object
@@ -725,12 +724,12 @@ io.sockets.on('connection', function (socket) {
   io.emit('currentPlayers', players);
 
   //update all other players of new player
-  io.broadcast.emit('newPlayer', players[socket.id]);
+  socket.broadcast.emit('newPlayer', players[socket.id]);
 });
 
 //disconnect
 
-socket.on('disconnect', function () {
+io.on('disconnect', function () {
 playerCount--;
 console.log('user disconnected');
 delete players[socket.id];
@@ -741,12 +740,12 @@ app.get('/club/:name/lobby', (req, res) => {
 })
 
 
-socket.on('message', function(data){
+io.on('message', function(data){
     console.log("catched")
     console.log(data);
     io.emit('message', data);
 })
-socket.on('disconnect', function () {
+io.on('disconnect', function () {
 io.sockets.emit('numPlayers', playerCount);
 io.emit('disconnect');
 });

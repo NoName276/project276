@@ -5,31 +5,10 @@
     <title>tHe ClUb</title>
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
       const roomName = "<%= roomName %>"
     </script>
     <script src="/scripts/socket.io.js"></script>
-    <script>
-      var socket = io()
-      userContainer = document.getElementById('user-container')
-      socket.on('user-joined', user => {
-        console.log("new user")
-      })
-      var socket = io.connect();
-      var $form =$('.form');
-      var $message =$('#message');
-      var $chat =$('.chat');
-      $message.submit(function(e){
-        e.preventDefault();
-        socket.emit('send message', $message.val());
-        $message.val('');
-        console.log("sent");
-      });
-      socket.on('new message', function(data){
-        $chat.append(`<div class= "chatbox" >${data.msg}</div>`);
-      })
-    </script>
   </head>
 
   <body>
@@ -41,17 +20,6 @@
       <p><%= user %></p>
       <% }) %>
     </div>
-
-    <div class = "chatbox">
-        <form id="message">
-        <label> Enter message</label>
-        <textarea placeholder =" Type message.." name="msg" class ="form" required>
-        </textarea>
-        <button type= "submit" class ="button">Send</button>
-        <button type="button" class="cancel" onclick="closeForm()">Close</button>
-      </div>
-    </form>
-    <div class="chat">
 
     </div>
   </body>
