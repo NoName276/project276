@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+      <h1>Now Playing: </h1>
+      <h2>SLOW DANCING IN THE DARK</h2>
+      <h2>BPM: 89</h2>
+      <h2>Duration: 209 seconds</h2>
+
+      <audio id="audio" src="slow-dancing-in-the-dark.mp3" ></audio>
+      <script>
+        function play() {
+            var audio = document.getElementById("audio");
+            audio.play();
+        }
+      </script>
+      <input id = "playButton" type="button" value="PLAY" onclick="play()">
+      
+  </body>
+</html>

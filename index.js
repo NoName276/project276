@@ -320,6 +320,13 @@ app.post('/playing', (req,res) => {
     });
 })
 
+app.get('/joji', (req,res) => {
+    res.render('pages/slow-dancing-in-the-dark');
+})
+app.get('/slow-dancing-in-the-dark.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/slow-dancing-in-the-dark.mp3')
+})
+
 var request = require('request'); // "Request" library
 var cors = require('cors');
 var querystring = require('querystring');
