@@ -7,7 +7,6 @@
 
 		<link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
 
-        <script async type="text/javascript" src="/scripts/game.js"></script>
         <style>
             /* #musicdiv{
                 margin: auto;
@@ -18,7 +17,7 @@
 
 	<body>
             <h1>The Club</h1>
-            <p id="p" >Now Playing: <%= name %> by <%= artist %></>
+            <p id="p" >Now Playing: <%= name %> by <%= artist %></p>
 
             <form class= "form">
 
@@ -51,7 +50,7 @@
                     </div>
                 </div>
             <div id="musicdiv" align="center">
-                    <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()"></iframe>
+                    <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()" onclick="start_game()"></iframe>
                     <p> Duration: <%= duration %> </p>
                     <p id="p"> Song Uri: <%= uri %> </p>
                     <p id="p"> Token: <%= accessToken %> </p>
@@ -143,7 +142,8 @@
                 //     console.log("START GAME")
                 // })
             </script>
-
+        <script async type="text/javascript" src="/scripts/game.js"></script> 
+        
 
 
 	</body>

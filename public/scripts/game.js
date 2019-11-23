@@ -1,5 +1,5 @@
 var FRAMERATE = 30;
-var fpb = FRAMERATE/(parseInt(document.getElementById('bpm').value)/60);
+var fpb = FRAMERATE/(document.getElementById('bpm').value/60);
 var beat_offset = 0;
 var valid_flag = false;
 var bonus_flag =false;
@@ -46,7 +46,7 @@ if (x == x2){
 function change_bpm(){
     new_bpm = document.getElementById('bpm').value;
     if (new_bpm >= 1){
-        fpb = FRAMERATE/(parseInt(new_bpm)/60);
+        fpb = FRAMERATE/new_bpm/60;
         console.log(`update FRAMERATE:${FRAMERATE} fpb:${fpb}`);
     }
 }
@@ -224,7 +224,7 @@ function generate_upcoming_beats(){
     beat_shelf = [,,,,,'|',];
     //console.log(upcoming_beats)
     for(var i=0; i<upcoming_beats.length; ++i){
-        upcoming_beats[i] += 1/fpb;
+        upcoming_beats[i] += 1/FRAMERATE;
         if(upcoming_beats[i]>=1){
             onCollisions();
             upcoming_beats.shift();
@@ -244,10 +244,10 @@ function generate_upcoming_beats(){
         }
         
         else{
-            if(upcoming_beats[i]>=0.8){
+            if(upcoming_beats[i]>=0.7){
                 valid_flag=true;
             }
-            if(upcoming_beats[i]>=0.9){
+            if(upcoming_beats[i]>=0.85){
                 bonus_flag=true;
             }
             var temp = parseInt(upcoming_beats[i]*6)
@@ -284,7 +284,7 @@ function game_loop(){
     generate_upcoming_beats();
     document.getElementById('player mult').innerHTML = 'x' + multiplier.toFixed(1);
     beat_offset += 1;
-    while(beat_offset>=fpb){beat_offset -= fpb;}
+    while (beat_offset>=fpb){beat_offset -= fpb;}
     
     setTimeout(function(){game_loop();}, 1000/FRAMERATE);
 }
@@ -377,3 +377,4 @@ document.onkeydown = player_move;
 
 
 setTimeout(function(){game_loop();}, 1000/FRAMERATE);
+
