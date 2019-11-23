@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>tHe ClUb: Toggle Users</title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+  </head>
+  <body>
+    <div id="1">
+    <h1>ThE ClUb</h1>
+	<button type="button" id= "backstats" onclick="window.location.href = '/club/admin/<%= rows.name %>/home';">BACK</button>
+  <p>Welcome, <%= rows.name %>! This TOGGLE page currently under construction!</p>
+  <p><%= rows.selfchange ? 'You cannot alter your own status' : ''; %></p>
+  <p><%= rows.goodtoggle ? 'Successful toggle!' : ''; %></p>
+  <p><%= rows.notexist ? 'User does not exist!' : ''; %></p>
+  <div id= "2" style="display: inline-flex">
+  <table>
+  <tr>
+        <th><h2>ADMINS</h2></th>
+   </tr>
+      <% rows.admins.forEach((r) => { %>
+		<tr><th><%= r.username %></th></tr>
+	 <% }); %>
+	  
+	 </table> </div> <div id= "3" style="display: inline-flex"><table>
+  <tr>
+		<th><h2>NORMAL</h2></th>
+   </tr>
+	  <% rows.norms.forEach((r) => { %>
+		<tr><th><%= r.username %></th></tr>
+	 <% }); %>
+	 </table></div>
+	 <form type="submit" action="/club/admin/<%= rows.name %>/toggleadmin" method="POST">
+		<input type="text" name="toggleduser" placeholder="Who to toggle..."required>
+		<button class ="button" type="submit">Toggle Status</button> 
+</div>
+
+  </body>
+
+  <script></script>
+</html>

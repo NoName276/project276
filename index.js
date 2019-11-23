@@ -661,7 +661,7 @@ app.get("/club/admin/:name/stats", (req, res) => {
 });
 
 app.get("/club/admin/:name/home", (req, res) => {
-    console.log("in!");
+   // console.log("in!");
     let name = req.params.name;
     var getUserQuery = `SELECT * FROM users`;
     pool.query(getUserQuery, (error, result) => {
@@ -672,6 +672,81 @@ app.get("/club/admin/:name/home", (req, res) => {
         results.name = name;
         res.render('pages/admin', { 'rows': results })  // load admin page for admins
     })
+});
+
+app.get("/club/admin/:name/toggleadmin", (req, res) => {
+    let name = req.params.name;
+    var getAdminsQuery = `SELECT * FROM users where type= 'admin';`;
+    var getNormsQuery = `select * from users where type <> 'admin' OR type IS NULL;`;
+    var results = {};
+    pool.query(getAdminsQuery, (error, result) => {
+        if (error)
+            res.end(error);
+        results.admins = result.rows;
+        pool.query(getNormsQuery, (error, result) => {
+            if (error) {
+                res.end(error);
+            }
+            results.norms = result.rows;
+            results.name = name;
+            res.render('pages/admintoggle', { 'rows': results });
+        })
+    })
+});
+
+app.post("/club/admin/:name/toggleadmin", (req, res) => {
+    let name = req.params.name;
+    let toBeToggled = req.body.toggleduser;
+    console.log(toBeToggled);
+    var results = {};
+    if (name != toBeToggled) {
+        var getToggledQuery = `SELECT username, type FROM users where username= '${toBeToggled}';`;
+        console.log(getToggledQuery);
+        pool.query(getToggledQuery, (error, result) => {
+            if (error)
+                res.send(error);
+           // console.log(result);
+            if (result.rows.length > 0) {
+                if (result.rows[0].type === 'admin') {
+                    var Toggling = `UPDATE users SET type= NULL where username= '${toBeToggled}';`;
+                }
+                else {
+                    var Toggling = `UPDATE users SET type= 'admin' where username= '${toBeToggled}';`;
+                }
+                console.log("set toggle to: " + Toggling);
+                pool.query(Toggling, (error, result) => {
+                    if (error)
+                        res.send(error);
+                    else
+                        results.goodtoggle = true;
+                });
+            }
+            else {
+                results.notexist = true;
+            }
+        })
+    }
+    else {
+        results.selfchange = true;
+    }
+    var getAdminsQuery = `SELECT * FROM users where type = 'admin';`;
+    var getNormsQuery = `SELECT * from users where type IS NULL;`;
+    pool.query(getAdminsQuery, (error, result) => {
+        if (error)
+            res.end(error);
+        console.log(result.rows);
+        results.admins = result.rows;
+        pool.query(getNormsQuery, (error, result) => {
+            if (error) {
+                res.end(error);
+            }
+            console.log(result.rows);
+            results.norms = result.rows;
+            results.name = name;
+            res.render('pages/admintoggle', { 'rows': results });
+        })
+    })
+
 });
 
 // creating and joining rooms
