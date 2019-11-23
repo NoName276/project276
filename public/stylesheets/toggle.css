@@ -1,15 +1,22 @@
-div{
+.back {
   background-color: black;
+  padding: 2%;
+  margin: 5%;
   font-family: 'Press Start 2P', cursive;
 }
-#1 {
+
+.table {
+    background-color: black;
     padding: 2%;
-    margin: 5%;
+    //margin: 5%;
+    font-family: 'Press Start 2P', cursive;
+    width: 40%;
 }
 h1 {
     color: blue;
     font-size: 24pt;
     text-align: center;
+
 }
 h2 {
  color: blue;
@@ -30,11 +37,9 @@ input[type=text]{
 	font-family: 'Press Start 2P', cursive;
   height: 25px;
 }
-table, th, td {
-    border: 0px;
-    width: 50%;
-    display: inline-table;
-
+table, th, td{
+  border: 0px;
+  width: 75%;
 }
 th{
   font-weight: bold;
@@ -74,4 +79,11 @@ body{
     display: inline;
     margin-top: -6.0%;
 }
-
+.er {
+    color: red;
+    text-align: center;
+}
+.suc {
+    color: forestgreen;
+    text-align: center;
+}

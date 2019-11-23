@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <title>tHe ClUb: Toggle Users</title>
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/toggle.css">
   </head>
   <body>
-    <div id="1">
+    <div class="back">
     <h1>ThE ClUb</h1>
 	<button type="button" id= "backstats" onclick="window.location.href = '/club/admin/<%= rows.name %>/home';">BACK</button>
   <p>Welcome, <%= rows.name %>! This TOGGLE page currently under construction!</p>
-  <p><%= rows.selfchange ? 'You cannot alter your own status' : ''; %></p>
-  <p><%= rows.goodtoggle ? 'Successful toggle!' : ''; %></p>
-  <p><%= rows.notexist ? 'User does not exist!' : ''; %></p>
-  <div id= "2" style="display: inline-flex">
+  <p class= "er"><%= rows.selfchange ? 'You cannot alter your own status' : ''; %></p>
+  <p class = "suc"><%= rows.goodtoggle ? 'Successful toggle!' : ''; %></p>
+  <p class = "er"><%= rows.notexist ? 'User does not exist!' : ''; %></p>
+  <div class="table" style="display: inline-flex">
   <table>
   <tr>
         <th><h2>ADMINS</h2></th>
@@ -23,7 +23,7 @@
 		<tr><th><%= r.username %></th></tr>
 	 <% }); %>
 	  
-	 </table> </div> <div id= "3" style="display: inline-flex"><table>
+	 </table> </div> <div class="table" style="display: inline-flex"><table>
   <tr>
 		<th><h2>NORMAL</h2></th>
    </tr>

@@ -705,7 +705,6 @@ app.post("/club/admin/:name/toggleadmin", (req, res) => {
         pool.query(getToggledQuery, (error, result) => {
             if (error)
                 res.send(error);
-           // console.log(result);
             if (result.rows.length > 0) {
                 if (result.rows[0].type === 'admin') {
                     var Toggling = `UPDATE users SET type= NULL where username= '${toBeToggled}';`;
