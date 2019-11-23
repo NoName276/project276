@@ -810,4 +810,9 @@ app.get('/:room', (req, res) => {
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
+
+//The 404 Route (ALWAYS Keep this as the last route)
+app.get('*', function (req, res) {
+    res.render('pages/404');
+});
 // })
