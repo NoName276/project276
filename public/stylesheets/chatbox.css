@@ -1,4 +1,4 @@
-
+* {box-sizing: border-box;}
 .open-button {
   background-color: #555;
   color: white;
@@ -11,7 +11,7 @@
   right: 28px;
   width: 280px;
 }
-.form-popup {
+.chatbox {
   display: none;
   position: fixed;
   bottom: 0;
@@ -37,7 +37,7 @@
   background-color: #ddd;
   outline: none;
 }
-#message .button {
+#message.button {
   background-color: #4CAF50;
   color: white;
   padding: 16px 20px;
@@ -47,6 +47,9 @@
   margin-bottom:10px;
   opacity: 0.8;
 }
-#message .cancel {
+#message.cancel {
   background-color: red;
+}
+#message .button:hover, .open-button:hover {
+  opacity: 1;
 }
