@@ -716,36 +716,77 @@ app.post("/club/admin/:name/toggleadmin", (req, res) => {
                 pool.query(Toggling, (error, result) => {
                     if (error)
                         res.send(error);
-                    else
+                    else {
                         results.goodtoggle = true;
+                        console.log("good toggle\n");
+                    }
+                    var getAdminsQuery = `SELECT * FROM users where type = 'admin';`;
+                    var getNormsQuery = `SELECT * from users where type IS NULL;`;
+                    pool.query(getAdminsQuery, (error, result) => {
+                       // console.log("start loading table\n")
+                        if (error)
+                            res.end(error);
+                        //console.log(result.rows);
+                        results.admins = result.rows;
+                        pool.query(getNormsQuery, (error, result) => {
+                            if (error) {
+                                res.end(error);
+                            }
+                           // console.log(result.rows);
+                            results.norms = result.rows;
+                            results.name = name;
+                            res.render('pages/admintoggle', { 'rows': results });
+                        });
+                    });
                 });
             }
             else {
                 results.notexist = true;
+                var getAdminsQuery = `SELECT * FROM users where type = 'admin';`;
+                var getNormsQuery = `SELECT * from users where type IS NULL;`;
+                pool.query(getAdminsQuery, (error, result) => {
+                    console.log("start loading table (else1)\n")
+                    if (error)
+                        res.end(error);
+                    console.log(result.rows);
+                    results.admins = result.rows;
+                    pool.query(getNormsQuery, (error, result) => {
+                        if (error) {
+                            res.end(error);
+                        }
+                        console.log(result.rows);
+                        results.norms = result.rows;
+                        results.name = name;
+                        res.render('pages/admintoggle', { 'rows': results });
+                    });
+                });
+
             }
         })
     }
     else {
         results.selfchange = true;
-    }
-    var getAdminsQuery = `SELECT * FROM users where type = 'admin';`;
-    var getNormsQuery = `SELECT * from users where type IS NULL;`;
-    pool.query(getAdminsQuery, (error, result) => {
-        if (error)
-            res.end(error);
-        console.log(result.rows);
-        results.admins = result.rows;
-        pool.query(getNormsQuery, (error, result) => {
-            if (error) {
+        var getAdminsQuery = `SELECT * FROM users where type = 'admin';`;
+        var getNormsQuery = `SELECT * from users where type IS NULL;`;
+        pool.query(getAdminsQuery, (error, result) => {
+            console.log("start loading table (else2)\n")
+            if (error)
                 res.end(error);
-            }
             console.log(result.rows);
-            results.norms = result.rows;
-            results.name = name;
-            res.render('pages/admintoggle', { 'rows': results });
-        })
-    })
+            results.admins = result.rows;
+            pool.query(getNormsQuery, (error, result) => {
+                if (error) {
+                    res.end(error);
+                }
+                console.log(result.rows);
+                results.norms = result.rows;
+                results.name = name;
+                res.render('pages/admintoggle', { 'rows': results });
+            });
+        });
 
+    }
+   
 });
 
 // creating and joining rooms

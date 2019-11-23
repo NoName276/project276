@@ -10,7 +10,7 @@
     <div class="back">
     <h1>ThE ClUb</h1>
 	<button type="button" id= "backstats" onclick="window.location.href = '/club/admin/<%= rows.name %>/home';">BACK</button>
-  <p>Welcome, <%= rows.name %>! This TOGGLE page currently under construction!</p>
+  <p>Welcome, <%= rows.name %>! Here you can alter the status of all the users within the database!</p>
   <p class= "er"><%= rows.selfchange ? 'You cannot alter your own status' : ''; %></p>
   <p class = "suc"><%= rows.goodtoggle ? 'Successful toggle!' : ''; %></p>
   <p class = "er"><%= rows.notexist ? 'User does not exist!' : ''; %></p>
