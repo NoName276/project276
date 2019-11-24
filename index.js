@@ -338,6 +338,36 @@ app.get('/dear-evan-hansen', (req,res) => {
 app.get('/waving-through-a-window-from-the-dear-evan-hansen-original-broadway-cast-recording.mp3', (req,res) => {
     res.sendFile(__dirname + '/audio/waving-through-a-window-from-the-dear-evan-hansen-original-broadway-cast-recording.mp3')
 })
+app.get('/88rising', (req,res) => {
+    res.render('pages/breathe');
+})
+app.get('/breathe.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/breathe.mp3')
+})
+app.get('/billie-eilish', (req,res) => {
+    res.render('pages/bad-guy');
+})
+app.get('/bad-guy.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/bad-guy.mp3')
+})
+app.get('/dua-lipa', (req,res) => {
+    res.render('pages/dont-start-now');
+})
+app.get('/dont-start-now.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/dont-start-now.mp3')
+})
+app.get('/sam-smith', (req,res) => {
+    res.render('pages/how-do-you-sleep');
+})
+app.get('/how-do-you-sleep.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/how-do-you-sleep.mp3')
+})
+app.get('/ali-gatie', (req,res) => {
+    res.render('pages/its-you');
+})
+app.get('/its-you.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/its-you.mp3')
+})
 
 var request = require('request'); // "Request" library
 var cors = require('cors');

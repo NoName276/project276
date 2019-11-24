@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+      <h1>Now Playing: </h1>
+      <h2>bad guy</h2>
+      <h2>Billie Eilish</h2>
+      <h2>BPM: 135</h2>
+      <h2>Duration: 194 seconds</h2>
+
+      <audio id="audio" src="bad-guy.mp3" ></audio>
+      <script>
+        function play() {
+            var audio = document.getElementById("audio");
+            audio.play();
+        }
+      </script>
+      <input id = "playButton" type="button" value="PLAY" onclick="play()">
+      
+  </body>
+</html>
