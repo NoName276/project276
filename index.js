@@ -156,7 +156,7 @@ app.get("/club", (req, res) => {
 })
 
 app.post("/club/login", (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
     var queryString = `SELECT * FROM users WHERE username='${req.body.username}';`;
     pool.query(queryString, (error, result) => {
         if(error)
@@ -170,7 +170,7 @@ app.post("/club/login", (req, res) => {
                   var results = {};
                   results.users = result.rows;
                   results.name = req.body.username;
-                  console.log(results);
+                  //console.log(results);
                   res.render('pages/admin', { 'rows': results })  // load admin page for admins
               })
               return;
@@ -200,7 +200,7 @@ app.get("/club/:name/stats", (req, res) => {
                 res.send("error");
                 console.log(error);
             }
-            console.log(result);
+            //console.log(result);
             findrank = (result) ? result.rows : null;
             findrank.forEach(function (user) {
                 if (user.username == name) {
@@ -249,7 +249,7 @@ app.get("/club/:name/leaderboard", (req, res) => {
         results.topten = leaderboard;
         if (foundplayer == true) {
             results.player = player;
-            console.log(results);
+            //console.log(results);
             res.render('pages/leaderboard', { 'rows': results });
         }
         else {
@@ -267,7 +267,7 @@ app.get("/club/:name/leaderboard", (req, res) => {
                     }
                 });
                 results.player = player;
-                console.log(results);
+                //console.log(results);
                 res.render('pages/leaderboard', { 'rows': results })
             });
         }
@@ -286,7 +286,7 @@ app.get("/club/admin/:name/leaderboard", (req, res) => {
         var results = {};
         results.player = name;
         results.board = result.rows;
-        console.log(results.board);
+        //console.log(results.board);
         res.render('pages/adminleaderboard', { 'rows': results });
     })
 });
