@@ -7,15 +7,11 @@ var request = require("request"),
 chai = require("chai");
 chaiHttp = require('chai-http');
 let should = chai.should();
-//import chatHttp from 'chai-http';
-//import 'chai/register-should';
-//import app from './index.js';
 
 chai.use(chaiHttp);
 const { expect } = chai;
 
-describe("If Home Page Running", function () {
-    describe("GET /", function () {
+describe("Home Page Running?", function () {
         it("returns status code 200", function (done) {
             request.get(base_url, function (error, response, body) {
                 //expect(response.statusCode).toBe(200);
@@ -23,10 +19,9 @@ describe("If Home Page Running", function () {
                 done();
             });
         });
-    });
 });
 
-describe("404 page testing", function () {
+describe("404 page", function () {
     it('Status 404 on unreal page', (done) => {
         chai.request(app)
             .get(`/club/testing`)
@@ -38,7 +33,7 @@ describe("404 page testing", function () {
 });
 
 describe("Register", function () {
-    it('delete user to test "new user"', (done) => {
+    it('delete user to test "new user" (in case made before test)', (done) => {
         let person = {
             username: "testingregister",
             password: "x"
@@ -47,7 +42,6 @@ describe("Register", function () {
             .post(`/BobbyC/deleted`)
             .send(person)
             .end(function (err, res) {
-                console.log(res.text);
                 expect(res.status).to.be.eq(200);
                 done();
             });
@@ -91,3 +85,107 @@ describe("Register", function () {
             });
     });
 });
+
+//TODOS
+describe("LogIn and LogOut", function () {
+});
+
+describe("Stats and Leaderboard", function () {
+});
+
+//done this one
+describe("Toggling Admin", function () {
+    let changer = {
+        toggleduser: "BobbyC"
+    }
+    let changing = {
+        toggleduser: "testingregister"
+    }
+    let notexist = {
+        toggleduser: "notexist"
+    }
+    it("toggle normal user to admin", function (done) {
+        chai.request(app)
+            .post(`/club/admin/BobbyC/toggleadmin`)
+            .send(changing)
+            .end(function (err, res) {
+                /* expect(res.body.data).to.include({
+                     username: person.username,
+                     password: person.password,
+                 });*/
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('Successful toggle!');
+                done();
+            });
+    });
+    it("toggle admin user to normal", function (done) {
+        chai.request(app)
+            .post(`/club/admin/BobbyC/toggleadmin`)
+            .send(changing)
+            .end(function (err, res) {
+                /* expect(res.body.data).to.include({
+                     username: person.username,
+                     password: person.password,
+                 });*/
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('Successful toggle!');
+                done();
+            });
+    });
+    it("toggle non existent user", function (done) {
+        chai.request(app)
+            .post(`/club/admin/BobbyC/toggleadmin`)
+            .send(notexist)
+            .end(function (err, res) {
+                /* expect(res.body.data).to.include({
+                     username: person.username,
+                     password: person.password,
+                 });*/
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('User does not exist!');
+                done();
+            });
+    });
+    it("toggle self", function (done) {
+        chai.request(app)
+            .post(`/club/admin/BobbyC/toggleadmin`)
+            .send(changer)
+            .end(function (err, res) {
+                /* expect(res.body.data).to.include({
+                     username: person.username,
+                     password: person.password,
+                 });*/
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('You cannot alter your own status');
+                done();
+            });
+    });
+});
+
+//TO DO CONT
+describe("Single Player", function () { });
+
+describe("Multiplayer", function () { });
+
+describe("API", function () { });
+
+describe("ROOMS/SOCKET", function () { });
+
+//done this too
+describe("CLEAN UP POST TEST", function () {
+    it('delete "new user" post-test', (done) => {
+        let person = {
+            username: "testingregister",
+            password: "x"
+        }
+        chai.request(app)
+            .post(`/BobbyC/deleted`)
+            .send(person)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                done();
+            });
+    });
+});
+
+    
