@@ -11,7 +11,8 @@ let should = chai.should();
 chai.use(chaiHttp);
 const { expect } = chai;
 
-describe("Home Page Running?", function () {
+//done
+describe("Front Page Running?", function () {
         it("returns status code 200", function (done) {
             request.get(base_url, function (error, response, body) {
                 //expect(response.statusCode).toBe(200);
@@ -21,6 +22,7 @@ describe("Home Page Running?", function () {
         });
 });
 
+//done
 describe("404 page", function () {
     it('Status 404 on unreal page', (done) => {
         chai.request(app)
@@ -32,6 +34,7 @@ describe("404 page", function () {
     });
 });
 
+//done
 describe("Register", function () {
     it('delete user to test "new user" (in case made before test)', (done) => {
         let person = {
@@ -199,7 +202,8 @@ describe("LogIn and LogOut", function () {
         })
     });
 });
-//TODO
+
+//TODO (leaderboards)
 describe("Stats and Leaderboard", function () {
     describe("Stats", function () {
         it("All Stats being shown?", function (done) {
@@ -283,7 +287,7 @@ describe("Stats and Leaderboard", function () {
     });
 });
 
-//done this one
+//done
 describe("Toggling Admin", function () {
     let changer = {
         toggleduser: "BobbyC"
@@ -352,7 +356,7 @@ describe("Toggling Admin", function () {
     });
 });
 
-//TO DO CONT
+//TO DO CONT (all below)
 describe("Single Player", function () { });
 
 describe("Multiplayer", function () { });
@@ -361,7 +365,7 @@ describe("API", function () { });
 
 describe("ROOMS/SOCKET", function () { });
 
-//done this too
+//cleanup; done
 describe("CLEAN UP POST TEST", function () {
     it('delete "new user" post-test', (done) => {
         let person = {
