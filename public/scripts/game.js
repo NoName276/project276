@@ -18,14 +18,15 @@ var game_grid = [
     ['1',,,,,,,,,'8',],
     ['O','2','3',,'4','5',,'6','7','O',]
 ];
-var player_pos = [[1,3]];
+var player_num = 0;
+var player_pos = [[1,0],[1,3],[1,6],[1,9],];
 var glasses = [0,0,0,0,0,0,0,0,0,0,];
 var filled_glasses = 0;
 var next_glass_counter = 0;
 var score = 0;
 var multiplier = 1.0;
-var player_glasses = [];
-var last_player_move = 0;
+var player_glasses = [[],[],[],[],];
+var last_player_move = [0,0,0,0,];
 let x2 = Math.floor(Math.random()* 4) + 2;
 let y2 = Math.floor(Math.random()* game_grid[x2].length);
 let x = Math.floor(Math.random()* 4) + 2;
@@ -51,7 +52,7 @@ function change_bpm(){
     }
 }
 
-function player_move(e){
+function player_move(num, e){
     gridEl = document.getElementById('game_grid');
     var pressed = e.which || e.keyCode;
     //console.log(pressed)
@@ -65,26 +66,26 @@ function player_move(e){
                     multiplier += 0.1;
                 }
             }
-            if( (pressed == last_player_move) || (player_glasses.length < 4) ){
+            if( (pressed == last_player_move[num]) || (player_glasses[num].length < 5) ){
                 switch(pressed){
                     case 87:
                     case 38:
-                        if(player_pos[0][0] > 0){
-                            if(game_grid[player_pos[0][0]-1][player_pos[0][1]] == null){
-                                game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                                player_pos[0][0] -= 1;
-                                //game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                        if(player_pos[num][0] > 0){
+                            if(game_grid[player_pos[num][0]-1][player_pos[num][1]] == null){
+                                game_grid[player_pos[num][0]][player_pos[num][1]] = null;
+                                player_pos[num][0] -= 1;
+                                //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                             }
-                            else if(!isNaN(game_grid[player_pos[0][0]-1][player_pos[0][1]])){
-                                if(glasses[game_grid[player_pos[0][0]-1][player_pos[0][1]]] != 0){
-                                    player_glasses.push(glasses[game_grid[player_pos[0][0]-1][player_pos[0][1]]]);
-                                    glasses[game_grid[player_pos[0][0]-1][player_pos[0][1]]] = 0;
+                            else if(!isNaN(game_grid[player_pos[num][0]-1][player_pos[num][1]])){
+                                if(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] != 0){
+                                    player_glasses[num].push(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]]);
+                                    glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] = 0;
                                     filled_glasses -= 1;
                                 }
                             }
-                            else if(game_grid[player_pos[0][0]-1][player_pos[0][1]] == 'T'){
-                                while(player_glasses.length != 0){
-                                    score += player_glasses.pop()*10*multiplier;
+                            else if(player_pos[num][0]-1 == 0 && player_pos[num][1] == 3*num){
+                                while(player_glasses[num].length != 0){
+                                    score += player_glasses[num].pop()*10*multiplier;
                                     document.getElementById('player score').innerHTML = score.toFixed(0)
                                 }
                             }
@@ -92,22 +93,22 @@ function player_move(e){
                         break;
                     case 83:
                     case 40:
-                        if(player_pos[0][0] < 9){
-                            if(game_grid[player_pos[0][0]+1][player_pos[0][1]] == null){
-                                game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                                player_pos[0][0] += 1;
-                                //game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                        if(player_pos[num][0] < 9){
+                            if(game_grid[player_pos[num][0]+1][player_pos[num][1]] == null){
+                                game_grid[player_pos[num][0]][player_pos[num][1]] = null;
+                                player_pos[num][0] += 1;
+                                //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                             }
-                            else if(!isNaN(game_grid[player_pos[0][0]+1][player_pos[0][1]])){
-                                if(glasses[game_grid[player_pos[0][0]+1][player_pos[0][1]]] != 0){
-                                    player_glasses.push(glasses[game_grid[player_pos[0][0]+1][player_pos[0][1]]]);
-                                    glasses[game_grid[player_pos[0][0]+1][player_pos[0][1]]] = 0;
+                            else if(!isNaN(game_grid[player_pos[num][0]+1][player_pos[num][1]])){
+                                if(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] != 0){
+                                    player_glasses[num].push(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]]);
+                                    glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] = 0;
                                     filled_glasses -= 1;
                                 }
                             }
-                            else if(game_grid[player_pos[0][0]+1][player_pos[0][1]] == 'T'){
-                                while(player_glasses.length != 0){
-                                    score += player_glasses.pop()*10*multiplier;
+                            else if(player_pos[num][0]+1 == 0 && player_pos[num][1] == 3*num){
+                                while(player_glasses[num].length != 0){
+                                    score += player_glasses[num].pop()*10*multiplier;
                                     document.getElementById('player score').innerHTML = score.toFixed(0)
                                 }
                             }
@@ -115,22 +116,22 @@ function player_move(e){
                         break;
                     case 65:
                     case 37:
-                        if(player_pos[0][1] > 0){
-                            if (game_grid[player_pos[0][0]][player_pos[0][1]-1] == null){
-                                game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                                player_pos[0][1] -= 1;
-                                //game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                        if(player_pos[num][1] > 0){
+                            if (game_grid[player_pos[num][0]][player_pos[num][1]-1] == null){
+                                game_grid[player_pos[num][0]][player_pos[num][1]] = null;
+                                player_pos[num][1] -= 1;
+                                //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                         }
-                            else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]-1])){
-                                if(glasses[game_grid[player_pos[0][0]][player_pos[0][1]-1]] != 0){
-                                    player_glasses.push(glasses[game_grid[player_pos[0][0]][player_pos[0][1]-1]]);
-                                    glasses[game_grid[player_pos[0][0]][player_pos[0][1]-1]] = 0;
+                            else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]-1])){
+                                if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] != 0){
+                                    player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]]);
+                                    glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] = 0;
                                     filled_glasses -= 1;
                                 }
                             }
-                            else if(game_grid[player_pos[0][0]][player_pos[0][1]-1] == 'T'){
-                                while(player_glasses.length != 0){
-                                    score += player_glasses.pop()*10*multiplier;
+                            else if(player_pos[num][0] == 0 && player_pos[num][1]-1 == 3*num){
+                                while(player_glasses[num].length != 0){
+                                    score += player_glasses[num].pop()*10*multiplier;
                                     document.getElementById('player score').innerHTML = score.toFixed(0)
                                 }
                             }
@@ -138,22 +139,22 @@ function player_move(e){
                         break;
                     case 68:
                     case 39:
-                        if(player_pos[0][1] < 9){
-                            if (game_grid[player_pos[0][0]][player_pos[0][1]+1] == null){
-                                game_grid[player_pos[0][0]][player_pos[0][1]] = null;
-                                player_pos[0][1] += 1;
-                                //game_grid[player_pos[0][0]][player_pos[0][1]] = 'P';
+                        if(player_pos[num][1] < 9){
+                            if (game_grid[player_pos[num][0]][player_pos[num][1]+1] == null){
+                                game_grid[player_pos[num][0]][player_pos[num][1]] = null;
+                                player_pos[num][1] += 1;
+                                //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                             }
-                            else if(!isNaN(game_grid[player_pos[0][0]][player_pos[0][1]+1])){
-                                if(glasses[game_grid[player_pos[0][0]][player_pos[0][1]+1]] != 0){
-                                player_glasses.push(glasses[game_grid[player_pos[0][0]][player_pos[0][1]+1]]);
-                                glasses[game_grid[player_pos[0][0]][player_pos[0][1]+1]] = 0;
+                            else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]+1])){
+                                if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] != 0){
+                                player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]]);
+                                glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] = 0;
                                 filled_glasses -= 1;
                                 }
                             }
-                            else if(game_grid[player_pos[0][0]][player_pos[0][1]+1] == 'T'){
-                                while(player_glasses.length != 0){
-                                    score += player_glasses.pop()*10*multiplier;
+                            else if(player_pos[num][0] == 0 && player_pos[num][1]+1 == 3*num){
+                                while(player_glasses[num].length != 0){
+                                    score += player_glasses[num].pop()*10*multiplier;
                                     document.getElementById('player score').innerHTML = score.toFixed(0)
                                 }
                             }
@@ -163,10 +164,10 @@ function player_move(e){
                         key_flag = false;
                         gridEl.style.color = 'blue';
                 }
-                last_player_move = 0;
+                last_player_move[num] = 0;
             }
             else{
-                last_player_move = pressed;
+                last_player_move[num] = pressed;
             }
             
             setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
@@ -199,9 +200,19 @@ function display_game_grid(){
     for(var i = 0; i<10; ++i){
         gridEl.innerHTML += '#';
         for(var j=0; j<10; ++j){
-            if( (i == player_pos[0][0]) && (j == player_pos[0][1]) ){
-                gridEl.innerHTML += 'P';
+            var filled_flag = false;
+            for(var num = 0; num <2; num++){
+                if( (i == player_pos[num][0]) && (j == player_pos[num][1]) ){
+                    if (num == player_num){
+                        gridEl.innerHTML += 'U';
+                    }
+                    else {
+                        gridEl.innerHTML += 'P';
+                    }
+                    filled_flag = true;
+                }
             }
+            if(filled_flag){null;}
             else if( ( (i == x) && (j == y) ) || ( (i == x2) && (j == y2) ) || ( (i==third) && (j==thirdx) ) ){
                 gridEl.innerHTML += 'E'
             }
@@ -211,7 +222,7 @@ function display_game_grid(){
             else if(!isNaN(game_grid[i][j])){
                 gridEl.innerHTML += glasses[game_grid[i][j]];
             }
-            else{
+            else {
                 gridEl.innerHTML += game_grid[i][j];
             }
         }
@@ -356,24 +367,26 @@ function onCollisions() {
 }
 
 function attack() {
-  //  console.log(player_pos[0], [x,y])
-    if (player_pos[0][0] == x && player_pos[0][1] == y){
-        player_pos[0] = [x+1, y];
-        if(player_glasses.length > 0){player_glasses.pop();}
-      //  console.log('fight me');       
-    }
-    if (player_pos[0][0] == x2 && player_pos[0][1] == y2){
-        player_pos[0] = [x2+1,y2];
-        if(player_glasses.length > 0){player_glasses.pop();}
-    }
-    if (player_pos[0][0] == third && player_pos[0][1] == thirdx){
-        player_pos[0] = [third+1 ,thirdx];
-        if(player_glasses.length > 0){player_glasses.pop();}
+  //  console.log(player_pos[i], [x,y])
+    for(i=0; i<4; i++){
+        if (player_pos[i][0] == x && player_pos[i][1] == y){
+            player_pos[i] = [x+1, y];
+            if(player_glasses[i].length > 0){player_glasses[i].pop();}
+        //  console.log('fight me');       
+        }
+        if (player_pos[i][0] == x2 && player_pos[i][1] == y2){
+            player_pos[i] = [x2+1,y2];
+            if(player_glasses[i].length > 0){player_glasses[i].pop();}
+        }
+        if (player_pos[i][0] == third && player_pos[i][1] == thirdx){
+            player_pos[i] = [third+1 ,thirdx];
+            if(player_glasses[i].length > 0){player_glasses[i].pop();}
+        }
     }
 }
 
 console.log(`start FRAMERATE:${FRAMERATE} fpb:${fpb}`);
-document.onkeydown = player_move;
+document.onkeydown = function(e){player_move(player_num, e)};
 
 
 setTimeout(function(){game_loop();}, 1000/FRAMERATE);
