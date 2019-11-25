@@ -19,6 +19,8 @@ app.get('/hello', (req, res) => res.send('Hello There!'))
 app.get('/test', (req, res) => res.send('test'))
 // app.listen(PORT, () => console.log(`Listening on ${PORT}`))
 
+module.exports = server;
+
 app.get('/register', async (req, res) => {  //loads registerform
     try {
         res.render('pages/register', name);
@@ -91,7 +93,7 @@ app.post('/:name/deleted', (req, res) => {
     let name = req.params.name;
     var deleteUserQuery = `DELETE FROM users WHERE username = '${req.body.username}'`;
     var deleteStatsQuery = `DELETE FROM stats WHERE username = '${req.body.username}'`;
-    console.log(req.body);
+    //console.log(req.body);
     pool.query(deleteStatsQuery, (error) => {
         if (error)
             res.end(error);
@@ -107,40 +109,44 @@ app.post('/:name/deleted', (req, res) => {
             var results = {};
             results.users = result.rows;
             results.name = name;
+            //console.log(`deleted ${req.body.username}`)
             res.render('pages/admin', { 'rows': results })
             //var results = { 'rows': result.rows };
-            console.log("results= " , results);
-            res.render('pages/admin', { 'rows': results })
+           // console.log("results= " , results);
+           // console.log("res: ", res);
+            //res.render('pages/admin', { 'rows': results })
         });
     });
 });
 
 //registration and login
 app.post('/club/reg', (req,res) => {        // loads new reg to database +check if username already exist
-  console.log(req.body);
+  //console.log(req.body);
   let body = req.body;
-  let userCheck = `SELECT * FROM users WHERE username = '${body.username}';`;
-  pool.query(userCheck, (error, result) => {
-    if(result.rows.length > 0) {
+    let userCheck = `SELECT * FROM users WHERE username = '${body.username}';`;
+    //console.log(userCheck);
+    pool.query(userCheck, (error, result) => {
+    if (result.rows.length > 0) {
+       //console.log("res: ", res);
       res.render('pages/club', {'props': {regFailed: true}});
       return;
     }
       var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
       var getStatsQuery = `INSERT INTO stats (username , gamesplayed, gameswon, gameslost, gamesdrawn, highscore, totalpoints) VALUES ('${body.username}' , 0, 0, 0, 0, 0, 0);`;
-    console.log(getUsersQuery);
     pool.query(getUsersQuery,(error,result)=>{
       if (error){
         res.send("error");
         console.log(error);
        }
       });
-      console.log("passed User Query\n");
+     // console.log("passed User Query\n");
     pool.query(getStatsQuery, (error, result) => {
       if (error) {
          res.send("error");
          console.log(error);
          }
-      });
+        });
+        //console.log("res: ", res);
       res.render("pages/club", { props: { 'login': true } });
   });
 })
@@ -150,7 +156,7 @@ app.get("/club", (req, res) => {
 })
 
 app.post("/club/login", (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
     var queryString = `SELECT * FROM users WHERE username='${req.body.username}';`;
     pool.query(queryString, (error, result) => {
         if(error)
@@ -164,7 +170,7 @@ app.post("/club/login", (req, res) => {
                   var results = {};
                   results.users = result.rows;
                   results.name = req.body.username;
-                  console.log(results);
+                  //console.log(results);
                   res.render('pages/admin', { 'rows': results })  // load admin page for admins
               })
               return;
@@ -194,7 +200,7 @@ app.get("/club/:name/stats", (req, res) => {
                 res.send("error");
                 console.log(error);
             }
-            console.log(result);
+            //console.log(result);
             findrank = (result) ? result.rows : null;
             findrank.forEach(function (user) {
                 if (user.username == name) {
@@ -243,7 +249,7 @@ app.get("/club/:name/leaderboard", (req, res) => {
         results.topten = leaderboard;
         if (foundplayer == true) {
             results.player = player;
-            console.log(results);
+            //console.log(results);
             res.render('pages/leaderboard', { 'rows': results });
         }
         else {
@@ -261,7 +267,7 @@ app.get("/club/:name/leaderboard", (req, res) => {
                     }
                 });
                 results.player = player;
-                console.log(results);
+                //console.log(results);
                 res.render('pages/leaderboard', { 'rows': results })
             });
         }
@@ -280,7 +286,7 @@ app.get("/club/admin/:name/leaderboard", (req, res) => {
         var results = {};
         results.player = name;
         results.board = result.rows;
-        console.log(results.board);
+        //console.log(results.board);
         res.render('pages/adminleaderboard', { 'rows': results });
     })
 });
@@ -661,7 +667,7 @@ app.get("/club/admin/:name/stats", (req, res) => {
 });
 
 app.get("/club/admin/:name/home", (req, res) => {
-    console.log("in!");
+   // console.log("in!");
     let name = req.params.name;
     var getUserQuery = `SELECT * FROM users`;
     pool.query(getUserQuery, (error, result) => {
@@ -672,6 +678,121 @@ app.get("/club/admin/:name/home", (req, res) => {
         results.name = name;
         res.render('pages/admin', { 'rows': results })  // load admin page for admins
     })
+});
+
+app.get("/club/admin/:name/toggleadmin", (req, res) => {
+    let name = req.params.name;
+    var getAdminsQuery = `SELECT * FROM users where type= 'admin';`;
+    var getNormsQuery = `select * from users where type <> 'admin' OR type IS NULL;`;
+    var results = {};
+    pool.query(getAdminsQuery, (error, result) => {
+        if (error)
+            res.end(error);
+        results.admins = result.rows;
+        pool.query(getNormsQuery, (error, result) => {
+            if (error) {
+                res.end(error);
+            }
+            results.norms = result.rows;
+            results.name = name;
+            res.render('pages/admintoggle', { 'rows': results });
+        })
+    })
+});
+
+app.post("/club/admin/:name/toggleadmin", (req, res) => {
+    let name = req.params.name;
+    let toBeToggled = req.body.toggleduser;
+    //console.log("toggling user: ", toBeToggled);
+    var results = {};
+    if (name != toBeToggled) {
+        var getToggledQuery = `SELECT username, type FROM users where username= '${toBeToggled}';`;
+        //console.log(getToggledQuery);
+        pool.query(getToggledQuery, (error, result) => {
+            if (error)
+                res.send(error);
+            if (result.rows.length > 0) {
+                if (result.rows[0].type === 'admin') {
+                    var Toggling = `UPDATE users SET type= NULL where username= '${toBeToggled}';`;
+                }
+                else {
+                    var Toggling = `UPDATE users SET type= 'admin' where username= '${toBeToggled}';`;
+                }
+               // console.log("set toggle to: " + Toggling);
+                pool.query(Toggling, (error, result) => {
+                    if (error)
+                        res.send(error);
+                    else {
+                        results.goodtoggle = true;
+                       // console.log("good toggle\n");
+                    }
+                    var getAdminsQuery = `SELECT * FROM users where type = 'admin';`;
+                    var getNormsQuery = `SELECT * from users where type IS NULL;`;
+                    pool.query(getAdminsQuery, (error, result) => {
+                       // console.log("start loading table\n")
+                        if (error)
+                            res.end(error);
+                        //console.log(result.rows);
+                        results.admins = result.rows;
+                        pool.query(getNormsQuery, (error, result) => {
+                            if (error) {
+                                res.end(error);
+                            }
+                           // console.log(result.rows);
+                            results.norms = result.rows;
+                            results.name = name;
+                            res.render('pages/admintoggle', { 'rows': results });
+                        });
+                    });
+                });
+            }
+            else {
+                results.notexist = true;
+                var getAdminsQuery = `SELECT * FROM users where type = 'admin';`;
+                var getNormsQuery = `SELECT * from users where type IS NULL;`;
+                pool.query(getAdminsQuery, (error, result) => {
+                    //console.log("start loading table (else1)\n")
+                    if (error)
+                        res.end(error);
+                   // console.log(result.rows);
+                    results.admins = result.rows;
+                    pool.query(getNormsQuery, (error, result) => {
+                        if (error) {
+                            res.end(error);
+                        }
+                       // console.log(result.rows);
+                        results.norms = result.rows;
+                        results.name = name;
+                        res.render('pages/admintoggle', { 'rows': results });
+                    });
+                });
+
+            }
+        })
+    }
+    else {
+        results.selfchange = true;
+        var getAdminsQuery = `SELECT * FROM users where type = 'admin';`;
+        var getNormsQuery = `SELECT * from users where type IS NULL;`;
+        pool.query(getAdminsQuery, (error, result) => {
+           // console.log("start loading table (else2)\n")
+            if (error)
+                res.end(error);
+            //console.log(result.rows);
+            results.admins = result.rows;
+            pool.query(getNormsQuery, (error, result) => {
+                if (error) {
+                    res.end(error);
+                }
+               // console.log(result.rows);
+                results.norms = result.rows;
+                results.name = name;
+                res.render('pages/admintoggle', { 'rows': results });
+            });
+        });
+
+    }
+   
 });
 
 // creating and joining rooms
@@ -695,4 +816,10 @@ app.get('/:room', (req, res) => {
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
+
+//The 404 Route (ALWAYS Keep this as the last route)
+app.get('*', function (req, res) {
+    res.statusCode = 404;
+    res.render('pages/404');
+});
 // })
