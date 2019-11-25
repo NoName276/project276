@@ -109,10 +109,11 @@ app.post('/:name/deleted', (req, res) => {
             var results = {};
             results.users = result.rows;
             results.name = name;
+            //console.log(`deleted ${req.body.username}`)
             res.render('pages/admin', { 'rows': results })
             //var results = { 'rows': result.rows };
            // console.log("results= " , results);
-            console.log("res: ", res);
+           // console.log("res: ", res);
             res.render('pages/admin', { 'rows': results })
         });
     });
@@ -125,7 +126,6 @@ app.post('/club/reg', (req,res) => {        // loads new reg to database +check 
     let userCheck = `SELECT * FROM users WHERE username = '${body.username}';`;
     console.log(userCheck);
     pool.query(userCheck, (error, result) => {
-        
     if (result.rows.length > 0) {
        //console.log("res: ", res);
       res.render('pages/club', {'props': {regFailed: true}});

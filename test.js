@@ -38,12 +38,20 @@ describe("404 page testing", function () {
 });
 
 describe("Register", function () {
-    beforeEach((done) => { //Before each test we empty the database of testingregister
+    it('delete user to test "new user"', (done) => {
+        let person = {
+            username: "testingregister",
+            password: "x"
+        }
         chai.request(app)
             .post(`/BobbyC/deleted`)
-            .send("testingregister")
-        done();
-    });   
+            .send(person)
+            .end(function (err, res) {
+                console.log(res.text);
+                expect(res.status).to.be.eq(200);
+                done();
+            });
+    });
 
     it('With new user', (done) => {
         let person = {
@@ -58,7 +66,9 @@ describe("Register", function () {
                     username: person.username,
                     password: person.password,
                 });*/
+             
                 expect(res.status).to.be.eq(200);
+                res.text.should.include('registration successful')
                 done();
             });
     });
@@ -75,7 +85,9 @@ describe("Register", function () {
                     username: person.username,
                     password: person.password,
                 });*/
-              
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('Username taken.');
+                done();
             });
     });
 });
