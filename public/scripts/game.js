@@ -202,7 +202,7 @@ function display_game_grid(){
         for(var j=0; j<10; ++j){
             var filled_flag = false;
             for(var num = 0; num <2; num++){
-                if( (i == player_pos[num][0]) && (j == player_pos[num][1]) ){
+                if( (i == player_pos[num][0]) && (j == player_pos[num][1]) && (!filled_flag)){
                     if (num == player_num){
                         gridEl.innerHTML += 'U';
                     }
