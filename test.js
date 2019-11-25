@@ -203,7 +203,7 @@ describe("LogIn and LogOut", function () {
     });
 });
 
-//TODO (leaderboards)
+//done (?)
 describe("Stats and Leaderboard", function () {
     describe("Stats", function () {
         it("All Stats being shown?", function (done) {
@@ -265,13 +265,19 @@ describe("Stats and Leaderboard", function () {
                 });
         })
     });
-    //TODO
+ 
     describe("Leaderboard", function () {
         it("Normal Leaderboard/Top Ten", function (done) {
             chai.request(app)
                 .get("/club/Quiette/leaderboard")
                 .end(function (err, res) {
                     expect(res.status).to.be.eq(200);
+                    //console.log(res.text);
+                    res.text.should.include("Welcome, Quiette. Here is the Leaderboard:"); //in leaderboard
+                    res.text.should.include("<th>1</th>\r\n\t\t  <th>BobbyC</th>\r\n\t\t  <th>150</th>\r\n"); //holds top player
+                    res.text.should.include("<th>4</th>\r\n\t\t  <th>Vanthournout</th>\r\n\t\t  <th>0</th>\r\n");//holds 10th place player or lowest player if less than ten 
+                    res.text.should.include("Here is your standing:");
+                    res.text.should.include("<th>2</th>\r\n\t\t  <th>Quiette</th>\r\n\t\t  <th>100</th>\r\n"); //holds self in table
                     done();
                 });
         })
@@ -280,6 +286,20 @@ describe("Stats and Leaderboard", function () {
                 .get("/club/admin/BobbyC/leaderboard")
                 .end(function (err, res) {
                     expect(res.status).to.be.eq(200);
+                    //console.log(res.data);
+                    res.text.should.include("Here is the Master Leaderboard:");
+                    res.text.should.include("Username");
+                    res.text.should.include("Rank");
+                    res.text.should.include("Played");
+                    res.text.should.include("Won");
+                    res.text.should.include("Lost");
+                    res.text.should.include("Drawn");
+                    res.text.should.include("High Score");
+                    res.text.should.include("Total");
+                    res.text.should.include("BobbyC");
+                    res.text.should.include("testingregister");
+                    res.text.should.include("Quiette");
+                    res.text.should.include("jen");
                     done();
                 });
         })
