@@ -19,6 +19,8 @@ app.get('/hello', (req, res) => res.send('Hello There!'))
 app.get('/test', (req, res) => res.send('test'))
 // app.listen(PORT, () => console.log(`Listening on ${PORT}`))
 
+module.exports = server;
+
 app.get('/register', async (req, res) => {  //loads registerform
     try {
         res.render('pages/register', name);
@@ -109,7 +111,8 @@ app.post('/:name/deleted', (req, res) => {
             results.name = name;
             res.render('pages/admin', { 'rows': results })
             //var results = { 'rows': result.rows };
-            console.log("results= " , results);
+           // console.log("results= " , results);
+            console.log("res: ", res);
             res.render('pages/admin', { 'rows': results })
         });
     });
@@ -119,9 +122,12 @@ app.post('/:name/deleted', (req, res) => {
 app.post('/club/reg', (req,res) => {        // loads new reg to database +check if username already exist
   console.log(req.body);
   let body = req.body;
-  let userCheck = `SELECT * FROM users WHERE username = '${body.username}';`;
-  pool.query(userCheck, (error, result) => {
-    if(result.rows.length > 0) {
+    let userCheck = `SELECT * FROM users WHERE username = '${body.username}';`;
+    console.log(userCheck);
+    pool.query(userCheck, (error, result) => {
+        
+    if (result.rows.length > 0) {
+       //console.log("res: ", res);
       res.render('pages/club', {'props': {regFailed: true}});
       return;
     }
@@ -140,7 +146,8 @@ app.post('/club/reg', (req,res) => {        // loads new reg to database +check 
          res.send("error");
          console.log(error);
          }
-      });
+        });
+        //console.log("res: ", res);
       res.render("pages/club", { props: { 'login': true } });
   });
 })
@@ -813,6 +820,7 @@ app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function (req, res) {
+    res.statusCode = 404;
     res.render('pages/404');
 });
 // })
