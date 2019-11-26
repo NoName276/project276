@@ -18,7 +18,7 @@ var game_grid = [
     ['1',,,,,,,,,'8',],
     ['O','2','3',,'4','5',,'6','7','O',]
 ];
-var player_num = 0;
+var player_num = 1;
 var player_pos = [[1,0],[1,3],[1,6],[1,9],];
 var glasses = [0,0,0,0,0,0,0,0,0,0,];
 var filled_glasses = 0;
@@ -27,6 +27,7 @@ var score = 0;
 var multiplier = 1.0;
 var player_glasses = [[],[],[],[],];
 var last_player_move = [0,0,0,0,];
+var num_players = 4;
 let x2 = Math.floor(Math.random()* 4) + 2;
 let y2 = Math.floor(Math.random()* game_grid[x2].length);
 let x = Math.floor(Math.random()* 4) + 2;
@@ -67,11 +68,20 @@ function player_move(num, e){
                 }
             }
             if( (pressed == last_player_move[num]) || (player_glasses[num].length < 5) ){
+                var hit_flag = false;
                 switch(pressed){
                     case 87:
                     case 38:
                         if(player_pos[num][0] > 0){
-                            if(game_grid[player_pos[num][0]-1][player_pos[num][1]] == null){
+                            for(i=1; i<num_players;i++){
+                                if(player_pos[num][0]-1 == player_pos[i%4][0] && player_pos[num][1] == player_pos[i%4][1]){
+                                    hit_flag = true;
+                                    if(player_glasses[i].length > 0){player_glasses[i].pop();}
+                                    if(player_glasses[num].length > 0){player_glasses[num].pop();}
+                                }
+                            }
+                            if(hit_flag){null;}
+                            else if(game_grid[player_pos[num][0]-1][player_pos[num][1]] == null){
                                 game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                 player_pos[num][0] -= 1;
                                 //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
@@ -94,7 +104,15 @@ function player_move(num, e){
                     case 83:
                     case 40:
                         if(player_pos[num][0] < 9){
-                            if(game_grid[player_pos[num][0]+1][player_pos[num][1]] == null){
+                            for(i=1; i<num_players;i++){
+                                if(player_pos[num][0]+1 == player_pos[i%4][0] && player_pos[num][1] == player_pos[i%4][1]){
+                                    hit_flag = true;
+                                    if(player_glasses[i].length > 0){player_glasses[i].pop();}
+                                    if(player_glasses[num].length > 0){player_glasses[num].pop();}
+                                }
+                            }
+                            if(hit_flag){null;}
+                            else if(game_grid[player_pos[num][0]+1][player_pos[num][1]] == null){
                                 game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                 player_pos[num][0] += 1;
                                 //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
@@ -117,7 +135,15 @@ function player_move(num, e){
                     case 65:
                     case 37:
                         if(player_pos[num][1] > 0){
-                            if (game_grid[player_pos[num][0]][player_pos[num][1]-1] == null){
+                            for(i=1; i<num_players;i++){
+                                if(player_pos[num][0] == player_pos[i%4][0] && player_pos[num][1]-1 == player_pos[i%4][1]){
+                                    hit_flag = true;
+                                    if(player_glasses[i].length > 0){player_glasses[i].pop();}
+                                    if(player_glasses[num].length > 0){player_glasses[num].pop();}
+                                }
+                            }
+                            if(hit_flag){null;}
+                            else if (game_grid[player_pos[num][0]][player_pos[num][1]-1] == null){
                                 game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                 player_pos[num][1] -= 1;
                                 //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
@@ -140,7 +166,15 @@ function player_move(num, e){
                     case 68:
                     case 39:
                         if(player_pos[num][1] < 9){
-                            if (game_grid[player_pos[num][0]][player_pos[num][1]+1] == null){
+                            for(i=1; i<num_players;i++){
+                                if(player_pos[num][0] == player_pos[i%4][0] && player_pos[num][1]+1 == player_pos[i%4][1]){
+                                    hit_flag = true;
+                                    if(player_glasses[i].length > 0){player_glasses[i].pop();}
+                                    if(player_glasses[num].length > 0){player_glasses[num].pop();}
+                                }
+                            }
+                            if(hit_flag){null;}
+                            else if (game_grid[player_pos[num][0]][player_pos[num][1]+1] == null){
                                 game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                 player_pos[num][1] += 1;
                                 //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
@@ -201,7 +235,7 @@ function display_game_grid(){
         gridEl.innerHTML += '#';
         for(var j=0; j<10; ++j){
             var filled_flag = false;
-            for(var num = 0; num <2; num++){
+            for(var num = 0; num < num_players; num++){
                 if( (i == player_pos[num][0]) && (j == player_pos[num][1]) && (!filled_flag)){
                     if (num == player_num){
                         gridEl.innerHTML += 'U';
