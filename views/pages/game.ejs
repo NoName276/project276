@@ -50,8 +50,39 @@
                     </div>
                 </div>
             <div id="musicdiv" align="center">
+<<<<<<< HEAD
                     <p id = "countTitle">Start music in: </p>
                     <p id = "countDown"></p>
+=======
+
+                    <p id = "countTitle">Start music in: </p>
+                    <p id = "countDown"></p>
+                    <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()"></iframe>
+            </div>
+
+            <script>
+                    var title = document.getElementById("countTitle");
+                    var display = document.getElementById("countDown");
+                    var interval = setInterval(countDown,1000);
+                    var seconds = 3;
+                    function countDown() {
+                        if (seconds == 0) {
+                            title.innerHTML = "Play"
+                            display.innerHTML = "Now";
+                            clearInterval(interval)
+                            console.log("Play Now")
+                        } else {
+                            // console.log(seconds)
+                            display.innerHTML = seconds
+                            seconds = seconds - 1;
+                        }
+                    }
+                    window.onload = countDown();
+    
+                    
+                </script>
+
+>>>>>>> c69022fc1920008ffb56ccd15327a094fd5c1dd2
                     <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()" onclick="start_game()"></iframe>
                     <p> Duration: <%= duration %> </p>
                     <p id="p"> Song Uri: <%= uri %> </p>
@@ -77,8 +108,12 @@
                 }
                 window.onload = countDown();
 
+<<<<<<< HEAD
                 
             </script>
+=======
+
+>>>>>>> c69022fc1920008ffb56ccd15327a094fd5c1dd2
             <!-- <form>
                 <input type="number" id="bpm" value='<%= tempo %>'/>
                 <input type="button" value="change bpm" onclick="change_bpm()" />

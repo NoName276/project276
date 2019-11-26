@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+      <h1>Now Playing: </h1>
+      <h2>Way down Hadestown II</h2>
+      <h2>Hadestown Original Broadway Cast</h2>
+      <h2>BPM: 120</h2>
+      <h2>Duration: 230 seconds</h2>
+
+      <audio id="audio" src="hadestown-original-broadway-cast-way-down-hadestown-ii-lyrics.mp3" ></audio>
+      <script>
+        function play() {
+            var audio = document.getElementById("audio");
+            audio.play();
+        }
+      </script>
+      <input id = "playButton" type="button" value="PLAY" onclick="play()">
+      
+  </body>
+</html>
