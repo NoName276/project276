@@ -3,11 +3,10 @@
 <html>
 	<head>
         <title>Club Game Prototype</title>
-        <link href='https://fonts.googleapis.com/css?family=Monofett' rel='stylesheet'>        
+        <link href='https://fonts.googleapis.com/css?family=Monofett' rel='stylesheet'>
 
 		<link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
 
-        <script async type="text/javascript" src="/scripts/game.js"></script> 
         <style>
             /* #musicdiv{
                 margin: auto;
@@ -18,13 +17,10 @@
 
 	<body>
             <h1>The Club</h1>
-            <h1>Now Playing: <%= name %> by <%= artist %></h1>
-            <p> Duration: <%= duration %> </p>
-            <p> Song Uri: <%= uri %> </p>
-            <p> Token: <%= accessToken %> </p>
+            <p id="p" >Now Playing: <%= name %> by <%= artist %></p>
 
             <form class= "form">
-                   
+
                     <p id="score">Score:</p>
                     <p id="player score">0</p>
                     <p id="m">Multiplier:</p>
@@ -40,7 +36,7 @@
                         #<div id= "col1">0000000000</div>#<br>
                         #<div id= "col1">0000000000</div>#<br>
                         #<div id= "col1">0000000000</div>#<br>
-                        #<div id= "col1">0000000000</div>#<br>  
+                        #<div id= "col1">0000000000</div>#<br>
                         #<div id= "col1">0000000000</div>#<br>
                         #<div id= "col1">0000000000</div>#<br>
                         #<div id= "col1">0000000000</div>#<br>
@@ -54,6 +50,7 @@
                     </div>
                 </div>
             <div id="musicdiv" align="center">
+
                     <p id = "countTitle">Start music in: </p>
                     <p id = "countDown"></p>
                     <!-- <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()"></iframe> -->
@@ -81,6 +78,14 @@
     
                     
                 </script>
+
+                    <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()" onclick="start_game()"></iframe>
+                    <p> Duration: <%= duration %> </p>
+                    <p id="p"> Song Uri: <%= uri %> </p>
+                    <p id="p"> Token: <%= accessToken %> </p>
+            </div>
+
+
 
             <!-- <form>
                 <input type="number" id="bpm" value='<%= tempo %>'/>
@@ -166,7 +171,12 @@
                 // innerDoc.getElementByClassName("b8 b9 ba ao bb bc bd be bf bg bh bi bj").addEventListener('click', function() {
                 //     console.log("START GAME")
                 // })
+<<<<<<< HEAD
             </script> -->
+=======
+            </script>
+        <script async type="text/javascript" src="/scripts/game.js"></script> 
+>>>>>>> dc2ca54b8ee905f2cb7665eb21a9a2c377d9068c
         
 
 

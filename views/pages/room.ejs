@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>tHe ClUb</title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    <script>
+      const roomName = "<%= roomName %>"
+    </script>
+    <script src="/scripts/socket.io.js"></script>
+    <script>
+      var socket = io('http://localhost')
+      userContainer = document.getElementById('user-container')
+      socket.on('user-joined', user => {
+        console.log("new user")
+      })
+    </script>
+  </head>
+
+  <body>
+    <div id="user-container">
+    <h1>ThE ClUb</h1>
+    <p>Invite players to this room: <%= roomName %></p>
+    <h2>Current players in this room:</h2>
+      <% Object.keys(users).forEach(user => { %>
+      <p><%= user %></p>
+      <% }) %>
+    </div>
+    <button type="button" onclick="window.location.href = '/lobby';">READY</button
+
+  </body>
+</html>

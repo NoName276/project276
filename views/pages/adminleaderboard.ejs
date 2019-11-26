@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>tHe ClUb: Master Leaderboard</title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/adminleaderboard.css">
+  </head>
+  <body>
+    <div>
+    <h1>ThE ClUb</h1>
+    <p>Here is the Master Leaderboard:</p>
+	<button type="button" id= "backlead" onclick="window.location.href = '/club/admin/<%= rows.player %>/home';">BACK</button>
+    <table>
+      <tr>
+        <th><h2>Rank</h2></th>
+		<th><h2>Username</h2></th>
+		<th style="text-align:center"><h2>Games Played</h2></th>
+		<th style="text-align:center"><h2>Games Won</h2></th>
+		<th style="text-align:center"><h2>Games Lost</h2></th>
+		<th style="text-align:center"><h2>Games Drawn</h2></th>
+		<th style="text-align:center"><h2>High Score</h2></th>
+		<th style="text-align:center"><h2>Total Points</h2></th>
+      </tr>
+      <% rows.board.forEach((r) => { %>
+        <tr>
+          <th><%= r.rank %></th>
+		  <th><%= r.username %></th>
+		  <th style="text-align:center"><%= r.gamesplayed %></th>
+		  <th style="text-align:center"><%= r.gameswon %></th>
+		  <th style="text-align:center"><%= r.gameslost %></th>
+		  <th style="text-align:center"><%= r.gamesdrawn %></th>
+		  <th style="text-align:center"><%= r.highscore %></th>
+		  <th style="text-align:center"><%= r.totalpoints %></th>
+        </tr>
+      <% }); %>
+    </table>
+</div>
+  </body>
+
+  <script></script>
+</html>
