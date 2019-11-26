@@ -856,10 +856,10 @@ app.post('/room', (req, res) => {
     return res.redirect('pages/lobby')
   }
   rooms[req.body.room] = { users: {} }
-  res.redirect(req.body.room)
+  res.redirect('/room/' + req.body.room)
   io.emit('room-created', req.body.room)
 })
-app.get('/:room', (req, res) => {
+app.get('/room/:room', (req, res) => {
   io.emit('user-joined', "hello")
   res.render('pages/room', { roomName: req.params.room, users: users })
 })
