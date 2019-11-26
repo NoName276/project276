@@ -56,7 +56,8 @@
             <div id="musicdiv" align="center">
                     <p id = "countTitle">Start music in: </p>
                     <p id = "countDown"></p>
-                    <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()"></iframe>
+                    <!-- <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()"></iframe> -->
+                    <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" ></iframe>
             </div>
 
             <script>
@@ -86,7 +87,7 @@
                 <input type="button" value="change bpm" onclick="change_bpm()" />
             </form> -->
             
-            <script src="https://sdk.scdn.co/spotify-player.js"></script>
+            <!-- <script src="https://sdk.scdn.co/spotify-player.js"></script>
             <script>
                 window.onSpotifyWebPlaybackSDKReady = () => {
                     const token = '<%= accessToken %>';
@@ -165,7 +166,7 @@
                 // innerDoc.getElementByClassName("b8 b9 ba ao bb bc bd be bf bg bh bi bj").addEventListener('click', function() {
                 //     console.log("START GAME")
                 // })
-            </script>
+            </script> -->
         
 
 
