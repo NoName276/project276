@@ -381,7 +381,30 @@ describe("Single Player", function () { });
 
 describe("Multiplayer", function () { });
 
-describe("API", function () { });
+describe("API", function () { 
+    
+    it("reach spotify authentication page", function(done) {
+        chai.request(app)
+            .get(`/spotify-login`)
+            .end(function(err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('LoginController');
+                done();
+            })
+    })
+    // it("successful login to spotify within web application", function(done) {
+
+    // })
+    it("retreive spotify access token", function (done) {
+        chai.request(app)
+            .get(`/music`)
+            .end(function(err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('BQCFoaRik72wOjfi37di6qP4QV5KrdoobtUSVNQHcMfOr1T8_sGf3c7hGFuo2B3S0wTmcXlgjxYUHsonk3s2HOAspCCaDnkMjaxMfOlu1Bxp41ZYF_uRA9pbbhMSI05-g5oo-hlPEs4hlF7VWzxtNRFnW3-mE8gndIIHKo2HM3LWmBJNR9YRyIE');
+            })
+    })
+    it("current ")
+});
 
 describe("ROOMS/SOCKET", function () { });
 
