@@ -6,13 +6,6 @@
         <link href='https://fonts.googleapis.com/css?family=Monofett' rel='stylesheet'>
 
 		<link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
-
-        <style>
-            /* #musicdiv{
-                margin: auto;
-                width: 50%;
-            } */
-        </style>
 	</head>
 
 	<body>
@@ -53,7 +46,6 @@
 
                     <p id = "countTitle">Start music in: </p>
                     <p id = "countDown"></p>
-                    <!-- <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()"></iframe> -->
                     <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" ></iframe>
                     <p> Duration: <%= duration %> </p>
                     <p id="songUri"> Song Uri: <%= uri %> </p>
@@ -81,98 +73,9 @@
     
                     
                 </script>
-
-                    <!-- <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()" onclick="start_game()"></iframe> -->
                     
             </div>
+            <script async type="text/javascript" src="/scripts/game.js"></script>     
 
-
-
-            <!-- <form>
-                <input type="number" id="bpm" value='<%= tempo %>'/>
-                <input type="button" value="change bpm" onclick="change_bpm()" />
-            </form> -->
-            
-            <!-- <script src="https://sdk.scdn.co/spotify-player.js"></script>
-            <script>
-                window.onSpotifyWebPlaybackSDKReady = () => {
-                    const token = '<%= accessToken %>';
-                    console.log(token)
-                    const player = new Spotify.Player({
-                        name: 'Game Music Player',
-                        getOAuthToken: cb => { cb(token); }
-                    });
-
-                    // Error handling
-                    player.addListener('initialization_error', ({ message }) => { console.error(message); });
-                    player.addListener('authentication_error', ({ message }) => { console.error(message); });
-                    player.addListener('account_error', ({ message }) => { console.error(message); });
-                    player.addListener('playback_error', ({ message }) => { console.error(message); });
-
-                    // Playback status updates
-                    player.addListener('player_state_changed', state => { console.log(state); });
-
-                    // Ready
-                    player.addListener('ready', ({ device_id }) => {
-                        console.log('Ready with Device ID', device_id);
-                        const play = ({
-                            spotify_uri,
-                            playerInstance: {
-                                _options: {
-                                    getOAuthToken,
-                                    id
-                                }
-                            }
-                        }) => {
-                            getOAuthToken(access_token => {
-                                fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-                                    method: 'PUT',
-                                    body: JSON.stringify({ uris: [spotify_uri] }),
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'Authorization': `Bearer ${access_token}`
-                                    },
-                                });
-                            });
-                        };
-                        play({
-                            playerInstance: player,
-                            spotify_uri: 'spotify:track:7xGfFoTpQ2E7fRF5lN10tr',
-                        });
-                    });
-
-                    // Not Ready
-                    player.addListener('not_ready', ({ device_id }) => {
-                        console.log('Device ID has gone offline', device_id);
-                    });
-
-                    // Connect to the player!
-                    player.connect();
-                };
-            </script>
-
-            <script>
-                function access() {
-                    // console.log("hello")
-                    var iframe = document.getElementById('iframeId');
-                    var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                    console.log(innerDoc)
-                }
-
-                // var iframe = document.getElementById('iframeId');
-                // var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                // console.log(iframe)
-                // console.log(innerDoc)
-                // console.log(innerDoc.getElementByClassName("b8 b9 ba ao bb bc bd be bf bg bh bi bj"))
-
-                // var innerDoc = iframe.contentDocument.document.getElementByClassName("b8 b9 ba ao bb bc bd be bf bg bh bi bj").addEventListener('click', function() {
-                //     console.log("START GAME")
-                // })
-                // console.log(innerDoc)
-                // innerDoc.getElementByClassName("b8 b9 ba ao bb bc bd be bf bg bh bi bj").addEventListener('click', function() {
-                //     console.log("START GAME")
-                // })
-            </script> -->
-        
 	</body>
 </html>
