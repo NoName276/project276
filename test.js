@@ -6,12 +6,17 @@ var request = require("request"),
 
 chai = require("chai");
 chaiHttp = require('chai-http');
+chai.use(require('chai-dom'));
 let should = chai.should();
+chai.use(chaiHttp);
 
 chai.use(chaiHttp);
 const { expect } = chai;
 
+var jsdom = require('mocha-jsdom')
+
 //done
+
 describe("Front Page Running?", function () {
         it("returns status code 200", function (done) {
             request.get(base_url, function (error, response, body) {
@@ -59,10 +64,7 @@ describe("Register", function () {
             .post(`/club/reg`)
             .send(person)
             .end(function (err, res) {
-                /*expect(res.body.data).to.include({
-                    username: person.username,
-                    password: person.password,
-                });*/
+                
              
                 expect(res.status).to.be.eq(200);
                 res.text.should.include('registration successful')
@@ -78,10 +80,7 @@ describe("Register", function () {
             .post(`/club/reg`)
             .send(person)
             .end(function (err, res) {
-               /* expect(res.body.data).to.include({
-                    username: person.username,
-                    password: person.password,
-                });*/
+              
                 expect(res.status).to.be.eq(200);
                 res.text.should.include('Username taken.');
                 done();
@@ -324,10 +323,7 @@ describe("Toggling Admin", function () {
             .post(`/club/admin/BobbyC/toggleadmin`)
             .send(changing)
             .end(function (err, res) {
-                /* expect(res.body.data).to.include({
-                     username: person.username,
-                     password: person.password,
-                 });*/
+                
                 expect(res.status).to.be.eq(200);
                 res.text.should.include('Successful toggle!');
                 done();
@@ -338,10 +334,7 @@ describe("Toggling Admin", function () {
             .post(`/club/admin/BobbyC/toggleadmin`)
             .send(changing)
             .end(function (err, res) {
-                /* expect(res.body.data).to.include({
-                     username: person.username,
-                     password: person.password,
-                 });*/
+               
                 expect(res.status).to.be.eq(200);
                 res.text.should.include('Successful toggle!');
                 done();
@@ -352,10 +345,7 @@ describe("Toggling Admin", function () {
             .post(`/club/admin/BobbyC/toggleadmin`)
             .send(notexist)
             .end(function (err, res) {
-                /* expect(res.body.data).to.include({
-                     username: person.username,
-                     password: person.password,
-                 });*/
+              
                 expect(res.status).to.be.eq(200);
                 res.text.should.include('User does not exist!');
                 done();
@@ -366,10 +356,7 @@ describe("Toggling Admin", function () {
             .post(`/club/admin/BobbyC/toggleadmin`)
             .send(changer)
             .end(function (err, res) {
-                /* expect(res.body.data).to.include({
-                     username: person.username,
-                     password: person.password,
-                 });*/
+              
                 expect(res.status).to.be.eq(200);
                 res.text.should.include('You cannot alter your own status');
                 done();
@@ -379,6 +366,9 @@ describe("Toggling Admin", function () {
 
 //TO DO CONT (all below)
 describe("Single Player", function () {
+    jsdom({
+        url: "http://localhost:5000/"
+    })
     it("song data in single player is consistent with current spotify playback ", function (done) {
         chai.request(app)
             .get(`/playing`)
@@ -405,7 +395,9 @@ describe("Single Player", function () {
 describe("Multiplayer", function () { });
 
 describe("spotify web api authentication, song data from playback, Spotify play b", function () { 
-    
+    jsdom({
+        url: "http://localhost:5000/"
+    })
     it("app can reach spotify authentication page", function(done) {
         chai.request(app)
             .get(`/spotify-login`)
