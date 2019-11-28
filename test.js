@@ -211,7 +211,7 @@ describe("Stats and Leaderboard", function () {
             .get("/club/BobbyC/stats")
                 .end(function (err, res) {
                     expect(res.status).to.be.eq(200);
-                    console.log(res.text);
+                    //console.log(res.text);
                     res.text.should.include("Welcome, BobbyC! Here you can view all your personal stats!");
                     res.text.should.include("Leaderboard Rank");
                     res.text.should.include("Games Played");
