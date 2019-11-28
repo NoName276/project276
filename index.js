@@ -315,37 +315,93 @@ app.post('/playing', (req,res) => {
     })
     .then(function(data) {
         // Output items
-        //console.log("Now Playing: ",data.body.item.artists[0].name);
-        //console.log("Now Playing: ",data.body.item.name);
-        var queryData = {}
-        var trackURI = data.body.item.uri;
-        var trackURIFormatted = trackURI.replace('spotify:track:', '')
-        // console.log(trackURIFormatted)
-        queryData.artist = data.body.item.artists[0].name + '';
-        queryData.name = data.body.item.name + '';
-        queryData.uri = trackURIFormatted + '';
-        queryData.accessToken = token + '';
-        /* Get Audio Analysis for a Track */
-        spotifyApi.getAudioAnalysisForTrack(queryData.uri)
-        .then(function(data) {
-            // console.log(data.body.track.duration);
-            // console.log(data.body.track.tempo);
-            queryData.duration = data.body.track.duration;
-            queryData.tempo = data.body.track.tempo;
-            // res.send(queryData)
+        console.log(data.body.is_playing)
+        if (data.body.is_playing == false) {
+            res.redirect('/music')
+            res.end('Play a song before playing!');
+        } else {
+            //console.log("Now Playing: ",data.body.item.artists[0].name);
+            //console.log("Now Playing: ",data.body.item.name);
+            var queryData = {}
+            var trackURI = data.body.item.uri;
+            var trackURIFormatted = trackURI.replace('spotify:track:', '')
+            // console.log(trackURIFormatted)
+            queryData.artist = data.body.item.artists[0].name + '';
+            queryData.name = data.body.item.name + '';
+            queryData.uri = trackURIFormatted + '';
+            queryData.accessToken = token + '';
+            /* Get Audio Analysis for a Track */
+            spotifyApi.getAudioAnalysisForTrack(queryData.uri)
+            .then(function(data) {
+                // console.log(data)
+                // console.log(data.body.track.duration);
+                // console.log(data.body.track.tempo);
+                queryData.duration = data.body.track.duration;
+                queryData.tempo = data.body.track.tempo;
+                // res.send(queryData)
 
+                // res.render('pages/playing', queryData)
+            res.render('pages/game', queryData)
+            }, function(err) {
+                // done(err);
+                console.log(err)
+            });
+            // console.log(queryData)
+            // res.send(queryData)
             // res.render('pages/playing', queryData)
-           res.render('pages/game', queryData)
-        }, function(err) {
-            // done(err);
-            console.log(err)
-        });
-        // console.log(queryData)
-        // res.send(queryData)
-        // res.render('pages/playing', queryData)
+        }      
     }, function(err) {
     console.log('Something went wrong!', err);
     });
+})
+
+app.get('/joji', (req,res) => {
+    res.render('pages/slow-dancing-in-the-dark');
+})
+app.get('/slow-dancing-in-the-dark.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/slow-dancing-in-the-dark.mp3')
+})
+app.get('/hadestown', (req, res) => {
+    res.render('pages/way-down-hadestown-ii');
+})
+app.get('/hadestown-original-broadway-cast-way-down-hadestown-ii-lyrics.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/hadestown-original-broadway-cast-way-down-hadestown-ii-lyrics.mp3')
+})
+app.get('/dear-evan-hansen', (req,res) => {
+    res.render('pages/waving-through-a-window');
+})
+app.get('/waving-through-a-window-from-the-dear-evan-hansen-original-broadway-cast-recording.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/waving-through-a-window-from-the-dear-evan-hansen-original-broadway-cast-recording.mp3')
+})
+app.get('/88rising', (req,res) => {
+    res.render('pages/breathe');
+})
+app.get('/breathe.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/breathe.mp3')
+})
+app.get('/billie-eilish', (req,res) => {
+    res.render('pages/bad-guy');
+})
+app.get('/bad-guy.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/bad-guy.mp3')
+})
+app.get('/dua-lipa', (req,res) => {
+    res.render('pages/dont-start-now');
+})
+app.get('/dont-start-now.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/dont-start-now.mp3')
+})
+app.get('/sam-smith', (req,res) => {
+    res.render('pages/how-do-you-sleep');
+})
+app.get('/how-do-you-sleep.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/how-do-you-sleep.mp3')
+})
+app.get('/ali-gatie', (req,res) => {
+    res.render('pages/its-you');
+})
+app.get('/its-you.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/its-you.mp3')
 })
 
 var request = require('request'); // "Request" library
@@ -356,9 +412,9 @@ var cookieParser = require('cookie-parser');
 var client_id = '76399d6d66784fbd9b089a5363553e47'; // 'CLIENT_ID'; // Your client id
 var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Your secret
 // var redirect_uri =  'http://localhost:8888/callback'; // 'REDIRECT_URI'; // Your redirect uri
-//var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
+var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
 // var redirect_uri =  'https://server-simulator.herokuapp.com/callback'; // 'REDIRECT_URI'; // Your redirect uri
-var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
+// var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
 
 /**
  * Generates a random string containing numbers and letters
@@ -435,7 +491,9 @@ if (state === null || state !== storedState) {
 
         var access_token = body.access_token,
             refresh_token = body.refresh_token;
-
+        console.log(body.access_token);
+        console.log('\n')
+        console.log(body.refresh_token);
         var options = {
         url: 'https://api.spotify.com/v1/me',
         headers: { 'Authorization': 'Bearer ' + access_token },
@@ -490,112 +548,6 @@ request.post(authOptions, function(error, response, body) {
 });
 });
 
-// app.get('/playing', (req,res) => {
-
-//     var spotifyApi = new SpotifyWebApi({
-//         clientId: '76399d6d66784fbd9b089a5363553e47',
-//         clientSecret: '5d6ec7245f5a4902af2f5b40c6315a63',
-//         redirectUri: 'http://localhost:5000/music'
-//     });
-//     spotifyApi.setAccessToken('');
-//     spotifyApi.getMyCurrentPlaybackState({
-//     })
-//     .then(function(data) {
-//         // Output items
-//         //console.log("Now Playing: ",data.body.item.artists[0].name);
-//         //console.log("Now Playing: ",data.body.item.name);
-//         var queryData = {}
-//         var trackURI = data.body.item.uri;
-//         var trackURIFormatted = trackURI.replace('spotify:track:', '')
-//         // console.log(trackURIFormatted)
-//         queryData.artist = data.body.item.artists[0].name + '';
-//         queryData.name = data.body.item.name + '';
-//         queryData.uri = trackURIFormatted + '';
-//         /* Get Audio Analysis for a Track */
-//         spotifyApi.getAudioAnalysisForTrack(queryData.uri)
-//         .then(function(data) {
-//             // console.log(data.body.track.duration);
-//             // console.log(data.body.track.tempo);
-//             queryData.duration = data.body.track.duration;
-//             queryData.tempo = data.body.track.tempo;
-//             // res.send(queryData)
-//             res.render('pages/playing', queryData)
-//         }, function(err) {
-//             // done(err);
-//             console.log(err)
-//         });
-//         // console.log(queryData)
-//         // res.send(queryData)
-//         // res.render('pages/playing', queryData)
-//     }, function(err) {
-//     console.log('Something went wrong!', err);
-//     });
-
-// })
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// // credentials are optional
-// var spotifyApi = new SpotifyWebApi({
-//     clientId: '76399d6d66784fbd9b089a5363553e47',
-//     clientSecret: '5d6ec7245f5a4902af2f5b40c6315a63',
-//     redirectUri: 'http://localhost:5000/song'
-// });
-
-// spotifyApi.setAccessToken('BQCzo9rOobdKvKENECnSt6sFkRMtKTihqhaUbfheNP20-_es92VBypTvteHfI1_0srQpOwcHoXvPH0g_HKqXhZofxMAuV12XI5no64MtspL2kVFt5W_opkXB-xKWY9pTMthQ2og62Jw6l3T1w-b5HRqYGsVMnwyIKeM4iGfd_nFwC2yhs5J2ax-eAg');
-
-// spotifyApi.getMyCurrentPlaybackState({
-// })
-// .then(function(data) {
-//   // Output items
-// //   console.log("Now Playing: ",data.body);
-//   console.log("Now Playing: ",data.body.item.artists[0].name);
-//   console.log("Now Playing: ",data.body.item.name);
-// //   console.log("Now Playing: ",data.body.item.uri);
-//   var trackURI = data.body.item.uri;
-//   var trackURIFormatted = trackURI.replace('spotify:track:', '')
-//   console.log(trackURIFormatted)
-// //   console.log("Now Playing: ",data.body.name);
-// //   console.log("Now Playing: ",data.body.artists);
-// }, function(err) {
-//   console.log('Something went wrong!', err);
-// });
-
-// /* Get Audio Analysis for a Track */
-// spotifyApi.getAudioAnalysisForTrack('0rKtyWc8bvkriBthvHKY8d')
-//   .then(function(data) {
-//     console.log(data.body.track.duration);
-//     console.log(data.body.track.tempo);
-//   }, function(err) {
-//     done(err);
-// });
-
-// spotifyApi.getTrack('0rKtyWc8bvkriBthvHKY8d')
-//   .then(function(data) {
-//     console.log(data.body.name);
-//     console.log(data.body.artists[0].name);
-//   }, function(err) {
-//     done(err);
-// });
-
-/* Get Audio Analysis for a Track */
-
-// spotifyApi.getAudioAnalysisForTrack(trackURIFormatted)
-//   .then(function(data) {
-//     console.log(data.body.track.duration);
-//     console.log(data.body.track.tempo);
-//   }, function(err) {
-//     done(err);
-// });
-
-// spotifyApi.getTrack(trackURIFormatted)
-//   .then(function(data) {
-//     console.log(data.body.name);
-//     console.log(data.body.artists[0].name);
-//   }, function(err) {
-//     done(err);
-// });
 app.get("/club/:name/home", (req, res) => {
     var name = req.params.name;
     var queryString = `SELECT * FROM users WHERE username='${name}';`;
