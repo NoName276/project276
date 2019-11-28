@@ -381,9 +381,9 @@ describe("Single Player", function () { });
 
 describe("Multiplayer", function () { });
 
-describe("API", function () { 
+describe("spotify web api authentication and song data from playback", function () { 
     
-    it("reach spotify authentication page", function(done) {
+    it("app can reach spotify authentication page", function(done) {
         chai.request(app)
             .get(`/spotify-login`)
             .end(function(err, res) {
@@ -392,18 +392,36 @@ describe("API", function () {
                 done();
             })
     })
-    // it("successful login to spotify within web application", function(done) {
-
-    // })
-    it("retreive spotify access token", function (done) {
+    it("login to spotify within web application", function(done) {
+        const access_token = 'BQCK4GvSfLNTTZkAvV3_xhYOBGeROtptQtH_-GQFcxKLp-PXBtYZucN-dPN6TENAhkGIRWvsbfOk7Dit-3q6tutSiwmKf-Ypk75-EHXF9gWdaaT0iQ5NtaTTcbUp2ptoFW9vLOsTBp7meo98idMaZeXlYuvbShMnfghjdCJHCVb0zLebq_UiPw8';
+        // const refresh_token = 'AQCmKha13lOmHsONVh3uk9mIUBZ87UbMIYvomy51DqTudaiNJZxAfD9H-9P8Q6d9QjbWDOsDiGdtXd718mQKF0ean5t7iqYIYMtSV4djKicnxoe1bjBroYYCMhC9ETc_79g';
         chai.request(app)
             .get(`/music`)
+            .send()
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
-                res.text.should.include('BQCFoaRik72wOjfi37di6qP4QV5KrdoobtUSVNQHcMfOr1T8_sGf3c7hGFuo2B3S0wTmcXlgjxYUHsonk3s2HOAspCCaDnkMjaxMfOlu1Bxp41ZYF_uRA9pbbhMSI05-g5oo-hlPEs4hlF7VWzxtNRFnW3-mE8gndIIHKo2HM3LWmBJNR9YRyIE');
+                var hashParams = {};
+                var e, r = /([^&;=]+)=?([^&;]*)/g,
+                    q = window.location.hash.substring(1);
+                while ( e = r.exec(q)) {
+                hashParams[e[1]] = decodeURIComponent(e[2]);
+                }
+                expect(hashParams.access_token).to.equal(access_token)
+                done();
             })
     })
-    it("current ")
+    it("upon login, user can retreive spotify access token", function (done) {
+        const access_token = 'BQCK4GvSfLNTTZkAvV3_xhYOBGeROtptQtH_-GQFcxKLp-PXBtYZucN-dPN6TENAhkGIRWvsbfOk7Dit-3q6tutSiwmKf-Ypk75-EHXF9gWdaaT0iQ5NtaTTcbUp2ptoFW9vLOsTBp7meo98idMaZeXlYuvbShMnfghjdCJHCVb0zLebq_UiPw8';
+        const refresh_token = 'AQCmKha13lOmHsONVh3uk9mIUBZ87UbMIYvomy51DqTudaiNJZxAfD9H-9P8Q6d9QjbWDOsDiGdtXd718mQKF0ean5t7iqYIYMtSV4djKicnxoe1bjBroYYCMhC9ETc_79g';
+        chai.request(app)
+            .get(`/music/#` + access_token + refresh_token)
+            .end(function(err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include(access_token);
+                done();
+            })
+    })
+    // it("current ")
 });
 
 describe("ROOMS/SOCKET", function () { });

@@ -485,7 +485,9 @@ if (state === null || state !== storedState) {
 
         var access_token = body.access_token,
             refresh_token = body.refresh_token;
-
+        console.log(body.access_token);
+        console.log('\n')
+        console.log(body.refresh_token);
         var options = {
         url: 'https://api.spotify.com/v1/me',
         headers: { 'Authorization': 'Bearer ' + access_token },
