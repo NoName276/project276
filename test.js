@@ -377,11 +377,33 @@ describe("Toggling Admin", function () {
 });
 
 //TO DO CONT (all below)
-describe("Single Player", function () { });
+describe("Single Player", function () {
+    it("song data in single player is consistent with current spotify playback ", function (done) {
+        chai.request(app)
+            .get(`/playing`)
+            .end(function(err, res) {
+                expect(res.status).to.be.eq(200);
+                expect(document.querySelector('h1').should.have.text('The Club'));
+                expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                done();
+            })
+    });
+    it("embedded spotify play button in game is consistent with current spotify playback ", function (done) {
+        chai.request(app)
+            .get(`/music`)
+            .end(function(err, res) {
+                expect(res.status).to.be.eq(200);
+                expect(document.querySelector('h1').should.have.text('The Club'));
+                expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                expect(document.querySelector('songUri').should.have.text('0rKtyWc8bvkriBthvHKY8d'));
+                done();
+            })
+    });
+ });
 
 describe("Multiplayer", function () { });
 
-describe("spotify web api authentication and song data from playback", function () { 
+describe("spotify web api authentication, song data from playback, Spotify play b", function () { 
     
     it("app can reach spotify authentication page", function(done) {
         chai.request(app)
@@ -391,15 +413,15 @@ describe("spotify web api authentication and song data from playback", function 
                 res.text.should.include('LoginController');
                 done();
             })
-    })
+    });
     it("login to spotify within web application", function(done) {
         const access_token = 'BQCK4GvSfLNTTZkAvV3_xhYOBGeROtptQtH_-GQFcxKLp-PXBtYZucN-dPN6TENAhkGIRWvsbfOk7Dit-3q6tutSiwmKf-Ypk75-EHXF9gWdaaT0iQ5NtaTTcbUp2ptoFW9vLOsTBp7meo98idMaZeXlYuvbShMnfghjdCJHCVb0zLebq_UiPw8';
         // const refresh_token = 'AQCmKha13lOmHsONVh3uk9mIUBZ87UbMIYvomy51DqTudaiNJZxAfD9H-9P8Q6d9QjbWDOsDiGdtXd718mQKF0ean5t7iqYIYMtSV4djKicnxoe1bjBroYYCMhC9ETc_79g';
         chai.request(app)
             .get(`/music`)
-            .send()
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
+                document.querySelector('#loginButton').click();
                 var hashParams = {};
                 var e, r = /([^&;=]+)=?([^&;]*)/g,
                     q = window.location.hash.substring(1);
@@ -409,19 +431,88 @@ describe("spotify web api authentication and song data from playback", function 
                 expect(hashParams.access_token).to.equal(access_token)
                 done();
             })
-    })
+    });
     it("upon login, user can retreive spotify access token", function (done) {
         const access_token = 'BQCK4GvSfLNTTZkAvV3_xhYOBGeROtptQtH_-GQFcxKLp-PXBtYZucN-dPN6TENAhkGIRWvsbfOk7Dit-3q6tutSiwmKf-Ypk75-EHXF9gWdaaT0iQ5NtaTTcbUp2ptoFW9vLOsTBp7meo98idMaZeXlYuvbShMnfghjdCJHCVb0zLebq_UiPw8';
-        const refresh_token = 'AQCmKha13lOmHsONVh3uk9mIUBZ87UbMIYvomy51DqTudaiNJZxAfD9H-9P8Q6d9QjbWDOsDiGdtXd718mQKF0ean5t7iqYIYMtSV4djKicnxoe1bjBroYYCMhC9ETc_79g';
+        // const refresh_token = 'AQCmKha13lOmHsONVh3uk9mIUBZ87UbMIYvomy51DqTudaiNJZxAfD9H-9P8Q6d9QjbWDOsDiGdtXd718mQKF0ean5t7iqYIYMtSV4djKicnxoe1bjBroYYCMhC9ETc_79g';
         chai.request(app)
-            .get(`/music/#` + access_token + refresh_token)
+            .get(`/music`)
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
-                res.text.should.include(access_token);
+                document.querySelector('#loginButton').click();
+                // res.text.should.include(access_token);
+                document.querySelector('#getToken').click();
+                expect(document.querySelector('#tokenid').value.to.equal(access_token));
                 done();
             })
-    })
-    // it("current ")
+    });
+    it("user attempts to retrive access token without spotify authentication", function (done) {
+        chai.request(app)
+            .get(`/music`)
+            .end(function(err, res) {
+                expect(res.status).to.be.eq(200);
+                document.querySelector('#getToken').click();
+                expect(document.querySelector('#token').should.have.text('Please login to Spotify first'));
+                done();
+            })
+    });
+    it("user attempts to get now playing without access token", function (done) {
+        chai.request(app)
+            .get(`/music`)
+            .end(function(err, res) {
+                expect(res.status).to.be.eq(200);
+                document.querySelector('#getPlaying').click();
+                expect(res.status).to.be.eq(401);
+                done();
+            })
+    });
+    it("successful spotify authentication & access token retreival without current spotify playback ", function (done) {
+        chai.request(app)
+            .get(`/music`)
+            .end(function(err, res) {
+                expect(res.status).to.be.eq(200);
+                document.querySelector('#loginButton').click();
+                document.querySelector('#getToken').click();
+                document.querySelector('#getPlaying').click();
+                expect(document.querySelector('#token').should.have.text(''));
+                done();
+            })
+    });
+    it("successful spotify authentication & access token retreival with current spotify playback ", function (done) {
+        chai.request(app)
+            .get(`/music`)
+            .end(function(err, res) {
+                expect(res.status).to.be.eq(200);
+                document.querySelector('#loginButton').click();
+                document.querySelector('#getToken').click();
+                document.querySelector('#getPlaying').click();
+                expect(res.status).to.be.eq(200);
+                expect(document.querySelector('h1').should.have.text('The Club'));
+                done();
+            })
+    });
+    it("song data is consistent with current spotify playback ", function (done) {
+        chai.request(app)
+            .get(`/playing`)
+            .end(function(err, res) {
+                expect(res.status).to.be.eq(200);
+                expect(document.querySelector('h1').should.have.text('The Club'));
+                expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                done();
+            })
+    });
+    it("embedded spotify play button is consistent with current spotify playback ", function (done) {
+        chai.request(app)
+            .get(`/music`)
+            .end(function(err, res) {
+                expect(res.status).to.be.eq(200);
+                expect(document.querySelector('h1').should.have.text('The Club'));
+                expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                expect(document.querySelector('songUri').should.have.text('0rKtyWc8bvkriBthvHKY8d'));
+                done();
+            })
+    });
+
 });
 
 describe("ROOMS/SOCKET", function () { });

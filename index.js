@@ -315,35 +315,41 @@ app.post('/playing', (req,res) => {
     })
     .then(function(data) {
         // Output items
-        //console.log("Now Playing: ",data.body.item.artists[0].name);
-        //console.log("Now Playing: ",data.body.item.name);
-        var queryData = {}
-        var trackURI = data.body.item.uri;
-        var trackURIFormatted = trackURI.replace('spotify:track:', '')
-        // console.log(trackURIFormatted)
-        queryData.artist = data.body.item.artists[0].name + '';
-        queryData.name = data.body.item.name + '';
-        queryData.uri = trackURIFormatted + '';
-        queryData.accessToken = token + '';
-        /* Get Audio Analysis for a Track */
-        spotifyApi.getAudioAnalysisForTrack(queryData.uri)
-        .then(function(data) {
-            // console.log(data)
-            // console.log(data.body.track.duration);
-            // console.log(data.body.track.tempo);
-            queryData.duration = data.body.track.duration;
-            queryData.tempo = data.body.track.tempo;
-            // res.send(queryData)
+        console.log(data.body.is_playing)
+        if (data.body.is_playing == false) {
+            res.redirect('/music')
+            res.end('Play a song before playing!');
+        } else {
+            //console.log("Now Playing: ",data.body.item.artists[0].name);
+            //console.log("Now Playing: ",data.body.item.name);
+            var queryData = {}
+            var trackURI = data.body.item.uri;
+            var trackURIFormatted = trackURI.replace('spotify:track:', '')
+            // console.log(trackURIFormatted)
+            queryData.artist = data.body.item.artists[0].name + '';
+            queryData.name = data.body.item.name + '';
+            queryData.uri = trackURIFormatted + '';
+            queryData.accessToken = token + '';
+            /* Get Audio Analysis for a Track */
+            spotifyApi.getAudioAnalysisForTrack(queryData.uri)
+            .then(function(data) {
+                // console.log(data)
+                // console.log(data.body.track.duration);
+                // console.log(data.body.track.tempo);
+                queryData.duration = data.body.track.duration;
+                queryData.tempo = data.body.track.tempo;
+                // res.send(queryData)
 
+                // res.render('pages/playing', queryData)
+            res.render('pages/game', queryData)
+            }, function(err) {
+                // done(err);
+                console.log(err)
+            });
+            // console.log(queryData)
+            // res.send(queryData)
             // res.render('pages/playing', queryData)
-           res.render('pages/game', queryData)
-        }, function(err) {
-            // done(err);
-            console.log(err)
-        });
-        // console.log(queryData)
-        // res.send(queryData)
-        // res.render('pages/playing', queryData)
+        }      
     }, function(err) {
     console.log('Something went wrong!', err);
     });
