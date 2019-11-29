@@ -412,9 +412,9 @@ var cookieParser = require('cookie-parser');
 var client_id = '76399d6d66784fbd9b089a5363553e47'; // 'CLIENT_ID'; // Your client id
 var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Your secret
 // var redirect_uri =  'http://localhost:8888/callback'; // 'REDIRECT_URI'; // Your redirect uri
-// var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
+//var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
 // var redirect_uri =  'https://server-simulator.herokuapp.com/callback'; // 'REDIRECT_URI'; // Your redirect uri
-var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
+//var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
 
 /**
  * Generates a random string containing numbers and letters
@@ -758,10 +758,10 @@ app.post('/room', (req, res) => {
     return res.redirect('pages/lobby')
   }
   rooms[req.body.room] = { users: {} }
-  res.redirect(req.body.room)
+  res.redirect('/room/' + req.body.room)
   io.emit('room-created', req.body.room)
 })
-app.get('/:room', (req, res) => {
+app.get('/room/:room', (req, res) => {
   io.emit('user-joined', "hello")
   res.render('pages/room', { roomName: req.params.room, users: users })
 })
