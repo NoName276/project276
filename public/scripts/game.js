@@ -1,6 +1,7 @@
 var FRAMERATE = 30;
 var fpb = FRAMERATE/(document.getElementById('bpm').value/60);
 var beat_offset = 0;
+var game_running = false;
 var valid_flag = false;
 var bonus_flag =false;
 var key_flag = false;
@@ -53,179 +54,185 @@ function change_bpm(){
     }
 }
 
+function game_end(){
+    game_running = false;
+}
+
 function player_move(num, e){
     gridEl = document.getElementById('game_grid');
     var pressed = e.which || e.keyCode;
     //console.log(pressed)
-    if(!key_flag){
-        key_flag = true;
-        if(valid_flag){
-            gridEl.style.color = 'green';
-            if(bonus_flag){
-                gridEl.style.color = 'orange';                
-                if(multiplier < 2.0){
-                    multiplier += 0.1;
+    if(game_running){
+        if(!key_flag){
+            key_flag = true;
+            if(valid_flag){
+                gridEl.style.color = 'green';
+                if(bonus_flag){
+                    gridEl.style.color = 'orange';                
+                    if(multiplier < 2.0){
+                        multiplier += 0.1;
+                    }
                 }
+                if( (pressed == last_player_move[num]) || (player_glasses[num].length < 5) ){
+                    var hit_flag = false;
+                    switch(pressed){
+                        case 87:
+                        case 38:
+                            if(player_pos[num][0] > 0){
+                                for(i=1; i<num_players;i++){
+                                    if(player_pos[num][0]-1 == player_pos[i%4][0] && player_pos[num][1] == player_pos[i%4][1]){
+                                        hit_flag = true;
+                                        if(player_glasses[i].length > 0){player_glasses[i].pop();}
+                                        if(player_glasses[num].length > 0){player_glasses[num].pop();}
+                                    }
+                                }
+                                if(hit_flag){null;}
+                                else if(game_grid[player_pos[num][0]-1][player_pos[num][1]] == null){
+                                    game_grid[player_pos[num][0]][player_pos[num][1]] = null;
+                                    player_pos[num][0] -= 1;
+                                    //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
+                                }
+                                else if(!isNaN(game_grid[player_pos[num][0]-1][player_pos[num][1]])){
+                                    if(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] != 0 && player_glasses[num].length < 9){
+                                        player_glasses[num].push(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]]);
+                                        glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] = 0;
+                                        filled_glasses -= 1;
+                                    }
+                                }
+                                else if(player_pos[num][0]-1 == 0 && player_pos[num][1] == 3*num){
+                                    while(player_glasses[num].length != 0){
+                                        score += player_glasses[num].pop()*10*multiplier;
+                                        document.getElementById('player score').innerHTML = score.toFixed(0)
+                                    }
+                                }
+                            }
+                            break;
+                        case 83:
+                        case 40:
+                            if(player_pos[num][0] < 9){
+                                for(i=1; i<num_players;i++){
+                                    if(player_pos[num][0]+1 == player_pos[i%4][0] && player_pos[num][1] == player_pos[i%4][1]){
+                                        hit_flag = true;
+                                        if(player_glasses[i].length > 0){player_glasses[i].pop();}
+                                        if(player_glasses[num].length > 0){player_glasses[num].pop();}
+                                    }
+                                }
+                                if(hit_flag){null;}
+                                else if(game_grid[player_pos[num][0]+1][player_pos[num][1]] == null){
+                                    game_grid[player_pos[num][0]][player_pos[num][1]] = null;
+                                    player_pos[num][0] += 1;
+                                    //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
+                                }
+                                else if(!isNaN(game_grid[player_pos[num][0]+1][player_pos[num][1]])){
+                                    if(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] != 0 && player_glasses[num].length < 9){
+                                        player_glasses[num].push(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]]);
+                                        glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] = 0;
+                                        filled_glasses -= 1;
+                                    }
+                                }
+                                else if(player_pos[num][0]+1 == 0 && player_pos[num][1] == 3*num){
+                                    while(player_glasses[num].length != 0){
+                                        score += player_glasses[num].pop()*10*multiplier;
+                                        document.getElementById('player score').innerHTML = score.toFixed(0)
+                                    }
+                                }
+                            }
+                            break;
+                        case 65:
+                        case 37:
+                            if(player_pos[num][1] > 0){
+                                for(i=1; i<num_players;i++){
+                                    if(player_pos[num][0] == player_pos[i%4][0] && player_pos[num][1]-1 == player_pos[i%4][1]){
+                                        hit_flag = true;
+                                        if(player_glasses[i].length > 0){player_glasses[i].pop();}
+                                        if(player_glasses[num].length > 0){player_glasses[num].pop();}
+                                    }
+                                }
+                                if(hit_flag){null;}
+                                else if (game_grid[player_pos[num][0]][player_pos[num][1]-1] == null){
+                                    game_grid[player_pos[num][0]][player_pos[num][1]] = null;
+                                    player_pos[num][1] -= 1;
+                                    //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
+                            }
+                                else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]-1])){
+                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] != 0 && player_glasses[num].length < 9){
+                                        player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]]);
+                                        glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] = 0;
+                                        filled_glasses -= 1;
+                                    }
+                                }
+                                else if(player_pos[num][0] == 0 && player_pos[num][1]-1 == 3*num){
+                                    while(player_glasses[num].length != 0){
+                                        score += player_glasses[num].pop()*10*multiplier;
+                                        document.getElementById('player score').innerHTML = score.toFixed(0)
+                                    }
+                                }
+                            }
+                            break;
+                        case 68:
+                        case 39:
+                            if(player_pos[num][1] < 9){
+                                for(i=1; i<num_players;i++){
+                                    if(player_pos[num][0] == player_pos[i%4][0] && player_pos[num][1]+1 == player_pos[i%4][1]){
+                                        hit_flag = true;
+                                        if(player_glasses[i].length > 0){player_glasses[i].pop();}
+                                        if(player_glasses[num].length > 0){player_glasses[num].pop();}
+                                    }
+                                }
+                                if(hit_flag){null;}
+                                else if (game_grid[player_pos[num][0]][player_pos[num][1]+1] == null){
+                                    game_grid[player_pos[num][0]][player_pos[num][1]] = null;
+                                    player_pos[num][1] += 1;
+                                    //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
+                                }
+                                else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]+1])){
+                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] != 0 && player_glasses[num].length < 9){
+                                    player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]]);
+                                    glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] = 0;
+                                    filled_glasses -= 1;
+                                    }
+                                }
+                                else if(player_pos[num][0] == 0 && player_pos[num][1]+1 == 3*num){
+                                    while(player_glasses[num].length != 0){
+                                        score += player_glasses[num].pop()*10*multiplier;
+                                        document.getElementById('player score').innerHTML = score.toFixed(0)
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+                            key_flag = false;
+                            gridEl.style.color = 'blue';
+                    }
+                    last_player_move[num] = 0;
+                }
+                else{
+                    last_player_move[num] = pressed;
+                }
+                
+                setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
             }
-            if( (pressed == last_player_move[num]) || (player_glasses[num].length < 5) ){
-                var hit_flag = false;
+            else{        
                 switch(pressed){
-                    case 87:
-                    case 38:
-                        if(player_pos[num][0] > 0){
-                            for(i=1; i<num_players;i++){
-                                if(player_pos[num][0]-1 == player_pos[i%4][0] && player_pos[num][1] == player_pos[i%4][1]){
-                                    hit_flag = true;
-                                    if(player_glasses[i].length > 0){player_glasses[i].pop();}
-                                    if(player_glasses[num].length > 0){player_glasses[num].pop();}
-                                }
-                            }
-                            if(hit_flag){null;}
-                            else if(game_grid[player_pos[num][0]-1][player_pos[num][1]] == null){
-                                game_grid[player_pos[num][0]][player_pos[num][1]] = null;
-                                player_pos[num][0] -= 1;
-                                //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
-                            }
-                            else if(!isNaN(game_grid[player_pos[num][0]-1][player_pos[num][1]])){
-                                if(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] != 0){
-                                    player_glasses[num].push(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]]);
-                                    glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] = 0;
-                                    filled_glasses -= 1;
-                                }
-                            }
-                            else if(player_pos[num][0]-1 == 0 && player_pos[num][1] == 3*num){
-                                while(player_glasses[num].length != 0){
-                                    score += player_glasses[num].pop()*10*multiplier;
-                                    document.getElementById('player score').innerHTML = score.toFixed(0)
-                                }
-                            }
-                        }
-                        break;
-                    case 83:
-                    case 40:
-                        if(player_pos[num][0] < 9){
-                            for(i=1; i<num_players;i++){
-                                if(player_pos[num][0]+1 == player_pos[i%4][0] && player_pos[num][1] == player_pos[i%4][1]){
-                                    hit_flag = true;
-                                    if(player_glasses[i].length > 0){player_glasses[i].pop();}
-                                    if(player_glasses[num].length > 0){player_glasses[num].pop();}
-                                }
-                            }
-                            if(hit_flag){null;}
-                            else if(game_grid[player_pos[num][0]+1][player_pos[num][1]] == null){
-                                game_grid[player_pos[num][0]][player_pos[num][1]] = null;
-                                player_pos[num][0] += 1;
-                                //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
-                            }
-                            else if(!isNaN(game_grid[player_pos[num][0]+1][player_pos[num][1]])){
-                                if(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] != 0){
-                                    player_glasses[num].push(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]]);
-                                    glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] = 0;
-                                    filled_glasses -= 1;
-                                }
-                            }
-                            else if(player_pos[num][0]+1 == 0 && player_pos[num][1] == 3*num){
-                                while(player_glasses[num].length != 0){
-                                    score += player_glasses[num].pop()*10*multiplier;
-                                    document.getElementById('player score').innerHTML = score.toFixed(0)
-                                }
-                            }
-                        }
-                        break;
-                    case 65:
                     case 37:
-                        if(player_pos[num][1] > 0){
-                            for(i=1; i<num_players;i++){
-                                if(player_pos[num][0] == player_pos[i%4][0] && player_pos[num][1]-1 == player_pos[i%4][1]){
-                                    hit_flag = true;
-                                    if(player_glasses[i].length > 0){player_glasses[i].pop();}
-                                    if(player_glasses[num].length > 0){player_glasses[num].pop();}
-                                }
-                            }
-                            if(hit_flag){null;}
-                            else if (game_grid[player_pos[num][0]][player_pos[num][1]-1] == null){
-                                game_grid[player_pos[num][0]][player_pos[num][1]] = null;
-                                player_pos[num][1] -= 1;
-                                //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
-                        }
-                            else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]-1])){
-                                if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] != 0){
-                                    player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]]);
-                                    glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] = 0;
-                                    filled_glasses -= 1;
-                                }
-                            }
-                            else if(player_pos[num][0] == 0 && player_pos[num][1]-1 == 3*num){
-                                while(player_glasses[num].length != 0){
-                                    score += player_glasses[num].pop()*10*multiplier;
-                                    document.getElementById('player score').innerHTML = score.toFixed(0)
-                                }
-                            }
-                        }
-                        break;
-                    case 68:
+                    case 38:
                     case 39:
-                        if(player_pos[num][1] < 9){
-                            for(i=1; i<num_players;i++){
-                                if(player_pos[num][0] == player_pos[i%4][0] && player_pos[num][1]+1 == player_pos[i%4][1]){
-                                    hit_flag = true;
-                                    if(player_glasses[i].length > 0){player_glasses[i].pop();}
-                                    if(player_glasses[num].length > 0){player_glasses[num].pop();}
-                                }
-                            }
-                            if(hit_flag){null;}
-                            else if (game_grid[player_pos[num][0]][player_pos[num][1]+1] == null){
-                                game_grid[player_pos[num][0]][player_pos[num][1]] = null;
-                                player_pos[num][1] += 1;
-                                //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
-                            }
-                            else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]+1])){
-                                if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] != 0){
-                                player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]]);
-                                glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] = 0;
-                                filled_glasses -= 1;
-                                }
-                            }
-                            else if(player_pos[num][0] == 0 && player_pos[num][1]+1 == 3*num){
-                                while(player_glasses[num].length != 0){
-                                    score += player_glasses[num].pop()*10*multiplier;
-                                    document.getElementById('player score').innerHTML = score.toFixed(0)
-                                }
-                            }
-                        }
+                    case 40:
+                    case 65:
+                    case 68:
+                    case 83:
+                    case 87:
+                        gridEl.style.color = 'red';
+                        multiplier = 1.0;
                         break;
                     default:
                         key_flag = false;
-                        gridEl.style.color = 'blue';
                 }
-                last_player_move[num] = 0;
+                setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
             }
-            else{
-                last_player_move[num] = pressed;
-            }
-            
-            setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
         }
-        else{        
-            switch(pressed){
-                case 37:
-                case 38:
-                case 39:
-                case 40:
-                case 65:
-                case 68:
-                case 83:
-                case 87:
-                    gridEl.style.color = 'red';
-                    multiplier = 1.0;
-                    break;
-                default:
-                    key_flag = false;
-            }
-            setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
-        }
-   }
-   e.preventDefault();
+        e.preventDefault();
+    }
 }
 
 function display_game_grid(){
@@ -330,8 +337,9 @@ function game_loop(){
     document.getElementById('player mult').innerHTML = 'x' + multiplier.toFixed(1);
     beat_offset += 1;
     while (beat_offset>=fpb){beat_offset -= fpb;}
-    
-    setTimeout(function(){game_loop();}, 1000/FRAMERATE);
+    if(game_running){
+        setTimeout(function(){game_loop();}, 1000/FRAMERATE);
+    }
 }
 
 function add_glass() {
@@ -422,6 +430,6 @@ function attack() {
 console.log(`start FRAMERATE:${FRAMERATE} fpb:${fpb}`);
 document.onkeydown = function(e){player_move(player_num, e)};
 
-
-setTimeout(function(){game_loop();}, 1000/FRAMERATE);
+game_loop();
+//setTimeout(function(){game_loop(); setTimeout(function{game_end();}, 1000*duration)}, 1000/FRAMERATE);
 
