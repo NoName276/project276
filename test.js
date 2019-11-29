@@ -364,6 +364,98 @@ describe("Toggling Admin", function () {
     });
 });
 
+describe("Listen to Songs", function () {
+    it("Proper Page shows up", function (done) {
+        chai.request(app)
+            .get(`/club/admin/BobbyC/songselect`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('Here you can view all songs');
+                done();
+            });
+    })
+    it("Slow Dancing in the Dark Loads", function (done) {
+        chai.request(app)
+            .get(`/joji`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('SLOW DANCING IN THE DARK');
+                done();
+            });
+    })
+
+    it("Hadestown Loads", function (done) {
+        chai.request(app)
+            .get(`/hadestown`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('Way down Hadestown II');
+                done();
+            });
+    })
+
+    it("Waving Through a Window Loads", function (done) {
+        chai.request(app)
+            .get(`/dear-evan-hansen`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('Waving Through a Window');
+                done();
+            });
+    })
+
+    it("Breathe Loads", function (done) {
+        chai.request(app)
+            .get(`/88rising`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('Breathe');
+                done();
+            });
+    })
+
+    it("Bad Guy Loads", function (done) {
+        chai.request(app)
+            .get(`/billie-eilish`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('bad guy');
+                done();
+            });
+    })
+
+    it("Dont Start Now Loads", function (done) {
+        chai.request(app)
+            .get(`/dua-lipa`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include("Don't Start Now");
+                done();
+            });
+    })
+
+    it("How Do You Sleep? Loads", function (done) {
+        chai.request(app)
+            .get(`/sam-smith`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include("How Do You Sleep?");
+                done();
+            });
+    })
+
+    it("It's You Loads", function (done) {
+        chai.request(app)
+            .get(`/ali-gatie`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include("It's You");
+                done();
+            });
+    })
+
+});
+
 //TO DO CONT (all below)
 describe("Single Player", function () {
     jsdom({
