@@ -382,7 +382,8 @@ app.get('/breathe.mp3', (req,res) => {
 app.get('/billie-eilish', (req,res) => {
     res.render('pages/bad-guy');
 })
-app.get('/bad-guy.mp3', (req,res) => {
+app.get('/bad-guy.mp3', (req, res) => {
+    console.log("loading badguy");
     res.sendFile(__dirname + '/audio/bad-guy.mp3')
 })
 app.get('/dua-lipa', (req,res) => {
@@ -745,6 +746,13 @@ app.post("/club/admin/:name/toggleadmin", (req, res) => {
 
     }
    
+});
+
+app.get('/club/admin/:name/songselect', (req, res) => {
+    let name = req.params.name;
+    console.log("in song select")
+    res.render('pages/selectsongs', { 'name': name });
+
 });
 
 // creating and joining rooms
