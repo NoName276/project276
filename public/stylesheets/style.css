@@ -84,14 +84,7 @@ body{
   right: 28px;
   width: 280px;
 }
-.chatbox {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  right: 15px;
-  border: 3px solid #f1f1f1;
-  z-index: 9;
-}
+
 #message {
   max-width: 300px;
   padding: 10px;
@@ -103,11 +96,10 @@ body{
 #message textarea {
   width: 100%;
   padding: 15px;
-  margin: 5px 0 22px 0;
   border: none;
   background: #f1f1f1;
-  resize: none;
-  min-height: 200px;
+ 
+  min-height: 10px;
 }
 #message textarea:focus {
   background-color: #ddd;
@@ -134,4 +126,8 @@ body{
 }
 label {
   color: white;
+}
+.text {
+  height: 100px;
+  
 }
