@@ -1,59 +1,62 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Chatbox</title>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/chatbox.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script>
-      const roomName = "<%= roomName %>"
-      function openForm() {
-        document.getElementById("chatbox").style.display = "block";
+
+<head>
+  <meta charset="utf-8">
+  <title>Chatbox</title>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/chatbox.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    const roomName = "<%= roomName %>"
+  </script>
+
+  <script src="/scripts/socket.io.js"></script>
+  <script>
+    var socket = io()
+    userContainer = document.getElementById('user-container')
+    socket.on('user-joined', user => {
+      console.log("new user")
+    })
+    var socket = io.connect();
+    var $form = $('.form');
+    var $message = $('#message');
+    var $chat = $('.chat');
+    $message.submit(function (e) {
+      e.preventDefault();
+      socket.emit('send message', $message.val());
+      $message.val('');
+      console.log("sent");
+    });
+    socket.on('new message', function (data) {
+      $chat.append(`<div class= "chatbox" >${data.msg}</div>`);
+    })
+  </script>
+</head>
+
+<body>
+
+
+  <button class="open-button" onclick="openForm()">Chat</button>
+  <div class="chatbox" id="myform">
+    <form id="message">
+      <h1>Chatbox</h1>
+      <label for="msg"><b>Enter message</b></label><br></br>
+      <textarea placeholder="Type message.." name="msg" required></textarea>
+      <br></br>
+      <button type="submit" class="button">Send</button>
+      <button type="button" class="cancel" onclick="closeForm()">Close</button>
+    </form>
+  </div>
+  <script>
+    function openForm() {
+      document.getElementById("chatbox").style.display = "block";
     }
 
     function closeForm() {
-        document.getElementById("chatbox").style.display = "none";
+      document.getElementById("chatbox").style.display = "none";
     }
-    </script>
-    <script src="/scripts/socket.io.js"></script>
-    <script>
-      var socket = io()
-      userContainer = document.getElementById('user-container')
-      socket.on('user-joined', user => {
-        console.log("new user")
-      })
-      var socket = io.connect();
-      var $form =$('.form');
-      var $message =$('#message');
-      var $chat =$('.chat');
-      $message.submit(function(e){
-        e.preventDefault();
-        socket.emit('send message', $message.val());
-        $message.val('');
-        console.log("sent");
-      });
-      socket.on('new message', function(data){
-        $chat.append(`<div class= "chatbox" >${data.msg}</div>`);
-      })
-    </script>
-  </head>
+  </script>
+</body>
+<iframe src="chatbox.html" style=height:200px;width:300px;border:none;bottom:0></iframe>
 
-  <body>
-  
-      <h2>Popup Chat Window</h2>
-      <p>Click on the button at the bottom of this page to open the chat form.</p>
-      <p>Note that the button and the form is fixed - they will always be positioned to the bottom of the browser window.</p>
-    <button class="open-button" onclick="openForm()">Chat</button>
-    <div id="user-container">
-
-    <div class = "chatbox">
-        <form id="message">
-            <h1>Chatbox</h1>
-           <label for="msg"><b>Enter message</b></label>
-        <textarea placeholder="Type message.." name="msg" required></textarea>
-        <button type= "submit" class ="button">Send</button>
-        <button type="button" class="cancel" onclick="closeForm()">Close</button>
-      </form>
-    </div>
-  </body>
 </html>

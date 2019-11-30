@@ -1,4 +1,6 @@
+body {font-family: Arial, Helvetica, sans-serif;}
 * {box-sizing: border-box;}
+
 .open-button {
   background-color: #555;
   color: white;
@@ -36,8 +38,8 @@
 #message textarea:focus {
   background-color: #ddd;
   outline: none;
-}
-#message.button {
+} 
+#message .button {
   background-color: #4CAF50;
   color: white;
   padding: 16px 20px;
