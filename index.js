@@ -151,6 +151,8 @@ app.get("/club", (req, res) => {
     res.render("pages/club", {"props": {loginFailed: false}})
 })
 
+
+
 app.post("/club/login", (req, res) => {
   console.log(req.body);
     var queryString = `SELECT * FROM users WHERE username='${req.body.username}';`;
@@ -685,8 +687,9 @@ app.get('/club/:name/lobby', (req, res) => {
 const rooms = { name:{} }
 const users = {  }
 app.post('/room', (req, res) => {
-  if(rooms[req.body.room] != null) {
-    return res.redirect('pages/lobby')
+
+    if(rooms[req.body.room] != null) {
+        return res.redirect('pages/lobby')
   }
   rooms[req.body.room] = { users: {} }
   res.redirect(req.body.room)
@@ -708,20 +711,21 @@ var players = {};
 io.sockets.on('connection', function (socket) {
   console.log('a user has now connected');
   io.sockets.emit('numPlayers', playerCount);
+  console.log(playerCount);
   // create a new player and add it to the players object
-  players[socket.id] = {
+    players[socket.id] = {
   //add position
       colour: "blue",
       playerId: socket.id,
       username: socket.username,
   }
-  io.on('updateColour', function (colourData) {
+io.on('updateColour', function (colourData) {
       players[socket.id].colour = colourData.colour;
       socket.broadcast.emit('updateSprite', players[socket.id]);
       });
 
       //send players object to new player
-  io.emit('currentPlayers', players);
+io.emit('currentPlayers', players);
 
   //update all other players of new player
   socket.broadcast.emit('newPlayer', players[socket.id]);
