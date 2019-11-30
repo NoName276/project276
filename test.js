@@ -464,13 +464,21 @@ describe("Single Player", function () {
     })
     it("song data in single player is consistent with current spotify playback ", function (done) {
         chai.request(app)
-            .get(`/playing`)
+            .get(`/music`)
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
                 document.addEventListener('DOMContentLoaded', function(event) {
+                    document.querySelector('#loginButton').click();
+                    document.querySelector('#getToken').click();
+                    document.querySelector('#getPlaying').click();
+                    expect(res.status).to.be.eq(200);
                     expect(document.querySelector('h1').should.have.text('The Club'));
                     expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
                 })
+                // document.addEventListener('DOMContentLoaded', function(event) {
+                //     expect(document.querySelector('h1').should.have.text('The Club'));
+                //     expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                // })
                 done();
             })
     });
@@ -595,10 +603,19 @@ describe("spotify web api authentication, song data from playback, Spotify play 
     });
     it("song data is consistent with current spotify playback ", function (done) {
         chai.request(app)
-            .get(`/playing`)
+            // .get(`/playing`)
+            .get(`/music`)
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
+                // document.addEventListener('DOMContentLoaded', function(event) {
+                //     expect(document.querySelector('h1').should.have.text('The Club'));
+                //     expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                // })
                 document.addEventListener('DOMContentLoaded', function(event) {
+                    document.querySelector('#loginButton').click();
+                    document.querySelector('#getToken').click();
+                    document.querySelector('#getPlaying').click();
+                    expect(res.status).to.be.eq(200);
                     expect(document.querySelector('h1').should.have.text('The Club'));
                     expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
                 })
