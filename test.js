@@ -275,7 +275,7 @@ describe("Stats and Leaderboard", function () {
                     //console.log(res.text);
                     res.text.should.include("Welcome, Quiette. Here is the Leaderboard:"); //in leaderboard
                     res.text.should.include("BobbyC"); //holds top player
-                    res.text.should.include("Vanthournout");//holds 10th place player or lowest player if less than ten 
+                    res.text.should.include("jen");//holds 10th place player or lowest player if less than ten 
                     res.text.should.include("Here is your standing:");
                     res.text.should.include("Quiette"); //holds self in table
                     done();
@@ -364,6 +364,7 @@ describe("Toggling Admin", function () {
     });
 });
 
+//done
 describe("Listen to Songs", function () {
     it("Proper Page shows up", function (done) {
         chai.request(app)
