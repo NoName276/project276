@@ -151,6 +151,8 @@ app.get("/club", (req, res) => {
     res.render("pages/club", { "props": { loginFailed: false } })
 })
 
+
+
 app.post("/club/login", (req, res) => {
     console.log(req.body);
     var queryString = `SELECT * FROM users WHERE username='${req.body.username}';`;
@@ -685,6 +687,7 @@ app.get('/club/:name/lobby', (req, res) => {
 const rooms = { name: {} }
 const users = {}
 app.post('/room', (req, res) => {
+
     if (rooms[req.body.room] != null) {
         return res.redirect('pages/lobby')
     }
