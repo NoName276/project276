@@ -382,7 +382,8 @@ app.get('/breathe.mp3', (req,res) => {
 app.get('/billie-eilish', (req,res) => {
     res.render('pages/bad-guy');
 })
-app.get('/bad-guy.mp3', (req,res) => {
+app.get('/bad-guy.mp3', (req, res) => {
+    console.log("loading badguy");
     res.sendFile(__dirname + '/audio/bad-guy.mp3')
 })
 app.get('/dua-lipa', (req,res) => {
@@ -412,9 +413,10 @@ var cookieParser = require('cookie-parser');
 var client_id = '76399d6d66784fbd9b089a5363553e47'; // 'CLIENT_ID'; // Your client id
 var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Your secret
 
-// var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
 
+// var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
 var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
+
 
 /**
  * Generates a random string containing numbers and letters
@@ -747,6 +749,13 @@ app.post("/club/admin/:name/toggleadmin", (req, res) => {
    
 });
 
+app.get('/club/admin/:name/songselect', (req, res) => {
+    let name = req.params.name;
+    console.log("in song select")
+    res.render('pages/selectsongs', { 'name': name });
+
+});
+
 // creating and joining rooms
 const rooms = { name:{} }
 const users = {  }
@@ -758,10 +767,10 @@ app.post('/room', (req, res) => {
     return res.redirect('pages/lobby')
   }
   rooms[req.body.room] = { users: {} }
-  res.redirect(req.body.room)
+  res.redirect('/room/' + req.body.room)
   io.emit('room-created', req.body.room)
 })
-app.get('/:room', (req, res) => {
+app.get('/room/:room', (req, res) => {
   io.emit('user-joined', "hello")
   res.render('pages/room', { roomName: req.params.room, users: users })
 })
