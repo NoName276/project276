@@ -47,10 +47,12 @@
                     <p id = "countTitle">Start music in: </p>
                     <p id = "countDown"></p>
                     <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" ></iframe>
-                    <p> Duration: <%= duration %> </p>
+                    <p id= 'songDur'> Duration: <%= duration %> </p>
                     <p id="songUri"> Song Uri: <%= uri %> </p>
                     <!-- <p id="p"> Token: <%= accessToken %> </p> -->
             </div>
+
+            <script type="text/javascript" src="/scripts/game.js"></script>  
 
             <script>
                     var title = document.getElementById("countTitle");
@@ -61,6 +63,7 @@
                         if (seconds == 0) {
                             title.innerHTML = "Play"
                             display.innerHTML = "Now";
+                            setTimeout(function(){setTimeout(function(){game_running = true; game_loop(); setTimeout(function(){game_end();}, 1000*<%= duration %>)}, 1000/FRAMERATE);}, 2000);
                             clearInterval(interval)
                             console.log("Play Now")
                         } else {
@@ -74,8 +77,7 @@
                     
                 </script>
                     
-            </div>
-            <script async type="text/javascript" src="/scripts/game.js"></script>     
+            </div>   
 
 	</body>
 </html>
