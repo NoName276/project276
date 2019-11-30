@@ -2,10 +2,11 @@
 
 <html>
 	<head>
-        <title>Club Game Prototype</title>
+        <title>The Club</title>
         <link href='https://fonts.googleapis.com/css?family=Monofett' rel='stylesheet'>
+				<link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 
-		<link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
+	<link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />
 
         <script async type="text/javascript" src="/scripts/game.js"></script>
         <style>
@@ -17,6 +18,7 @@
 	</head>
 
 	<body>
+			<div>
             <h1>The Club</h1>
             <p id="p" >Now Playing: <%= name %> by <%= artist %></>
 
@@ -29,7 +31,6 @@
                     <input type="number" class ="bpm" id="bpm" value='<%= tempo %>'/>
                     <input class="button" type="button" value="change bpm" onclick="change_bpm()" />
                 </form>
-
             <div class= "main" id="gamediv">
                 <div class ="row" id="game_grid">
                         <div id= "col1"class="top ">############</div><br>
@@ -144,7 +145,7 @@
                 // })
             </script>
 
-
+		</div>
 
 	</body>
 </html>
