@@ -6,13 +6,6 @@
         <link href='https://fonts.googleapis.com/css?family=Monofett' rel='stylesheet'>
 
 		<link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
-
-        <style>
-            /* #musicdiv{
-                margin: auto;
-                width: 50%;
-            } */
-        </style>
 	</head>
 
 	<body>
@@ -53,8 +46,13 @@
 
                     <p id = "countTitle">Start music in: </p>
                     <p id = "countDown"></p>
-                    <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()"></iframe>
+                    <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" ></iframe>
+                    <p id= 'songDur'> Duration: <%= duration %> </p>
+                    <p id="songUri"> Song Uri: <%= uri %> </p>
+                    <!-- <p id="p"> Token: <%= accessToken %> </p> -->
             </div>
+
+            <script type="text/javascript" src="/scripts/game.js"></script>  
 
             <script>
                     var title = document.getElementById("countTitle");
@@ -65,6 +63,7 @@
                         if (seconds == 0) {
                             title.innerHTML = "Play"
                             display.innerHTML = "Now";
+                            setTimeout(function(){setTimeout(function(){game_running = true; game_loop(); setTimeout(function(){game_end();}, 1000*<%= duration %>)}, 1000/FRAMERATE);}, 2000);
                             clearInterval(interval)
                             console.log("Play Now")
                         } else {
@@ -77,6 +76,7 @@
     
                     
                 </script>
+<<<<<<< HEAD
 
                     <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()" onclick="start_game()"></iframe>
                     <p> Duration: <%= duration %> </p>
@@ -191,6 +191,10 @@
         <script async type="text/javascript" src="/scripts/game.js"></script> 
         
 
+=======
+                    
+            </div>   
+>>>>>>> a525e82202a9d4e5f942e60215330690fd19181a
 
 	</body>
 </html>
