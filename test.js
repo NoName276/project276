@@ -4,14 +4,20 @@ var request = require("request"),
     app = require("./index.js"),
     base_url = "http://localhost:5000/";
 
+    
 chai = require("chai");
 chaiHttp = require('chai-http');
+chai.use(require('chai-dom'));
 let should = chai.should();
+chai.use(chaiHttp);
 
 chai.use(chaiHttp);
 const { expect } = chai;
 
+var jsdom = require('mocha-jsdom')
+
 //done
+
 describe("Front Page Running?", function () {
         it("returns status code 200", function (done) {
             request.get(base_url, function (error, response, body) {
@@ -59,10 +65,7 @@ describe("Register", function () {
             .post(`/club/reg`)
             .send(person)
             .end(function (err, res) {
-                /*expect(res.body.data).to.include({
-                    username: person.username,
-                    password: person.password,
-                });*/
+                
              
                 expect(res.status).to.be.eq(200);
                 res.text.should.include('registration successful')
@@ -78,10 +81,7 @@ describe("Register", function () {
             .post(`/club/reg`)
             .send(person)
             .end(function (err, res) {
-               /* expect(res.body.data).to.include({
-                    username: person.username,
-                    password: person.password,
-                });*/
+              
                 expect(res.status).to.be.eq(200);
                 res.text.should.include('Username taken.');
                 done();
@@ -211,6 +211,7 @@ describe("Stats and Leaderboard", function () {
             .get("/club/BobbyC/stats")
                 .end(function (err, res) {
                     expect(res.status).to.be.eq(200);
+                    //console.log(res.text);
                     res.text.should.include("Welcome, BobbyC! Here you can view all your personal stats!");
                     res.text.should.include("Leaderboard Rank");
                     res.text.should.include("Games Played");
@@ -274,10 +275,10 @@ describe("Stats and Leaderboard", function () {
                     expect(res.status).to.be.eq(200);
                     //console.log(res.text);
                     res.text.should.include("Welcome, Quiette. Here is the Leaderboard:"); //in leaderboard
-                    res.text.should.include("<th>1</th>\r\n\t\t  <th>BobbyC</th>\r\n\t\t  <th>150</th>\r\n"); //holds top player
-                    res.text.should.include("<th>4</th>\r\n\t\t  <th>Vanthournout</th>\r\n\t\t  <th>0</th>\r\n");//holds 10th place player or lowest player if less than ten 
+                    res.text.should.include("BobbyC"); //holds top player
+                    res.text.should.include("jen");//holds 10th place player or lowest player if less than ten 
                     res.text.should.include("Here is your standing:");
-                    res.text.should.include("<th>2</th>\r\n\t\t  <th>Quiette</th>\r\n\t\t  <th>100</th>\r\n"); //holds self in table
+                    res.text.should.include("Quiette"); //holds self in table
                     done();
                 });
         })
@@ -323,10 +324,7 @@ describe("Toggling Admin", function () {
             .post(`/club/admin/BobbyC/toggleadmin`)
             .send(changing)
             .end(function (err, res) {
-                /* expect(res.body.data).to.include({
-                     username: person.username,
-                     password: person.password,
-                 });*/
+                
                 expect(res.status).to.be.eq(200);
                 res.text.should.include('Successful toggle!');
                 done();
@@ -337,10 +335,7 @@ describe("Toggling Admin", function () {
             .post(`/club/admin/BobbyC/toggleadmin`)
             .send(changing)
             .end(function (err, res) {
-                /* expect(res.body.data).to.include({
-                     username: person.username,
-                     password: person.password,
-                 });*/
+               
                 expect(res.status).to.be.eq(200);
                 res.text.should.include('Successful toggle!');
                 done();
@@ -351,10 +346,7 @@ describe("Toggling Admin", function () {
             .post(`/club/admin/BobbyC/toggleadmin`)
             .send(notexist)
             .end(function (err, res) {
-                /* expect(res.body.data).to.include({
-                     username: person.username,
-                     password: person.password,
-                 });*/
+              
                 expect(res.status).to.be.eq(200);
                 res.text.should.include('User does not exist!');
                 done();
@@ -365,10 +357,7 @@ describe("Toggling Admin", function () {
             .post(`/club/admin/BobbyC/toggleadmin`)
             .send(changer)
             .end(function (err, res) {
-                /* expect(res.body.data).to.include({
-                     username: person.username,
-                     password: person.password,
-                 });*/
+              
                 expect(res.status).to.be.eq(200);
                 res.text.should.include('You cannot alter your own status');
                 done();
@@ -376,15 +365,120 @@ describe("Toggling Admin", function () {
     });
 });
 
+describe("Listen to Songs", function () {
+    it("Proper Page shows up", function (done) {
+        chai.request(app)
+            .get(`/club/admin/BobbyC/songselect`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('Here you can view all songs');
+                done();
+            });
+    })
+    it("Slow Dancing in the Dark Loads", function (done) {
+        chai.request(app)
+            .get(`/joji`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('SLOW DANCING IN THE DARK');
+                done();
+            });
+    })
+
+    it("Hadestown Loads", function (done) {
+        chai.request(app)
+            .get(`/hadestown`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('Way down Hadestown II');
+                done();
+            });
+    })
+
+    it("Waving Through a Window Loads", function (done) {
+        chai.request(app)
+            .get(`/dear-evan-hansen`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('Waving Through a Window');
+                done();
+            });
+    })
+
+    it("Breathe Loads", function (done) {
+        chai.request(app)
+            .get(`/88rising`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('Breathe');
+                done();
+            });
+    })
+
+    it("Bad Guy Loads", function (done) {
+        chai.request(app)
+            .get(`/billie-eilish`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('bad guy');
+                done();
+            });
+    })
+
+    it("Dont Start Now Loads", function (done) {
+        chai.request(app)
+            .get(`/dua-lipa`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include("Don't Start Now");
+                done();
+            });
+    })
+
+    it("How Do You Sleep? Loads", function (done) {
+        chai.request(app)
+            .get(`/sam-smith`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include("How Do You Sleep?");
+                done();
+            });
+    })
+
+    it("It's You Loads", function (done) {
+        chai.request(app)
+            .get(`/ali-gatie`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include("It's You");
+                done();
+            });
+    })
+
+});
+
 //TO DO CONT (all below)
 describe("Single Player", function () {
+    jsdom({
+        url: "http://localhost:5000/"
+    })
     it("song data in single player is consistent with current spotify playback ", function (done) {
         chai.request(app)
-            .get(`/playing`)
+            .get(`/music`)
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
-                expect(document.querySelector('h1').should.have.text('The Club'));
-                expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    document.querySelector('#loginButton').click();
+                    document.querySelector('#getToken').click();
+                    document.querySelector('#getPlaying').click();
+                    expect(res.status).to.be.eq(200);
+                    expect(document.querySelector('h1').should.have.text('The Club'));
+                    expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                })
+                // document.addEventListener('DOMContentLoaded', function(event) {
+                //     expect(document.querySelector('h1').should.have.text('The Club'));
+                //     expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                // })
                 done();
             })
     });
@@ -393,9 +487,11 @@ describe("Single Player", function () {
             .get(`/music`)
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
-                expect(document.querySelector('h1').should.have.text('The Club'));
-                expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
-                expect(document.querySelector('songUri').should.have.text('0rKtyWc8bvkriBthvHKY8d'));
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    expect(document.querySelector('h1').should.have.text('The Club'));
+                    expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                    expect(document.querySelector('songUri').should.have.text('0rKtyWc8bvkriBthvHKY8d'));
+                })
                 done();
             })
     });
@@ -404,7 +500,9 @@ describe("Single Player", function () {
 describe("Multiplayer", function () { });
 
 describe("spotify web api authentication, song data from playback, Spotify play b", function () { 
-    
+    jsdom({
+        url: "http://localhost:5000/"
+    })
     it("app can reach spotify authentication page", function(done) {
         chai.request(app)
             .get(`/spotify-login`)
@@ -421,14 +519,16 @@ describe("spotify web api authentication, song data from playback, Spotify play 
             .get(`/music`)
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
-                document.querySelector('#loginButton').click();
-                var hashParams = {};
-                var e, r = /([^&;=]+)=?([^&;]*)/g,
-                    q = window.location.hash.substring(1);
-                while ( e = r.exec(q)) {
-                hashParams[e[1]] = decodeURIComponent(e[2]);
-                }
-                expect(hashParams.access_token).to.equal(access_token)
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    document.querySelector("#loginButton").click();
+                    var hashParams = {};
+                    var e, r = /([^&;=]+)=?([^&;]*)/g,
+                        q = window.location.hash.substring(1);
+                    while ( e = r.exec(q)) {
+                    hashParams[e[1]] = decodeURIComponent(e[2]);
+                    }
+                    expect(hashParams.access_token).to.equal(access_token)
+                })
                 done();
             })
     });
@@ -439,10 +539,12 @@ describe("spotify web api authentication, song data from playback, Spotify play 
             .get(`/music`)
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
-                document.querySelector('#loginButton').click();
-                // res.text.should.include(access_token);
-                document.querySelector('#getToken').click();
-                expect(document.querySelector('#tokenid').value.to.equal(access_token));
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    document.querySelector("#loginButton").click();
+                    // res.text.should.include(access_token);
+                    document.querySelector("#getToken").click();
+                    expect(document.querySelector("#tokenid").value.to.equal(access_token));
+                })    
                 done();
             })
     });
@@ -451,8 +553,10 @@ describe("spotify web api authentication, song data from playback, Spotify play 
             .get(`/music`)
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
-                document.querySelector('#getToken').click();
-                expect(document.querySelector('#token').should.have.text('Please login to Spotify first'));
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    document.querySelector('#getToken').click();
+                    expect(document.querySelector('#token').should.have.text('Please login to Spotify first'));
+                })
                 done();
             })
     });
@@ -461,8 +565,10 @@ describe("spotify web api authentication, song data from playback, Spotify play 
             .get(`/music`)
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
-                document.querySelector('#getPlaying').click();
-                expect(res.status).to.be.eq(401);
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    document.querySelector('#getPlaying').click();
+                    expect(res.status).to.be.eq(401);
+                })    
                 done();
             })
     });
@@ -471,10 +577,12 @@ describe("spotify web api authentication, song data from playback, Spotify play 
             .get(`/music`)
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
-                document.querySelector('#loginButton').click();
-                document.querySelector('#getToken').click();
-                document.querySelector('#getPlaying').click();
-                expect(document.querySelector('#token').should.have.text(''));
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    document.querySelector('#loginButton').click();
+                    document.querySelector('#getToken').click();
+                    document.querySelector('#getPlaying').click();
+                    expect(document.querySelector('#token').should.have.text(''));
+                })
                 done();
             })
     });
@@ -483,21 +591,34 @@ describe("spotify web api authentication, song data from playback, Spotify play 
             .get(`/music`)
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
-                document.querySelector('#loginButton').click();
-                document.querySelector('#getToken').click();
-                document.querySelector('#getPlaying').click();
-                expect(res.status).to.be.eq(200);
-                expect(document.querySelector('h1').should.have.text('The Club'));
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    document.querySelector('#loginButton').click();
+                    document.querySelector('#getToken').click();
+                    document.querySelector('#getPlaying').click();
+                    expect(res.status).to.be.eq(200);
+                    expect(document.querySelector('h1').should.have.text('The Club'));
+                })
                 done();
             })
     });
     it("song data is consistent with current spotify playback ", function (done) {
         chai.request(app)
-            .get(`/playing`)
+            // .get(`/playing`)
+            .get(`/music`)
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
-                expect(document.querySelector('h1').should.have.text('The Club'));
-                expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                // document.addEventListener('DOMContentLoaded', function(event) {
+                //     expect(document.querySelector('h1').should.have.text('The Club'));
+                //     expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                // })
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    document.querySelector('#loginButton').click();
+                    document.querySelector('#getToken').click();
+                    document.querySelector('#getPlaying').click();
+                    expect(res.status).to.be.eq(200);
+                    expect(document.querySelector('h1').should.have.text('The Club'));
+                    expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                })
                 done();
             })
     });
@@ -506,9 +627,11 @@ describe("spotify web api authentication, song data from playback, Spotify play 
             .get(`/music`)
             .end(function(err, res) {
                 expect(res.status).to.be.eq(200);
-                expect(document.querySelector('h1').should.have.text('The Club'));
-                expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
-                expect(document.querySelector('songUri').should.have.text('0rKtyWc8bvkriBthvHKY8d'));
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    expect(document.querySelector('h1').should.have.text('The Club'));
+                    expect(document.querySelector('p').should.have.text('Now Playing: SLOW DANCING IN THE DARK by Joji'));
+                    expect(document.querySelector('songUri').should.have.text('0rKtyWc8bvkriBthvHKY8d'));
+                })
                 done();
             })
     });

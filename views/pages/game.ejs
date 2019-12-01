@@ -4,8 +4,9 @@
 	<head>
         <title>Club Game Prototype</title>
         <link href='https://fonts.googleapis.com/css?family=Monofett' rel='stylesheet'>
-
-		<link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
+        <script src="/scripts/socket.io.js"></script>
+        <link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
+        <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 	</head>
 
 	<body>
@@ -49,9 +50,11 @@
                     <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" ></iframe>
                     <p id= 'songDur'> Duration: <%= duration %> </p>
                     <p id="songUri"> Song Uri: <%= uri %> </p>
-                    <!-- <p id="p"> Token: <%= accessToken %> </p> -->
             </div>
-
+            <script>
+                var player_num = <%= playerNumber %>
+                var num_players = <%= numberOfPlayers %>
+            </script>
             <script type="text/javascript" src="/scripts/game.js"></script>  
 
             <script>
