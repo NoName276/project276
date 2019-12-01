@@ -21,11 +21,11 @@
         <h1 >The Club</h1>
         <img src="/assets/disk.gif" style="height: 35%;">
         <form type="submit" action="/club/home" method="POST" id="homeForm" class="<%= props.loginFailed || props.regFailed || props.login ? 'hide' : '';  %>">
-            <button type="button" class="button" id="button1" onclick="showForm('loginForm');" onclick="hideForm('homeForm');">Login </button>
-            <button type="button" class="button" id="button2" onclick="showForm('registerForm');" onclick="hideForm('homeForm');">Register </button>
+            <button type="button" class="button" id="button1" onclick="showForm('loginForm');" onclick="hideForm('homeForm');">Login</button>
+            <button type="button" class="button" id="button2" onclick="showForm('registerForm');" onclick="hideForm('homeForm');">Register</button>
         </form>
             <p class="error"><%= props.loginFailed ? 'Invalid Username or Password.' : ''; %></p>
-            <p class="notice"><%= props.login ? 'registration successful' : ''; %></p>
+            <p class="notice"><%= props.login ? 'Registration Successful' : ''; %></p>
         <form type="submit" action="/club/login" method="POST" id="loginForm" class="<%= props.loginFailed || props.login ? '' : 'hide';  %>">
             <div id="input">
                 <table id="table1">
@@ -35,13 +35,13 @@
                             <td><input type="text" name="username" placeholder="Username" equired></td>
                         </tr>
                         <tr>
-                            <th>password:</th>
+                            <th>Password:</th>
                             <td> <input type="password" name="password" placeholder="password" required></td>
                         </tr>
                     </tbody>
                 </table>
                 <p></p>
-                <button class= "button" id="button2"  onclick="showForm('homeForm');">Back to Homescreen</button>
+                <button class= "button" id="button2"  onclick="showForm('homeForm');">Back</button>
                 <button class ="button" id="frontbutton" type="submit">Login</button>
             </div>
         </form>
@@ -50,7 +50,7 @@
             <div id="input">
                 <table id="table2">
                     <tr>
-                        <th>Create Username:</th>
+                        <th>Create username:</th>
                         <td><input type="text" name="username" placeholder="Create Username" required></td>
                     </tr>
                     <tr>
@@ -59,8 +59,8 @@
                     </tr>
                 </table>
                 <p></p>
-                <button class= "button" id="button2" onclick="showForm('homeForm');">Back to Homescreen</button>
-                <button class= "button" id="frontbutton" type="submit">Finish signing up!</button>
+                <button class= "button" id="button2" onclick="showForm('homeForm');">Back</button>
+                <button class= "button" id="frontbutton" type="submit">Register</button>
             </div>
         </form>
     </body>

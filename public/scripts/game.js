@@ -59,8 +59,12 @@ function player_move(e){
         key_flag = true;
         if(valid_flag){
             //gridEl.style.color = 'green';
+            document.getElementById('hit').innerHTML = "GREAT";
+            document.getElementById('hit').style.color = 'green';
             if(bonus_flag){
                 //gridEl.style.color = 'orange';
+                document.getElementById('hit').innerHTML = "OKAY";
+                document.getElementById('hit').style.color = 'yellow';
                 if(multiplier < 2.0){
                     multiplier += 0.1;
                 }
@@ -162,6 +166,8 @@ function player_move(e){
                     default:
                         key_flag = false;
                         //gridEl.style.color = 'blue';
+                        document.getElementById('hit').innerHTML = "READY";
+                        document.getElementById('hit').style.color = 'blue';
                 }
                 last_player_move = 0;
             }
@@ -182,6 +188,8 @@ function player_move(e){
                 case 83:
                 case 87:
                     //gridEl.style.color = 'red';
+                    document.getElementById('hit').innerHTML = "MISS";
+                    document.getElementById('hit').style.color = 'red';
                     multiplier = 1.0;
                     break;
                 default:
@@ -191,6 +199,20 @@ function player_move(e){
         }
    }
    e.preventDefault();
+}
+
+function display_held_items(){
+  var displaystring = "";
+  for(var i = 0; i < player_glasses.length; i++){
+    if(player_glasses[i] == 1){
+        displaystring += '<img src="/assets/drink1.png">';
+    } else if(player_glasses[i] == 2){
+        displaystring += '<img src="/assets/drink2.png">';
+    }else{
+        displaystring += '<img src="/assets/drink3.png">';
+    }
+  }
+  document.getElementById('items').innerHTML = displaystring;
 }
 
 function display_game_grid(){
@@ -294,6 +316,7 @@ function game_loop(){
     attack();
     display_game_grid();
     generate_upcoming_beats();
+    display_held_items();
     document.getElementById('player mult').innerHTML = 'x' + multiplier.toFixed(1);
     beat_offset += 1;
     while(beat_offset>=fpb){beat_offset -= fpb;}
@@ -325,6 +348,8 @@ function add_glass() {
 function reset_conditions() {
     gridEl = document.getElementById('game_grid');
     //gridEl.style.color = 'blue';
+    document.getElementById('hit').innerHTML = "READY";
+    document.getElementById('hit').style.color = 'blue';
     key_flag = false;
 
 }

@@ -3,25 +3,40 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-      #tokenid {
-        width: 50%;
+      body{
+        background-image: url("/homeimage.png");
+      }
+      input, button, #tokenid{
+        width: 80%;
+        margin-top: 2%;
+        background-color: black;
+        color: white;
+        padding: 1% 1%;
+        border-radius: 0px;
+        border: 0px;
+        font-size: 16px;
+        font-family: 'Press Start 2P', cursive;
+        cursor: pointer;
+        transition-duration: 0.4s;
+      }
+      button:hover, input:hover{
+        color: blue;
       }
     </style>
   </head>
   <body>
       <a href="./spotify-login">
-          <button>Login With Spotify</button>
+          <button>Step 1. Login With Spotify</button>
       </a>
-      <button id = "getToken">Get Access Token</button>
-
-      <p id = "token"></p>
-
+      <p id="token"></p>
+      <button id = "getToken">Step 2. Click here for Access Token</button>
       <form class="" action="/playing" method="post">
-        <input id ="tokenid" type="text" name="tokenName" placeholder="Click Get Access Token" readonly required>
-        <input type="submit" name="" value="Get Now Playing">
+        <input id ="tokenid" type="text" name="tokenName" placeholder="Access Token" readonly required>
+      <input type="submit" name="" value="Step 3. Play a song then click here">
       </form>
-      
+
       <script>
         function getHashParams() {
             var hashParams = {};
@@ -43,7 +58,7 @@
             document.getElementById("tokenid").value = params.access_token;
           }
         })
-    
+
       </script>
 
 

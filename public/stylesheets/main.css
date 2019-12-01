@@ -25,12 +25,13 @@ h1 {
   align-items: center;
   justify-content: left;
   display: flex;
+  color: black;
   background-image: url("/assets/background.gif");
   background-repeat: no-repeat;
   background-position: 35px 25px;
   background-size: 440px;
 }
-#game_grid, .main div{
+#game_grid{
   margin-left: 46px;
   color: rgba(255, 0, 0, 0);
   font-size: 16pt;
@@ -41,7 +42,6 @@ h1 {
   float: center;
   text-align: center;
 }
-
 img{
   width: 1.65em;
   height: 25px;
@@ -94,7 +94,6 @@ p {
     float: center;
     border-radius: 0px;
     border: 0px;
-    margin: 0 5%;
     font-size: 20px;
     font-family: 'Press Start 2P', cursive;
     text-align: center;
@@ -175,15 +174,4 @@ th, td{
   font-size: 11pt;
   font-family: 'Press Start 2P', cursive;
   color: white;
-}
-#logoutadmin{
-    float:right;
-    display: inline;
-    margin-top: -9%;
-}
-
-#logoutnormal, #backstats {
-    float: right;
-    display: inline;
-    margin-top: -6%;
 }

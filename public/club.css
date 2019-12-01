@@ -9,17 +9,17 @@
 	width: 20%;
 	height: 6%;
 	top: 76%;
-    border: 6px solid  #1f2028;
-    background: none;
-    padding: 10px 24px;
-    font-size: 20px;
-    font-family: 'Press Start 2P', cursive;
-    cursor: pointer;
-    margin: 12px;
-    transition: 0.8s;
-    position: relative;
-    overflow: hidden;
-    color: black;
+  border: 6px solid  #1f2028;
+  background: none;
+  padding: 10px 24px;
+  font-size: 20px;
+  font-family: 'Press Start 2P', cursive;
+  cursor: pointer;
+  margin: 12px;
+  transition: 0.8s;
+  position: relative;
+  overflow: hidden;
+  color: black;
 	font-weight: bold;
 	text-align: center;
 }
@@ -62,7 +62,7 @@ body {
 }
 h1{
 	font-family:'Press Start 2P', cursive;
-	font-size: 100px;
+	font-size: 75px;
 	align-items: center;
 	text-align: center;
 	color: #1f2028;
@@ -77,17 +77,17 @@ img{
 }
 
 table, #table1, #table2{
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
 	border: solid;
-    font-size: 30px;
-    font-family: 'Press Start 2P', cursive;
-    /* margin-left:35%;
-    margin-right:35%; */
-	color: rgba(255, 255, 255, 0.42);
-	padding: 1.5%;
+  font-size: 20px;
+  font-family: 'Press Start 2P', cursive;
+  /* margin-left:35%;
+  margin-right:35%; */
+	color: #1f2028;
+	padding: 1% 1.5%;
 }
 #input{
 	text-align: center;
@@ -98,17 +98,17 @@ table, #table1, #table2{
 	width: 20%;
 	height: 6%;
 	top: 66%;
-    border: 6px solid  #183E61;
-    background: none;
-    padding: 10px 24px;
-    font-size: 20px;
-    font-family: 'Press Start 2P', cursive;
-    cursor: pointer;
-    margin: 12px;
-    transition: 0.8s;
-    position: relative;
-    overflow: hidden;
-    color: black;
+  border: 6px solid  #183E61;
+  background: none;
+  padding: 10px 24px;
+  font-size: 20px;
+  font-family: 'Press Start 2P', cursive;
+  cursor: pointer;
+  argin: 12px;
+  transition: 0.8s;
+  position: relative;
+  overflow: hidden;
+  color: black;
 	font-weight: bold;
 	text-align: center;
 
