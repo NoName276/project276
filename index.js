@@ -388,7 +388,7 @@ app.post('/playing', (req,res) => {
             // console.log(queryData)
             // res.send(queryData)
             // res.render('pages/playing', queryData)
-        }      
+        }
     }, function(err) {
     console.log('Something went wrong!', err);
     });
@@ -520,7 +520,7 @@ var client_id = '76399d6d66784fbd9b089a5363553e47'; // 'CLIENT_ID'; // Your clie
 var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Your secret
 
 
-// var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
+//var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
 var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
 
 
@@ -852,7 +852,7 @@ app.post("/club/admin/:name/toggleadmin", (req, res) => {
         });
 
     }
-   
+
 });
 
 app.get('/club/admin/:name/songselect', (req, res) => {
@@ -864,7 +864,7 @@ app.get('/club/admin/:name/songselect', (req, res) => {
 
 // creating and joining rooms
 
-const rooms = { 
+const rooms = {
   name: []
 }
 const users = {}
@@ -884,8 +884,13 @@ app.post('/room', (req, res) => {
 
 app.get('/room/:room/:username', (req, res) => {
   const {room, username} = req.params
-  if(rooms[room].length < 1){
-    res.render('pages/room', { roomName: room, users, username })
+  console.log(rooms[room].indexOf(username))
+  if(rooms[room].indexOf(username) != -1){
+    rooms[room].splice(rooms[room].indexOf(username), 1)
+  }
+  console.log(rooms[room])
+  if(rooms[room].length < 4){
+    res.render('pages/room', { roomName: room, users: rooms[room], username })
   }else{
     res.render('pages/lobby', {rooms, username, error: `room '${room}' is full`})
   }
@@ -908,20 +913,22 @@ io.of('chat').on('connection', socket => {
     console.log(`user '${username}' joining room '${room}'`)
     rooms[room].push(username)
     socket.join(room)
+    io.of('chat').to(room).emit('userJoined', username);
   })
 
   socket.on('leave', ({roomName: room, username}) => {
     console.log(`user '${username}' leaving room '${room}'`)
-    console.log(rooms)
-    rooms[room].splice(rooms[room].indexOf(username), 1)
-    console.log(rooms)
+    if(rooms[room].indexOf(username) != -1){
+      rooms[room].splice(rooms[room].indexOf(username), 1)
+    }
     socket.leave(room)
+    io.of('chat').to(room).emit('userLeft', username);
   })
 
   socket.on('message', (data) => {
-    const { message, room } = data;
-    console.log(`message: ${message} \n to room ${room}`)
-    io.of('chat').to(room).emit('newMessage', message)
+    const { message, room, username } = data;
+    console.log(`new message - ${room}:\n\t${username}: ${message}`)
+    io.of('chat').to(room).emit('newMessage', {username, message})
   })
 
   socket.on('disconnect', function () {
