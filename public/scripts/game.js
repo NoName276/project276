@@ -291,10 +291,10 @@ function display_game_grid(){
             for(var num = 0; num < num_players; num++){
                 if( (i == player_pos[num][0]) && (j == player_pos[num][1]) && (!filled_flag)){
                     if (num == player_num){
-                        gridEl.innerHTML += 'U';
+                        gridEl.innerHTML += '<img src="/assets/player.png">';
                     }
                     else {
-                        gridEl.innerHTML += gridEl.innerHTML += '<img src="/assets/player.png">';;
+                        gridEl.innerHTML += 'P';
                     }
                     filled_flag = true;
                 }
