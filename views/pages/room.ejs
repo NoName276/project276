@@ -1,33 +1,82 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+  <meta charset="utf-8">
+  <title>tHe ClUb</title>
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
   <head>
     <meta charset="utf-8">
     <title>tHe ClUb</title>
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
-    <script>
-      const roomName = "<%= roomName %>"
-    </script>
     <script src="/scripts/socket.io.js"></script>
     <script>
-      var socket = io('http://localhost')
-      userContainer = document.getElementById('user-container')
-      socket.on('user-joined', user => {
-        console.log("new user")
+      const roomName = "<%= roomName %>"
+      const username = "<%=username%>"
+      const socket = io('/chat')
+      socket.emit('join', {roomName, username});
+      socket.on('newMessage', function (data) {
+        console.log(`new message: ${data}`)
+        const newElement = document.createElement('li')
+        newElement.className = 'message'
+        newElement.innerHTML = data;
+        document.getElementById('messages').append(newElement);
+      })
+
+      function sendMessage(e) {
+        socket.emit('message', {
+          message: document.getElementById('userMessage').value,
+          room: roomName
+        });
+        console.log("sent");
+        e.preventDefault();
+      }
+
+
+      function openForm(formToShow) {
+        document.getElementById(formToShow).className = '';
+      }
+      function closeForm(formToHide) {
+        document.getElementById(formToHide).className = 'hide';
+      }
+
+      window.addEventListener('unload', (event) => {
+        socket.emit('leave', {roomName, username})
       })
     </script>
   </head>
 
-  <body>
-    <div id="user-container">
+
+<body>
+  <div id="user-container">
     <h1>ThE ClUb</h1>
     <p>Invite players to this room: <%= roomName %></p>
     <h2>Current players in this room:</h2>
-      <% Object.keys(users).forEach(user => { %>
-      <p><%= user %></p>
-      <% }) %>
-    </div>
-    <button type="button" onclick="window.location.href = '/lobby';">READY</button
+    <% Object.keys(users).forEach(user => { %>
+    <p><%= user %></p>
+    <% }) %>
+  </div>
+  <button type="button" onclick="window.location.href = '/club/<%=username%>/game';">READY</button>
+  <button type="button" onclick="window.location.href = '/club/<%=username%>/lobby';">BACK</button>
 
-  </body>
+
+  <button class="open-button" onclick="openForm('chatbox');">Chat</button>
+  <div id="chatbox" class='hide'>
+    <form id="message">
+      <div class="user-container">
+        <h1>Chatbox</h1>
+        <ul id="messages">
+        </ul>
+        <textarea id="userMessage" placeholder="Type message.." name="msg" required></textarea>
+        <button class="button" onclick="sendMessage(event)">Send</button>
+        <button type="button" class="cancel" onclick="closeForm('chatbox')">Close</button>
+      </div>
+    </form>
+  </div>
+</body>
+
 </html>
