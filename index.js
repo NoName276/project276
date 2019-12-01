@@ -5,9 +5,16 @@ const PORT = process.env.PORT || 5000
 const { Pool } = require('pg');
 var app = express();
 // variables for socket.io
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+// var server = require('http').Server(app);
+// var io = require('socket.io')(server);
 // server.listen(PORT);
+
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+server.listen(PORT, () => {
+  console.log(`Express App and Socket IO server listing on PORT ${PORT}`)
+});
+
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
