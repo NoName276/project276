@@ -115,6 +115,10 @@ body{
   margin-bottom:10px;
   opacity: 0.8;
 }
+.message{
+  color: white;
+  list-style: none;
+}
 #message.cancel {
   background-color: red;
 }

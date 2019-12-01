@@ -18,16 +18,15 @@
       const roomName = "<%= roomName %>"
       const socket = io('/chat')
       socket.emit('join', roomName);
-      socket.on('user-joined', user => {
-        console.log("new user")
-      })
+
       socket.on('newMessage', function (data) {
         console.log(`new message: ${data}`)
-        document.getElementById('messageList').append(`<div class= "chatbox" >${data}</div>`);
+        const newElement = document.createElement('li')
+        newElement.className = 'message'
+        newElement.innerHTML = data;
+        document.getElementById('messages').append(newElement);
       })
-      function openForm(formToShow) {
-        document.getElementById(formToShow).className = '';
-      }
+
       function sendMessage(e) {
         socket.emit('message', {
           message: document.getElementById('userMessage').value,
@@ -35,6 +34,11 @@
         });
         console.log("sent");
         e.preventDefault();
+      }
+
+
+      function openForm(formToShow) {
+        document.getElementById(formToShow).className = '';
       }
       function closeForm(formToHide) {
         document.getElementById(formToHide).className = 'hide';
@@ -52,15 +56,17 @@
     <p><%= user %></p>
     <% }) %>
   </div>
-  <button class="open-button" onclick="openForm();">Chat</button>
+  <button class="open-button" onclick="openForm('chatbox');">Chat</button>
   <div id="chatbox">
     <form id="message">
       <div class="user-container">
         <h1>Chatbox</h1>
-        <label for="msg">Enter messages<textarea class="text"></textarea></label>
-        <textarea placeholder="Type message.." name="msg" required></textarea>
+        <ul id="messages">
+
+        </ul>
+        <textarea id="userMessage" placeholder="Type message.." name="msg" required></textarea>
         <button class="button" onclick="sendMessage(event)">Send</button>
-        <button type="button" class="cancel" onclick="closeForm()">Close</button>
+        <button type="button" class="cancel" onclick="closeForm('chatbox')">Close</button>
       </div>
     </form>
   </div>
