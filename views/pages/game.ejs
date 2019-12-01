@@ -4,8 +4,9 @@
 	<head>
         <title>Club Game Prototype</title>
         <link href='https://fonts.googleapis.com/css?family=Monofett' rel='stylesheet'>
-
-		<link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
+        <script src="/scripts/socket.io.js"></script>
+        <link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
+        <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 	</head>
 
 	<body>
@@ -47,10 +48,14 @@
                     <p id = "countTitle">Start music in: </p>
                     <p id = "countDown"></p>
                     <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" ></iframe>
-                    <p> Duration: <%= duration %> </p>
+                    <p id= 'songDur'> Duration: <%= duration %> </p>
                     <p id="songUri"> Song Uri: <%= uri %> </p>
-                    <!-- <p id="p"> Token: <%= accessToken %> </p> -->
             </div>
+            <script>
+                var player_num = <%= playerNumber %>
+                var num_players = <%= numberOfPlayers %>
+            </script>
+            <script type="text/javascript" src="/scripts/game.js"></script>  
 
             <script>
                     var title = document.getElementById("countTitle");
@@ -61,6 +66,7 @@
                         if (seconds == 0) {
                             title.innerHTML = "Play"
                             display.innerHTML = "Now";
+                            setTimeout(function(){setTimeout(function(){game_running = true; game_loop(); setTimeout(function(){game_end();}, 1000*<%= duration %>)}, 1000/FRAMERATE);}, 2000);
                             clearInterval(interval)
                             console.log("Play Now")
                         } else {
@@ -74,8 +80,7 @@
                     
                 </script>
                     
-            </div>
-            <script async type="text/javascript" src="/scripts/game.js"></script>     
+            </div>   
 
 	</body>
 </html>
