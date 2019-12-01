@@ -33,8 +33,8 @@ app.get('/register', async (req, res) => {  //loads registerform
 })
 var pool = new Pool({
   ssl: true,
-  //connectionString: process.env.DATABASE_URL
-  connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
+  connectionString: process.env.DATABASE_URL
+  //connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
 });
 // var app = express();
 // app.use(express.urlencoded());
@@ -452,8 +452,8 @@ var client_id = '76399d6d66784fbd9b089a5363553e47'; // 'CLIENT_ID'; // Your clie
 var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Your secret
 
 
-var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
-//var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
+//var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
+var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
 
 
 /**
