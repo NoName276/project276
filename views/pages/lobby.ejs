@@ -31,13 +31,13 @@
       <p><%= room %> - <a href="/room/<%= room %>/<%=username %>">Join</a></p>
       <% }) %>
     </div>
-    <form action="/room" method="POST">
+    <form action="/room" method="POST" style="margin-left:5%;">
       <input name="room" type="text" required>
       <input name="username" value="<%=username %>" hidden>
       <button type="submit">Create</button>
     </form>
-    
-  <button type="button" onclick="window.location.href = '/club/<%=username %>/home';">BACK</button>
+
+  <button type="button" style="margin-left:5%;" onclick="window.location.href = '/club/<%=username %>/home';">BACK</button>
 
   </body>
 </html>
