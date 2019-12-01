@@ -20,7 +20,7 @@ var game_grid = [
     ['O','2','3',,'4','5',,'6','7','O',]
 ];
 var player_pos = [[1,0],[1,3],[1,6],[1,9],];
-var glasses = [0,0,0,0,0,0,0,0,0,0,];
+var glasses = [0,0,0,0,0,0,0,0,0,0];
 var filled_glasses = 0;
 var next_glass_counter = 0;
 var score = 0;
@@ -44,6 +44,13 @@ socket.on("updateEnemies", data => {
 socket.on("updateBpm", data => {
     document.getElementById('bpm').value = data
     fbp = FRAMERATE/data/60;
+})
+socket.on("updateGlasses", (data) => {
+    glasses = data.glasses
+    filled_glasses = data.filled_glasses
+})
+socket.on("updateFilledGlasses", data => {
+    filled_glasses = data 
 })
 var beats = 0;
 
@@ -100,6 +107,7 @@ function player_move(num, e){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]]);
                                         glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
+                                        socket.emit('newGlasses', {filled_glasses, glasses})
                                     }
                                 }
                                 else if(player_pos[num][0]-1 == 0 && player_pos[num][1] == 3*num){
@@ -132,6 +140,7 @@ function player_move(num, e){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]]);
                                         glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
+                                        socket.emit('newGlasses', {filled_glasses, glasses})
                                     }
                                 }
                                 else if(player_pos[num][0]+1 == 0 && player_pos[num][1] == 3*num){
@@ -164,6 +173,7 @@ function player_move(num, e){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]]);
                                         glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] = 0;
                                         filled_glasses -= 1;
+                                        socket.emit('newGlasses', {filled_glasses, glasses})
                                     }
                                 }
                                 else if(player_pos[num][0] == 0 && player_pos[num][1]-1 == 3*num){
@@ -196,6 +206,7 @@ function player_move(num, e){
                                     player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]]);
                                     glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] = 0;
                                     filled_glasses -= 1;
+                                    socket.emit('newGlasses', {filled_glasses, glasses})
                                     }
                                 }
                                 else if(player_pos[num][0] == 0 && player_pos[num][1]+1 == 3*num){
@@ -349,7 +360,7 @@ function game_loop(){
 }
 
 function add_glass() {
-    if(filled_glasses<10){
+    if(player_num == 0 && filled_glasses<10){
         glass_pos = parseInt(Math.random()*10);
         while( glasses[glass_pos] != 0){
             glass_pos = (glass_pos+1) % 10
@@ -365,6 +376,7 @@ function add_glass() {
             glasses[glass_pos] = 3;
         }
         filled_glasses += 1;
+        socket.emit('newGlasses', {filled_glasses, glasses})
     }
 
 }

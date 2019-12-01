@@ -918,4 +918,8 @@ io.of('game').on('connection', socket => {
   socket.on("newBpm", data => {
     io.of('game').emit('updateBpm', data)
   })
+  socket.on("newGlasses", data => {
+    console.log(data)
+    io.of('game').emit('updateGlasses', data)
+  })
 })
