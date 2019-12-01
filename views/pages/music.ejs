@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>The Club</title>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
       body{
         background-image: url("/homeimage.png");
@@ -28,13 +28,13 @@
   </head>
   <body>
       <a href="/spotify-login">
-          <button id = "loginButton">Login With Spotify</button>
+          <button id = "loginButton">Step 1. Login With Spotify</button>
       </a>
       <p id="token"></p>
       <button id = "getToken">Step 2. Click here for Access Token</button>
       <form class="" action="/playing" method="post">
-        <input id ="tokenid" type="text" name="tokenName" placeholder="Click Get Access Token" readonly required>
-        <input id ="getPlaying" type="submit" name="" value="Get Now Playing">
+        <input id ="tokenid" type="text" name="tokenName" placeholder="Access Token" readonly required>
+        <input id ="getPlaying" type="submit" name="" value="Step 3. Play a song then click here">
       </form>
 
       <script>
