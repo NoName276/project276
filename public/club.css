@@ -1,5 +1,5 @@
 #button1{
-	padding: 10px 24px;
+	padding: 10px 24px; 
 	width: 20%;
 	height: 6%;
 	text-align: center;
@@ -9,33 +9,34 @@
 	width: 20%;
 	height: 6%;
 	top: 76%;
-  border: 6px solid  #1f2028;
-  background: none;
-  padding: 10px 24px;
-  font-size: 20px;
-  font-family: 'Press Start 2P', cursive;
-  cursor: pointer;
-  margin: 12px;
-  transition: 0.8s;
-  position: relative;
-  overflow: hidden;
-  color: black;
-	font-weight: bold;
-	text-align: center;
-}
-.button{
-    border: 6px solid  #1f2028;
+    border: 6px solid  #183E61;
     background: none;
-    padding: 10px 24px;
+    padding: 10px 24px;   
     font-size: 20px;
-    font-family: 'Press Start 2P', cursive;
+    font-family: "montserrat";
     cursor: pointer;
     margin: 12px;
     transition: 0.8s;
     position: relative;
     overflow: hidden;
     color: black;
-		text-align: center;
+	font-weight: bold;
+	text-align: center;
+}
+.button{
+    border: 6px solid  #183E61;
+    background: none;
+    padding: 10px 24px;   
+    font-size: 20px;
+    font-family: "montserrat";
+    cursor: pointer;
+    margin: 12px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    color: black;
+	font-weight: bold;
+	text-align: center;
   }
 .button::before{
     content: "";
@@ -61,54 +62,53 @@ body {
     height: 100vh;
 }
 h1{
-	font-family:'Press Start 2P', cursive;
-	font-size: 75px;
+	width: 100%;
+	font-family:"Monofett";
+	font-style: normal;
+	font-weight: normal;
+	font-size: 220px;
 	align-items: center;
 	text-align: center;
-	color: #1f2028;
-}
-img{
-	width: 100%;
-	object-fit: contain;
-	margin-bottom: 5%;
+	letter-spacing: 0.015em;
+	color: rgba(255, 255, 255, 0.42);
 }
 .hide {
     display: none;
 }
 
 table, #table1, #table2{
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
 	border: solid;
-  font-size: 20px;
-  font-family: 'Press Start 2P', cursive;
-  /* margin-left:35%;
-  margin-right:35%; */
-	color: #1f2028;
-	padding: 1% 1.5%;
+    font-size: 30px;
+    font-family: "montserrat";
+    /* margin-left:35%; 
+    margin-right:35%; */
+	color: rgba(255, 255, 255, 0.42);
+	padding: 1.5%;
 }
 #input{
 	text-align: center;
 	box-sizing: border-box;
-
+	
 }
 #frontbutton{
 	width: 20%;
 	height: 6%;
 	top: 66%;
-  border: 6px solid  #183E61;
-  background: none;
-  padding: 10px 24px;
-  font-size: 20px;
-  font-family: 'Press Start 2P', cursive;
-  cursor: pointer;
-  argin: 12px;
-  transition: 0.8s;
-  position: relative;
-  overflow: hidden;
-  color: black;
+    border: 6px solid  #183E61;
+    background: none;
+    padding: 10px 24px;   
+    font-size: 20px;
+    font-family: "montserrat";
+    cursor: pointer;
+    margin: 12px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    color: black;
 	font-weight: bold;
 	text-align: center;
 
@@ -141,6 +141,7 @@ table, #table1, #table2{
     list-style: none;
     width: 25px;
     height: 25px;
+    background:rgba(0, 0, 0, 0.2);
     animation: animate 15s linear infinite;
     bottom: -175px;
 }
@@ -169,8 +170,8 @@ table, #table1, #table2{
 }
 .box li:nth-child(4){
     left: 70%;
-    width: 50px;
-    height: 50px;
+    width: 150px;
+    height: 150px;
     animation-delay: 2s;
     animation-duration: 10s;
 }
@@ -190,8 +191,8 @@ table, #table1, #table2{
 }
 .box li:nth-child(7){
     left: 25%;
-    width: 110px;
-    height: 110px;
+    width: 90px;
+    height: 90px;
     animation-delay: 4.5s;
 }
 .box li:nth-child(8){
