@@ -8,7 +8,6 @@ h1 {
     color: blue;
     font-size: 24pt;
     text-align: center;
-
 }
 h2 {
  color: blue;
@@ -18,10 +17,10 @@ input[type=submit], button, a.lobby{
   background-color: black;
   color: white;
   padding: 2% 2%;
-  float: center;
+  display: inline-block;
   border-radius: 0px;
   border: 0px;
-  margin: 0 5%;
+  margin: 1% 2%;
   font-size: 20px;
   font-family: 'Press Start 2P', cursive;
 }
@@ -98,7 +97,7 @@ body{
   padding: 15px;
   border: none;
   background: #f1f1f1;
- 
+
   min-height: 10px;
 }
 #message textarea:focus {
