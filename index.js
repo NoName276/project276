@@ -796,23 +796,31 @@ app.get('/club/admin/:name/songselect', (req, res) => {
 
 // creating and joining rooms
 
-app.get('/club/:name/lobby', (req, res) => {
-  res.render('pages/lobby', { rooms: rooms, props: { username: req.params.name } })
-})
-const rooms = { name: {} }
+const rooms = { 
+  name: []
+}
 const users = {}
+app.get('/club/:name/lobby', (req, res) => {
+  res.render('pages/lobby', { rooms, username: req.params.name })
+})
 app.post('/room', (req, res) => {
-
-  if (rooms[req.body.room] != null) {
+  const {room, username} = req.body
+  if (rooms[room] != null) {
     return res.redirect('pages/lobby')
   }
-  rooms[req.body.room] = { users: {} }
-  res.redirect('/room/' + req.body.room)
-  io.emit('room-created', req.body.room)
+  rooms[room] = []
+  console.log(`creating new room ${room}`)
+  io.of('lobby').emit('room-created', room)
+  res.redirect(`/room/${room}/${username}`)
 })
 
 app.get('/room/:room/:username', (req, res) => {
-  res.render('pages/room', { roomName: req.params.room, users: users, username: req.params.username })
+  const {room, username} = req.params
+  if(rooms[room].length < 1){
+    res.render('pages/room', { roomName: room, users, username })
+  }else{
+    res.render('pages/lobby', {rooms, username, error: `room '${room}' is full`})
+  }
 })
 
 
@@ -826,47 +834,52 @@ app.get('*', function (req, res) {
 var playerCount = 0;
 var players = {};
 
-io.of('chat')
-  .on('connection', function (socket) {
+io.of('chat').on('connection', socket => {
 
-    console.log('a user has now connected');
-    socket.emit('numPlayers', playerCount);
-    socket.on('join', room => {
-      console.log(`joining room: ${room}`)
-      socket.join(room)
-    })
-    socket.on('leave', room => {
-      console.log(`leaving room: ${room}`)
-      socket.leave(room)
-    })
-    socket.on('message', (data) => {
-      const { message, room } = data;
-      console.log(`message: ${message} \n to room ${room}`)
-      io.of('chat').to(room).emit('newMessage', message)
-    })
-    socket.on('disconnect', function () {
-      playerCount--;
-      console.log('user disconnected');
-      delete players[socket.id];
-      io.emit('disconnect', socket.id);
-    });
+  socket.on('join', ({roomName: room, username}) => {
+    console.log(`user '${username}' joining room '${room}'`)
+    rooms[room].push(username)
+    socket.join(room)
+  })
 
+  socket.on('leave', ({roomName: room, username}) => {
+    console.log(`user '${username}' leaving room '${room}'`)
+    console.log(rooms)
+    rooms[room].splice(rooms[room].indexOf(username), 1)
+    console.log(rooms)
+    socket.leave(room)
+  })
 
-    // create a new player and add it to the players object
-    players[socket.id] = {
-      //add position
-      colour: "blue",
-      playerId: socket.id,
-      username: socket.username,
-    }
-    io.on('updateColour', function (colourData) {
-      players[socket.id].colour = colourData.colour;
-      socket.broadcast.emit('updateSprite', players[socket.id]);
-    });
+  socket.on('message', (data) => {
+    const { message, room } = data;
+    console.log(`message: ${message} \n to room ${room}`)
+    io.of('chat').to(room).emit('newMessage', message)
+  })
 
-    //send players object to new player
-    io.emit('currentPlayers', players);
-
-    //update all other players of new player
-    socket.broadcast.emit('newPlayer', players[socket.id]);
+  socket.on('disconnect', function () {
+    playerCount--;
+    console.log('user disconnected');
+    delete players[socket.id];
+    io.emit('disconnect', socket.id);
   });
+
+
+  // create a new player and add it to the players object
+  players[socket.id] = {
+    //add position
+    colour: "blue",
+    playerId: socket.id,
+    username: socket.username,
+  }
+  io.on('updateColour', function (colourData) {
+    players[socket.id].colour = colourData.colour;
+    socket.broadcast.emit('updateSprite', players[socket.id]);
+  });
+})
+
+io.of("lobby").on('connection', socket => {
+  console.log("player joined lobby")
+  socket.on('disconnect', () => {
+    console.log('player leaving lobby')
+  } )
+})

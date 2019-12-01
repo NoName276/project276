@@ -14,7 +14,7 @@ h2 {
  color: blue;
  font-family: 'Press Start 2P', cursive;
 }
-input[type=submit], button{
+input[type=submit], button, a.lobby{
   background-color: black;
   color: white;
   padding: 2% 2%;

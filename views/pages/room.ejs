@@ -16,9 +16,9 @@
     <script src="/scripts/socket.io.js"></script>
     <script>
       const roomName = "<%= roomName %>"
+      const username = "<%=username%>"
       const socket = io('/chat')
-      socket.emit('join', roomName);
-
+      socket.emit('join', {roomName, username});
       socket.on('newMessage', function (data) {
         console.log(`new message: ${data}`)
         const newElement = document.createElement('li')
@@ -43,6 +43,10 @@
       function closeForm(formToHide) {
         document.getElementById(formToHide).className = 'hide';
       }
+
+      window.addEventListener('unload', (event) => {
+        socket.emit('leave', {roomName, username})
+      })
     </script>
   </head>
 
@@ -56,16 +60,16 @@
     <p><%= user %></p>
     <% }) %>
   </div>
-  <button type="button" onclick="window.location.href = '/club<%=username%>/game';">READY</button>
+  <button type="button" onclick="window.location.href = '/club/<%=username%>/game';">READY</button>
+  <button type="button" onclick="window.location.href = '/club/<%=username%>/lobby';">BACK</button>
 
 
   <button class="open-button" onclick="openForm('chatbox');">Chat</button>
-  <div id="chatbox">
+  <div id="chatbox" class='hide'>
     <form id="message">
       <div class="user-container">
         <h1>Chatbox</h1>
         <ul id="messages">
-
         </ul>
         <textarea id="userMessage" placeholder="Type message.." name="msg" required></textarea>
         <button class="button" onclick="sendMessage(event)">Send</button>
