@@ -368,6 +368,8 @@ app.post('/playing', (req,res) => {
             queryData.name = data.body.item.name + '';
             queryData.uri = trackURIFormatted + '';
             queryData.accessToken = token + '';
+            queryData.playerNumber = 0;
+            queryData.numberOfPlayers = 1;
             /* Get Audio Analysis for a Track */
             spotifyApi.getAudioAnalysisForTrack(queryData.uri)
             .then(function(data) {
@@ -816,11 +818,9 @@ app.post('/room', (req, res) => {
 
 app.get('/room/:room/:username', (req, res) => {
   const {room, username} = req.params
-  console.log(rooms[room].indexOf(username))
   if(rooms[room].indexOf(username) != -1){
     rooms[room].splice(rooms[room].indexOf(username), 1)
   }
-  console.log(rooms[room])
   if(rooms[room].length < 4){
     res.render('pages/room', { roomName: room, users: rooms[room], username })
   }else{
@@ -828,6 +828,19 @@ app.get('/room/:room/:username', (req, res) => {
   }
 })
 
+app.get('/club/:room/:username/game', (req, res) => {
+  const {room, username} = req.params
+  console.log(username)
+  res.render('pages/game', {
+    duration: 500,
+    playerNumber: rooms[room].indexOf(username),
+    numberOfPlayers: rooms[room].length,
+    uri: 'wad',
+    name: 'someName',
+    artist: 'someArtist',
+    tempo: 60,
+  })
+})
 
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function (req, res) {
@@ -836,16 +849,15 @@ app.get('*', function (req, res) {
 });
 
 //sockets
-var playerCount = 0;
-var players = {};
-
+const players = {};
+var playerCount =0;
 io.of('chat').on('connection', socket => {
 
   socket.on('join', ({roomName: room, username}) => {
     console.log(`user '${username}' joining room '${room}'`)
     rooms[room].push(username)
     socket.join(room)
-    io.of('chat').to(room).emit('userJoined', username);
+    io.of('chat').to(room).emit('userJoined', username)
   })
 
   socket.on('leave', ({roomName: room, username}) => {
@@ -854,7 +866,7 @@ io.of('chat').on('connection', socket => {
       rooms[room].splice(rooms[room].indexOf(username), 1)
     }
     socket.leave(room)
-    io.of('chat').to(room).emit('userLeft', username); 
+    io.of('chat').to(room).emit('userLeft', username)
   })
 
   socket.on('message', (data) => {
@@ -870,6 +882,9 @@ io.of('chat').on('connection', socket => {
     io.emit('disconnect', socket.id);
   });
 
+  socket.on('startGame', (room) => {
+    io.of('chat').to(room).emit('launchGame')
+  })
 
   // create a new player and add it to the players object
   players[socket.id] = {
@@ -889,4 +904,18 @@ io.of("lobby").on('connection', socket => {
   socket.on('disconnect', () => {
     console.log('player leaving lobby')
   } )
+})
+
+
+io.of('game').on('connection', socket => {
+  socket.on("newPos", data => {
+    console.log(data)
+    io.of('game').emit('updatePos', data)
+  })
+  socket.on("newEnemies", data => {
+    io.of('game').emit('updateEnemies', data)
+  })
+  socket.on("newBpm", data => {
+    io.of('game').emit('updateBpm', data)
+  })
 })
