@@ -809,9 +809,9 @@ app.post('/room', (req, res) => {
   res.redirect('/room/' + req.body.room)
   io.emit('room-created', req.body.room)
 })
-app.get('/room/:room', (req, res) => {
-  io.emit('user-joined', "hello")
-  res.render('pages/room', { roomName: req.params.room, users: users })
+
+app.get('/room/:room/:username', (req, res) => {
+  res.render('pages/room', { roomName: req.params.room, users: users, username: req.params.username })
 })
 
 
@@ -869,19 +869,3 @@ io.of('chat')
     //update all other players of new player
     socket.broadcast.emit('newPlayer', players[socket.id]);
   });
-
-//disconnect
-
-
-
-
-
-io.on('message', function (data) {
-  console.log("catched")
-  console.log(data);
-  io.broadcast('new message', data);
-})
-io.on('disconnect', function () {
-  io.sockets.emit('numPlayers', playerCount);
-  io.emit('disconnect');
-})
