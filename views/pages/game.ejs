@@ -48,33 +48,40 @@
                     <p id = "countDown"></p>
                     <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" ></iframe>
                     <p id= 'songDur'> Duration: <%= duration %> </p>
-                    <p id="songUri"> Song Uri: <%= uri %> </p>
+                    <!-- <p id="songUri"> Song Uri: <%= uri %> </p> -->
                     <!-- <p id="p"> Token: <%= accessToken %> </p> -->
             </div>
 
             <script type="text/javascript" src="/scripts/game.js"></script>  
 
+
+            <audio id="audio" src="<%= track %>.mp3" ></audio>
+            
             <script>
-                    var title = document.getElementById("countTitle");
-                    var display = document.getElementById("countDown");
-                    var interval = setInterval(countDown,1000);
-                    var seconds = 3;
-                    function countDown() {
-                        if (seconds == 0) {
-                            title.innerHTML = "Play"
-                            display.innerHTML = "Now";
-                            setTimeout(function(){setTimeout(function(){game_running = true; game_loop(); setTimeout(function(){game_end();}, 1000*<%= duration %>)}, 1000/FRAMERATE);}, 2000);
-                            clearInterval(interval)
-                            console.log("Play Now")
-                        } else {
-                            // console.log(seconds)
-                            display.innerHTML = seconds
-                            seconds = seconds - 1;
-                        }
+                function play() {
+                    var audio = document.getElementById("audio");
+                    audio.play();
+                }
+                var title = document.getElementById("countTitle");
+                var display = document.getElementById("countDown");
+                var interval = setInterval(countDown,1000);
+                var seconds = 3;
+                function countDown() {
+                    if (seconds == 0) {
+                        title.innerHTML = "Play"
+                        display.innerHTML = "Now";
+                        setTimeout(function(){setTimeout(function(){game_running = true; game_loop(); setTimeout(function(){game_end();}, 1000*<%= duration %>)}, 1000/FRAMERATE);}, 2000);
+                        clearInterval(interval)
+                        play()
+                        console.log("Play Now")
+                    } else {
+                        // console.log(seconds)
+                        display.innerHTML = seconds
+                        seconds = seconds - 1;
                     }
-                    window.onload = countDown();
-    
-                    
+                }
+                window.onload = countDown();
+     
                 </script>
                     
             </div>   
