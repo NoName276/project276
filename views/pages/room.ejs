@@ -6,37 +6,44 @@
   <title>tHe ClUb</title>
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
-  <script src="/scripts/socket.io.js"></script>
-  <script>
-    const roomName = "<%= roomName %>"
-    const socket = io('/chat')
-    socket.emit('join', roomName);
-    socket.on('user-joined', user => {
-      console.log("new user")
-    })
-    socket.on('newMessage', function (data) {
-      console.log(`new message: ${data}`)
-      document.getElementById('messageList').append(`<div class= "chatbox" >${data}</div>`);
-    })
-    function openForm(formToShow) {
-      document.getElementById(formToShow).className = '';
-    }
-    document.querySelectorAll("p.error").forEach(ele => {
-      ele.className += 'hide';
-    })
-    function sendMessage(e) {
-      socket.emit('message', {
-        message: document.getElementById('userMessage').value,
-        room: roomName
-      });
-      console.log("sent");
-      e.preventDefault();
-    }
-    function closeForm(formToHide) {
-      document.getElementById(formToHide).className = 'hide';
-    }
-  </script>
-</head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <head>
+    <meta charset="utf-8">
+    <title>tHe ClUb</title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+    <script src="/scripts/socket.io.js"></script>
+    <script>
+      const roomName = "<%= roomName %>"
+      const socket = io('/chat')
+      socket.emit('join', roomName);
+      socket.on('user-joined', user => {
+        console.log("new user")
+      })
+      socket.on('newMessage', function (data) {
+        console.log(`new message: ${data}`)
+        document.getElementById('messageList').append(`<div class= "chatbox" >${data}</div>`);
+      })
+      function openForm(formToShow) {
+        document.getElementById(formToShow).className = '';
+      }
+      document.querySelectorAll("p.error").forEach(ele => {
+        ele.className += 'hide';
+      })
+      function sendMessage(e) {
+        socket.emit('message', {
+          message: document.getElementById('userMessage').value,
+          room: roomName
+        });
+        console.log("sent");
+        e.preventDefault();
+      }
+      function closeForm(formToHide) {
+        document.getElementById(formToHide).className = 'hide';
+      }
+    </script>
+  </head>
 
 
 <body>
@@ -47,23 +54,26 @@
     <% Object.keys(users).forEach(user => { %>
     <p><%= user %></p>
     <% }) %>
+    <form class="form" class="hide">
   </div>
-
-
-  <button class="open-button" onclick="openForm('message');">Chat</button>
-
+  <form>
+    <button class="open-button" onclick="openForm();">Chat</button>
+  </form>
   <div id="chatbox">
-    <form id="message" class="">
+
+    <form id="message" id="form">
       <div class="user-container">
         <h1>Chatbox</h1>
-        <label id="messageList"><b>Enter message</b></label>
-        <textarea placeholder="Type message.." name="msg" id="userMessage" required></textarea>
-        <button class="button" onclick="sendMessage(event)">Send</button>
-        <button type="button" class="cancel" onclick="closeForm('message')">Close</button>
+        <label for="msg">Enter messages<textarea class="text"></textarea></label>
+        <textarea placeholder="Type message.." name="msg" required></textarea>
+        <button type="submit" class="button">Send</button>
+        <button type="button" class="cancel" onclick="closeForm()">Close</button>
       </div>
-    </form>
   </div>
+  </form>
 
+  </div>
+  </form>
 </body>
 
 </html>
