@@ -245,10 +245,10 @@ function player_move(num, e){
 
 function display_held_items(){
   var displaystring = "";
-  for(var i = 0; i < player_glasses.length; i++){
-    if(player_glasses[i] == 1){
+  for(var i = 0; i < player_glasses[player_num].length; i++){
+    if(player_glasses[player_num][i] == 1){
         displaystring += '<img src="/assets/drink1.png">';
-    } else if(player_glasses[i] == 2){
+    } else if(player_glasses[player_num][i] == 2){
         displaystring += '<img src="/assets/drink2.png">';
     }else{
         displaystring += '<img src="/assets/drink3.png">';
