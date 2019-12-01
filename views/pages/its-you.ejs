@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+      <h1>Now Playing: </h1>
+      <h2>It's You</h2>
+      <h2>Ali Gatie</h2>
+      <h2>BPM: 96</h2>
+      <h2>Duration: 214 seconds</h2>
+
+      <audio id="audio" src="its-you.mp3" ></audio>
+      <script>
+        function play() {
+            var audio = document.getElementById("audio");
+            audio.play();
+        }
+      </script>
+      <input id = "playButton" type="button" value="PLAY" onclick="play()">
+      
+  </body>
+</html>

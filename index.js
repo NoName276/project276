@@ -5,11 +5,12 @@ const PORT = process.env.PORT || 5000
 const { Pool } = require('pg');
 var app = express();
 // variables for socket.io
-var server = require('http').Server(app);
+var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-server.listen(80);
+server.listen(PORT, () => {
+  console.log(`Express App and Socket IO server listing on PORT ${PORT}`)
+});
 
-var app = express()
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -20,31 +21,33 @@ app.get('/hello', (req, res) => res.send('Hello There!'))
 app.get('/test', (req, res) => res.send('test'))
 // app.listen(PORT, () => console.log(`Listening on ${PORT}`))
 
+module.exports = server;
+
 app.get('/register', async (req, res) => {  //loads registerform
-    try {
-        res.render('pages/register', name);
-    } catch (err) {
-        console.error(err);
-        res.send("Error " + err);
-    }
+  try {
+    res.render('pages/register', name);
+  } catch (err) {
+    console.error(err);
+    res.send("Error " + err);
+  }
 })
 var pool = new Pool({
-    ssl: true,
-    connectionString: process.env.DATABASE_URL
-    //connectionString:"postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
+  ssl: true,
+  //connectionString: process.env.DATABASE_URL
+  connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
 });
 // var app = express();
 // app.use(express.urlencoded());
 // app.use(express.static(path.join(__dirname, 'public')));
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'ejs');
-app.get('/', (req, res) => res.render("pages/club", {"props": {loginFailed: false}}));
+app.get('/', (req, res) => res.render("pages/club", { "props": { loginFailed: false } }));
 app.get('/hello', (req, res) => res.send('Hello There!'));
 
-app.get('/play', (req,res) => {
+app.get('/play', (req, res) => {
   res.render("pages/play")
 })
-app.get('/game', (req,res) => {
+app.get('/game', (req, res) => {
   res.render("pages/game")
 })
 
@@ -81,9 +84,9 @@ app.post('/deleted', (req, res) => {
 
 app.get('/delete', (req, res) => res.render('pages/delete'))
 app.get('/:name/delete', (req, res) => {
-    var results = {};
-    results.name = req.params.name;
-    res.render('pages/delete', { 'user': results });
+  var results = {};
+  results.name = req.params.name;
+  res.render('pages/delete', { 'user': results });
 });
 
 app.get('/deleted', (req, res) => res.render('pages/admin'))
@@ -92,7 +95,7 @@ app.post('/:name/deleted', (req, res) => {
     let name = req.params.name;
     var deleteUserQuery = `DELETE FROM users WHERE username = '${req.body.username}'`;
     var deleteStatsQuery = `DELETE FROM stats WHERE username = '${req.body.username}'`;
-    console.log(req.body);
+    //console.log(req.body);
     pool.query(deleteStatsQuery, (error) => {
         if (error)
             res.end(error);
@@ -108,50 +111,54 @@ app.post('/:name/deleted', (req, res) => {
             var results = {};
             results.users = result.rows;
             results.name = name;
+            //console.log(`deleted ${req.body.username}`)
             res.render('pages/admin', { 'rows': results })
             //var results = { 'rows': result.rows };
-            console.log("results= " , results);
-            res.render('pages/admin', { 'rows': results })
+           // console.log("results= " , results);
+           // console.log("res: ", res);
+            //res.render('pages/admin', { 'rows': results })
         });
     });
-});
+  });
 
 //registration and login
-app.post('/club/reg', (req,res) => {        // loads new reg to database +check if username already exist
+app.post('/club/reg', (req, res) => {        // loads new reg to database +check if username already exist
   console.log(req.body);
   let body = req.body;
   let userCheck = `SELECT * FROM users WHERE username = '${body.username}';`;
   pool.query(userCheck, (error, result) => {
-    if(result.rows.length > 0) {
-      res.render('pages/club', {'props': {regFailed: true}});
+    if (result.rows.length > 0) {
+      res.render('pages/club', { 'props': { regFailed: true } });
       return;
     }
-      var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
-      var getStatsQuery = `INSERT INTO stats (username , gamesplayed, gameswon, gameslost, gamesdrawn, highscore, totalpoints) VALUES ('${body.username}' , 0, 0, 0, 0, 0, 0);`;
+    var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
+    var getStatsQuery = `INSERT INTO stats (username , gamesplayed, gameswon, gameslost, gamesdrawn, highscore, totalpoints) VALUES ('${body.username}' , 0, 0, 0, 0, 0, 0);`;
     console.log(getUsersQuery);
-    pool.query(getUsersQuery,(error,result)=>{
-      if (error){
+    pool.query(getUsersQuery, (error, result) => {
+      if (error) {
         res.send("error");
         console.log(error);
-       }
-      });
-      console.log("passed User Query\n");
+      }
+    });
+    console.log("passed User Query\n");
     pool.query(getStatsQuery, (error, result) => {
       if (error) {
-         res.send("error");
-         console.log(error);
-         }
-      });
-      res.render("pages/club", { props: { 'login': true } });
+        res.send("error");
+        console.log(error);
+      }
+    });
+    res.render("pages/club", { props: { 'login': true } });
   });
 })
 
 app.get("/club", (req, res) => {
-    res.render("pages/club", {"props": {loginFailed: false}})
+  res.render("pages/club", { "props": { loginFailed: false } })
 })
 
+
+
 app.post("/club/login", (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
     var queryString = `SELECT * FROM users WHERE username='${req.body.username}';`;
     pool.query(queryString, (error, result) => {
         if(error)
@@ -164,7 +171,8 @@ app.post("/club/login", (req, res) => {
                       res.end(error);
                   var results = {};
                   results.users = result.rows;
-                  results.name = req.query.username;
+                  results.name = req.body.username;
+                  //console.log(results);
                   res.render('pages/admin', { 'rows': results })  // load admin page for admins
               })
               return;
@@ -179,14 +187,26 @@ app.post("/club/login", (req, res) => {
 })
 
 app.get("/club/:name/stats", (req, res) => {
-    let name = req.params.name;
-    let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
-    let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
-    let results = {};
-    pool.query(loadStats, (error, result) => {
-        if (error) {
-            res.send("error");
-            console.log(error);
+  let name = req.params.name;
+  let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
+  let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
+  let results = {};
+  pool.query(loadStats, (error, result) => {
+    if (error) {
+      res.send("error");
+      console.log(error);
+    }
+    results.stats = result.rows[0];
+    pool.query(loadRank, (error, result) => {
+      if (error) {
+        res.send("error");
+        console.log(error);
+      }
+      console.log(result);
+      findrank = (result) ? result.rows : null;
+      findrank.forEach(function (user) {
+        if (user.username == name) {
+          results.rank = user.rank;
         }
         results.stats = result.rows[0];
         pool.query(loadRank, (error, result) => {
@@ -194,7 +214,7 @@ app.get("/club/:name/stats", (req, res) => {
                 res.send("error");
                 console.log(error);
             }
-            console.log(result);
+            //console.log(result);
             findrank = (result) ? result.rows : null;
             findrank.forEach(function (user) {
                 if (user.username == name) {
@@ -219,31 +239,53 @@ app.get("/club/:name/stats", (req, res) => {
             res.render('pages/stats', { 'rows': results });
         });
     });
+  });
 
+  });
 });
 
 app.get("/club/:name/leaderboard", (req, res) => {
-    var name = req.params.name;
-    let loadLeaderboard = `SELECT username, highscore, RANK() OVER (ORDER BY highscore DESC) FROM stats limit 10;`;
-    let results = {};
-    var player;
-    pool.query(loadLeaderboard, (error, result) => {
+  var name = req.params.name;
+  let loadLeaderboard = `SELECT username, highscore, RANK() OVER (ORDER BY highscore DESC) FROM stats limit 10;`;
+  let results = {};
+  var player;
+  pool.query(loadLeaderboard, (error, result) => {
+    if (error) {
+      res.send(error);
+      console.log(error);
+    }
+    var foundplayer = false;
+    var leaderboard = (result) ? result.rows : null;
+    leaderboard.forEach(function (user) {
+      if (user.username == name) {
+        foundplayer = true;
+        player = user;
+      }
+    });
+    results.topten = leaderboard;
+    if (foundplayer == true) {
+      results.player = player;
+      console.log(results);
+      res.render('pages/leaderboard', { 'rows': results });
+    }
+    else {
+      let findplayer = `SELECT username, highscore, RANK() OVER (ORDER BY highscore DESC) FROM stats offset 10;`;
+      pool.query(findplayer, (error, result) => {
         if (error) {
-            res.send(error);
-            console.log(error);
+          res.send(error);
+          console.log(error);
         }
-        var foundplayer = false;
-        var leaderboard = (result) ? result.rows : null;
-        leaderboard.forEach(function (user) {
-            if (user.username == name) {
-                foundplayer = true;
-                player = user;
-            }
+        var lookforplayer = (result) ? result.rows : null;
+        console.log("look for player:\n", lookforplayer);
+        lookforplayer.forEach(function (user) {
+          if (user.username == name) {
+            player = user;
+          }
         });
         results.topten = leaderboard;
         if (foundplayer == true) {
             results.player = player;
-            console.log(results.player);
+            //console.log(results);
             res.render('pages/leaderboard', { 'rows': results });
         }
         else {
@@ -261,23 +303,42 @@ app.get("/club/:name/leaderboard", (req, res) => {
                     }
                 });
                 results.player = player;
-                console.log(results.player);
+                //console.log(results);
                 res.render('pages/leaderboard', { 'rows': results })
             });
         }
     });
+  }
+  });
+});
+
+app.get("/club/admin/:name/leaderboard", (req, res) => {
+    var name = req.params.name;
+    let loadLeaderboard = `SELECT *, RANK() OVER (ORDER BY highscore DESC) FROM stats;`;
+    pool.query(loadLeaderboard, (error, result) => {
+        if (error) {
+            res.send(error);
+            console.log(error);
+        }
+        //var results = { 'rows': result.rows };
+        var results = {};
+        results.player = name;
+        results.board = result.rows;
+        //console.log(results.board);
+        res.render('pages/adminleaderboard', { 'rows': results });
+    })
 });
 
 app.get('/music-client', function (req, res) {
-    res.render('pages/music-client');
+  res.render('pages/music-client');
 });
 
-app.get('/music', (req,res) => {
-    res.render('pages/music');
+app.get('/music', (req, res) => {
+  res.render('pages/music');
 })
 
-app.post('/testPost', (req,res) => {
-    console.log(req.body)
+app.post('/testPost', (req, res) => {
+  console.log(req.body)
 })
 
 app.post('/playing', (req,res) => {
@@ -292,37 +353,94 @@ app.post('/playing', (req,res) => {
     })
     .then(function(data) {
         // Output items
-        //console.log("Now Playing: ",data.body.item.artists[0].name);
-        //console.log("Now Playing: ",data.body.item.name);
-        var queryData = {}
-        var trackURI = data.body.item.uri;
-        var trackURIFormatted = trackURI.replace('spotify:track:', '')
-        // console.log(trackURIFormatted)
-        queryData.artist = data.body.item.artists[0].name + '';
-        queryData.name = data.body.item.name + '';
-        queryData.uri = trackURIFormatted + '';
-        queryData.accessToken = token + '';
-        /* Get Audio Analysis for a Track */
-        spotifyApi.getAudioAnalysisForTrack(queryData.uri)
-        .then(function(data) {
-            // console.log(data.body.track.duration);
-            // console.log(data.body.track.tempo);
-            queryData.duration = data.body.track.duration;
-            queryData.tempo = data.body.track.tempo;
-            // res.send(queryData)
+        console.log(data.body.is_playing)
+        if (data.body.is_playing == false) {
+            res.redirect('/music')
+            res.end('Play a song before playing!');
+        } else {
+            //console.log("Now Playing: ",data.body.item.artists[0].name);
+            //console.log("Now Playing: ",data.body.item.name);
+            var queryData = {}
+            var trackURI = data.body.item.uri;
+            var trackURIFormatted = trackURI.replace('spotify:track:', '')
+            // console.log(trackURIFormatted)
+            queryData.artist = data.body.item.artists[0].name + '';
+            queryData.name = data.body.item.name + '';
+            queryData.uri = trackURIFormatted + '';
+            queryData.accessToken = token + '';
+            /* Get Audio Analysis for a Track */
+            spotifyApi.getAudioAnalysisForTrack(queryData.uri)
+            .then(function(data) {
+                // console.log(data)
+                // console.log(data.body.track.duration);
+                // console.log(data.body.track.tempo);
+                queryData.duration = data.body.track.duration;
+                queryData.tempo = data.body.track.tempo;
+                // res.send(queryData)
 
+                // res.render('pages/playing', queryData)
+            res.render('pages/game', queryData)
+            }, function(err) {
+                // done(err);
+                console.log(err)
+            });
+            // console.log(queryData)
+            // res.send(queryData)
             // res.render('pages/playing', queryData)
-           res.render('pages/game', queryData)
-        }, function(err) {
-            // done(err);
-            console.log(err)
-        });
-        // console.log(queryData)
-        // res.send(queryData)
-        // res.render('pages/playing', queryData)
+        }      
     }, function(err) {
     console.log('Something went wrong!', err);
     });
+})
+
+app.get('/joji', (req,res) => {
+    res.render('pages/slow-dancing-in-the-dark');
+})
+app.get('/slow-dancing-in-the-dark.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/slow-dancing-in-the-dark.mp3')
+})
+app.get('/hadestown', (req, res) => {
+    res.render('pages/way-down-hadestown-ii');
+})
+app.get('/hadestown-original-broadway-cast-way-down-hadestown-ii-lyrics.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/hadestown-original-broadway-cast-way-down-hadestown-ii-lyrics.mp3')
+})
+app.get('/dear-evan-hansen', (req,res) => {
+    res.render('pages/waving-through-a-window');
+})
+app.get('/waving-through-a-window-from-the-dear-evan-hansen-original-broadway-cast-recording.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/waving-through-a-window-from-the-dear-evan-hansen-original-broadway-cast-recording.mp3')
+})
+app.get('/88rising', (req,res) => {
+    res.render('pages/breathe');
+})
+app.get('/breathe.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/breathe.mp3')
+})
+app.get('/billie-eilish', (req,res) => {
+    res.render('pages/bad-guy');
+})
+app.get('/bad-guy.mp3', (req, res) => {
+    console.log("loading badguy");
+    res.sendFile(__dirname + '/audio/bad-guy.mp3')
+})
+app.get('/dua-lipa', (req,res) => {
+    res.render('pages/dont-start-now');
+})
+app.get('/dont-start-now.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/dont-start-now.mp3')
+})
+app.get('/sam-smith', (req,res) => {
+    res.render('pages/how-do-you-sleep');
+})
+app.get('/how-do-you-sleep.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/how-do-you-sleep.mp3')
+})
+app.get('/ali-gatie', (req,res) => {
+    res.render('pages/its-you');
+})
+app.get('/its-you.mp3', (req,res) => {
+    res.sendFile(__dirname + '/audio/its-you.mp3')
 })
 
 var request = require('request'); // "Request" library
@@ -332,9 +450,10 @@ var cookieParser = require('cookie-parser');
 
 var client_id = '76399d6d66784fbd9b089a5363553e47'; // 'CLIENT_ID'; // Your client id
 var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Your secret
-// var redirect_uri =  'http://localhost:8888/callback'; // 'REDIRECT_URI'; // Your redirect uri
-var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
-// var redirect_uri =  'https://server-simulator.herokuapp.com/callback'; // 'REDIRECT_URI'; // Your redirect uri
+
+
+// var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
+var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
 
 
 /**
@@ -342,14 +461,14 @@ var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your
  * @param  {number} length The length of the string
  * @return {string} The generated string
  */
-var generateRandomString = function(length) {
-var text = '';
-var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+var generateRandomString = function (length) {
+  var text = '';
+  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-for (var i = 0; i < length; i++) {
+  for (var i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
-}
-return text;
+  }
+  return text;
 };
 
 var stateKey = 'spotify_auth_state';
@@ -360,68 +479,70 @@ app.use(express.static(__dirname + '/public'))
 app.use(cors())
 app.use(cookieParser());
 
-app.get('/spotify-login', function(req, res) {
+app.get('/spotify-login', function (req, res) {
 
-var state = generateRandomString(16);
-res.cookie(stateKey, state);
+  var state = generateRandomString(16);
+  res.cookie(stateKey, state);
 
-// your application requests authorization
-// var scope = 'user-read-private user-read-email';
-var scope = 'user-read-private user-read-email user-read-playback-state';
-res.redirect('https://accounts.spotify.com/authorize?' +
+  // your application requests authorization
+  // var scope = 'user-read-private user-read-email';
+  var scope = 'user-read-private user-read-email user-read-playback-state';
+  res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
-    response_type: 'code',
-    client_id: client_id,
-    scope: scope,
-    redirect_uri: redirect_uri,
-    state: state
+      response_type: 'code',
+      client_id: client_id,
+      scope: scope,
+      redirect_uri: redirect_uri,
+      state: state
     }));
 });
 
-app.get('/callback', function(req, res) {
+app.get('/callback', function (req, res) {
 
-// your application requests refresh and access tokens
-// after checking the state parameter
+  // your application requests refresh and access tokens
+  // after checking the state parameter
 
-var code = req.query.code || null;
-var state = req.query.state || null;
-var storedState = req.cookies ? req.cookies[stateKey] : null;
+  var code = req.query.code || null;
+  var state = req.query.state || null;
+  var storedState = req.cookies ? req.cookies[stateKey] : null;
 
-if (state === null || state !== storedState) {
+  if (state === null || state !== storedState) {
     res.redirect('/#' +
-    querystring.stringify({
+      querystring.stringify({
         error: 'state_mismatch'
-    }));
-} else {
+      }));
+  } else {
     res.clearCookie(stateKey);
     var authOptions = {
-    url: 'https://accounts.spotify.com/api/token',
-    form: {
+      url: 'https://accounts.spotify.com/api/token',
+      form: {
         code: code,
         redirect_uri: redirect_uri,
         grant_type: 'authorization_code'
-    },
-    headers: {
+      },
+      headers: {
         'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-    },
-    json: true
+      },
+      json: true
     };
 
-    request.post(authOptions, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
+    request.post(authOptions, function (error, response, body) {
+      if (!error && response.statusCode === 200) {
 
         var access_token = body.access_token,
             refresh_token = body.refresh_token;
-
+        console.log(body.access_token);
+        console.log('\n')
+        console.log(body.refresh_token);
         var options = {
-        url: 'https://api.spotify.com/v1/me',
-        headers: { 'Authorization': 'Bearer ' + access_token },
-        json: true
+          url: 'https://api.spotify.com/v1/me',
+          headers: { 'Authorization': 'Bearer ' + access_token },
+          json: true
         };
 
         // use the access token to access the Spotify Web API
-        request.get(options, function(error, response, body) {
-        console.log(body);
+        request.get(options, function (error, response, body) {
+          console.log(body);
         });
 
         // we can also pass the token to the browser to make requests from there
@@ -429,222 +550,116 @@ if (state === null || state !== storedState) {
         // res.redirect('/#' +
         // res.redirect('http://localhost:5000/music/#' +
         res.redirect('./music/#' +
-        querystring.stringify({
+          querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token
-        }));
-    } else {
+          }));
+      } else {
         res.redirect('/#' +
-        querystring.stringify({
+          querystring.stringify({
             error: 'invalid_token'
-        }));
-    }
+          }));
+      }
     });
-}
+  }
 });
 
-app.get('/refresh_token', function(req, res) {
+app.get('/refresh_token', function (req, res) {
 
-// requesting access token from refresh token
-var refresh_token = req.query.refresh_token;
-var authOptions = {
+  // requesting access token from refresh token
+  var refresh_token = req.query.refresh_token;
+  var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
     headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
     form: {
-    grant_type: 'refresh_token',
-    refresh_token: refresh_token
+      grant_type: 'refresh_token',
+      refresh_token: refresh_token
     },
     json: true
-};
+  };
 
-request.post(authOptions, function(error, response, body) {
+  request.post(authOptions, function (error, response, body) {
     if (!error && response.statusCode === 200) {
-    var access_token = body.access_token;
-    res.send({
+      var access_token = body.access_token;
+      res.send({
         'access_token': access_token
-    });
+      });
     }
+  });
 });
-});
 
-// app.get('/playing', (req,res) => {
-
-//     var spotifyApi = new SpotifyWebApi({
-//         clientId: '76399d6d66784fbd9b089a5363553e47',
-//         clientSecret: '5d6ec7245f5a4902af2f5b40c6315a63',
-//         redirectUri: 'http://localhost:5000/music'
-//     });
-//     spotifyApi.setAccessToken('');
-//     spotifyApi.getMyCurrentPlaybackState({
-//     })
-//     .then(function(data) {
-//         // Output items
-//         //console.log("Now Playing: ",data.body.item.artists[0].name);
-//         //console.log("Now Playing: ",data.body.item.name);
-//         var queryData = {}
-//         var trackURI = data.body.item.uri;
-//         var trackURIFormatted = trackURI.replace('spotify:track:', '')
-//         // console.log(trackURIFormatted)
-//         queryData.artist = data.body.item.artists[0].name + '';
-//         queryData.name = data.body.item.name + '';
-//         queryData.uri = trackURIFormatted + '';
-//         /* Get Audio Analysis for a Track */
-//         spotifyApi.getAudioAnalysisForTrack(queryData.uri)
-//         .then(function(data) {
-//             // console.log(data.body.track.duration);
-//             // console.log(data.body.track.tempo);
-//             queryData.duration = data.body.track.duration;
-//             queryData.tempo = data.body.track.tempo;
-//             // res.send(queryData)
-//             res.render('pages/playing', queryData)
-//         }, function(err) {
-//             // done(err);
-//             console.log(err)
-//         });
-//         // console.log(queryData)
-//         // res.send(queryData)
-//         // res.render('pages/playing', queryData)
-//     }, function(err) {
-//     console.log('Something went wrong!', err);
-//     });
-
-// })
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// // credentials are optional
-// var spotifyApi = new SpotifyWebApi({
-//     clientId: '76399d6d66784fbd9b089a5363553e47',
-//     clientSecret: '5d6ec7245f5a4902af2f5b40c6315a63',
-//     redirectUri: 'http://localhost:5000/song'
-// });
-
-// spotifyApi.setAccessToken('BQCzo9rOobdKvKENECnSt6sFkRMtKTihqhaUbfheNP20-_es92VBypTvteHfI1_0srQpOwcHoXvPH0g_HKqXhZofxMAuV12XI5no64MtspL2kVFt5W_opkXB-xKWY9pTMthQ2og62Jw6l3T1w-b5HRqYGsVMnwyIKeM4iGfd_nFwC2yhs5J2ax-eAg');
-
-// spotifyApi.getMyCurrentPlaybackState({
-// })
-// .then(function(data) {
-//   // Output items
-// //   console.log("Now Playing: ",data.body);
-//   console.log("Now Playing: ",data.body.item.artists[0].name);
-//   console.log("Now Playing: ",data.body.item.name);
-// //   console.log("Now Playing: ",data.body.item.uri);
-//   var trackURI = data.body.item.uri;
-//   var trackURIFormatted = trackURI.replace('spotify:track:', '')
-//   console.log(trackURIFormatted)
-// //   console.log("Now Playing: ",data.body.name);
-// //   console.log("Now Playing: ",data.body.artists);
-// }, function(err) {
-//   console.log('Something went wrong!', err);
-// });
-
-// /* Get Audio Analysis for a Track */
-// spotifyApi.getAudioAnalysisForTrack('0rKtyWc8bvkriBthvHKY8d')
-//   .then(function(data) {
-//     console.log(data.body.track.duration);
-//     console.log(data.body.track.tempo);
-//   }, function(err) {
-//     done(err);
-// });
-
-// spotifyApi.getTrack('0rKtyWc8bvkriBthvHKY8d')
-//   .then(function(data) {
-//     console.log(data.body.name);
-//     console.log(data.body.artists[0].name);
-//   }, function(err) {
-//     done(err);
-// });
-
-/* Get Audio Analysis for a Track */
-
-// spotifyApi.getAudioAnalysisForTrack(trackURIFormatted)
-//   .then(function(data) {
-//     console.log(data.body.track.duration);
-//     console.log(data.body.track.tempo);
-//   }, function(err) {
-//     done(err);
-// });
-
-// spotifyApi.getTrack(trackURIFormatted)
-//   .then(function(data) {
-//     console.log(data.body.name);
-//     console.log(data.body.artists[0].name);
-//   }, function(err) {
-//     done(err);
-// });
 app.get("/club/:name/home", (req, res) => {
-    var name = req.params.name;
-    var queryString = `SELECT * FROM users WHERE username='${name}';`;
-    pool.query(queryString, (error, result) => {
-        if (error)
-            res.send(error);
-        if (result.rows.length > 0) {
-            if (result.rows[0].type === "admin") {
-                var getUserQuery = `SELECT * FROM users`;
-                pool.query(getUserQuery, (error, result) => {
-                    if (error)
-                        res.end(error);
-                    var results = { 'rows': result.rows };
-                    res.render('pages/admin', results)  // load admin page for admins
-                })
-                return;
-            }
-            else {
-                res.render("pages/play", { 'props': { username: name } });    // load user page for users
-                return;
-            }
-        }
-        res.render('pages/club', { 'props': { loginFailed: true } });
-    });
+  var name = req.params.name;
+  var queryString = `SELECT * FROM users WHERE username='${name}';`;
+  pool.query(queryString, (error, result) => {
+    if (error)
+      res.send(error);
+    if (result.rows.length > 0) {
+      if (result.rows[0].type === "admin") {
+        var getUserQuery = `SELECT * FROM users`;
+        pool.query(getUserQuery, (error, result) => {
+          if (error)
+            res.end(error);
+          var results = { 'rows': result.rows };
+          res.render('pages/admin', results)  // load admin page for admins
+        })
+        return;
+      }
+      else {
+        res.render("pages/play", { 'props': { username: name } });    // load user page for users
+        return;
+      }
+    }
+    res.render('pages/club', { 'props': { loginFailed: true } });
+  });
 });
 
 app.get("/club/admin/:name/stats", (req, res) => {
-    let name = req.params.name;
-    let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
-    let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
-    let results = {};
-    pool.query(loadStats, (error, result) => {
-        if (error) {
-            res.send("error");
-            console.log(error);
+  let name = req.params.name;
+  let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
+  let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
+  let results = {};
+  pool.query(loadStats, (error, result) => {
+    if (error) {
+      res.send("error");
+      console.log(error);
+    }
+    results.stats = result.rows[0];
+    pool.query(loadRank, (error, result) => {
+      if (error) {
+        res.send("error");
+        console.log(error);
+      }
+      // console.log(result);
+      findrank = (result) ? result.rows : null;
+      findrank.forEach(function (user) {
+        if (user.username == name) {
+          results.rank = user.rank;
         }
-        results.stats = result.rows[0];
-        pool.query(loadRank, (error, result) => {
-            if (error) {
-                res.send("error");
-                console.log(error);
-            }
-           // console.log(result);
-            findrank = (result) ? result.rows : null;
-            findrank.forEach(function (user) {
-                if (user.username == name) {
-                    results.rank = user.rank;
-                }
-            });
-            // console.log("rank of " + name + " :" + results.rank);
-            //results.rank = result.rows[0].rank;
-            if (results.rank == 1) {
-                results.color = "#D4AF37";
-            }
-            else if (results.rank == 2) {
-                results.color = "#C0C0C0";
-            }
-            else if (results.rank == 3) {
-                results.color = "#cd7f32";
-            }
-            else {
-                results.color = "white";
-            }
-            //console.log("color= ", results.color);
-            res.render('pages/stats_admin', { 'rows': results });
-        });
+      });
+      // console.log("rank of " + name + " :" + results.rank);
+      //results.rank = result.rows[0].rank;
+      if (results.rank == 1) {
+        results.color = "#D4AF37";
+      }
+      else if (results.rank == 2) {
+        results.color = "#C0C0C0";
+      }
+      else if (results.rank == 3) {
+        results.color = "#cd7f32";
+      }
+      else {
+        results.color = "white";
+      }
+      //console.log("color= ", results.color);
+      res.render('pages/stats_admin', { 'rows': results });
     });
+  });
 
 });
 
 app.get("/club/admin/:name/home", (req, res) => {
-    console.log("in!");
+   // console.log("in!");
     let name = req.params.name;
     var getUserQuery = `SELECT * FROM users`;
     pool.query(getUserQuery, (error, result) => {
@@ -657,25 +672,221 @@ app.get("/club/admin/:name/home", (req, res) => {
     })
 });
 
+app.get("/club/admin/:name/toggleadmin", (req, res) => {
+    let name = req.params.name;
+    var getAdminsQuery = `SELECT * FROM users where type= 'admin';`;
+    var getNormsQuery = `select * from users where type <> 'admin' OR type IS NULL;`;
+    var results = {};
+    pool.query(getAdminsQuery, (error, result) => {
+        if (error)
+            res.end(error);
+        results.admins = result.rows;
+        pool.query(getNormsQuery, (error, result) => {
+            if (error) {
+                res.end(error);
+            }
+            results.norms = result.rows;
+            results.name = name;
+            res.render('pages/admintoggle', { 'rows': results });
+        })
+    })
+});
+
+app.post("/club/admin/:name/toggleadmin", (req, res) => {
+    let name = req.params.name;
+    let toBeToggled = req.body.toggleduser;
+    //console.log("toggling user: ", toBeToggled);
+    var results = {};
+    if (name != toBeToggled) {
+        var getToggledQuery = `SELECT username, type FROM users where username= '${toBeToggled}';`;
+        //console.log(getToggledQuery);
+        pool.query(getToggledQuery, (error, result) => {
+            if (error)
+                res.send(error);
+            if (result.rows.length > 0) {
+                if (result.rows[0].type === 'admin') {
+                    var Toggling = `UPDATE users SET type= NULL where username= '${toBeToggled}';`;
+                }
+                else {
+                    var Toggling = `UPDATE users SET type= 'admin' where username= '${toBeToggled}';`;
+                }
+               // console.log("set toggle to: " + Toggling);
+                pool.query(Toggling, (error, result) => {
+                    if (error)
+                        res.send(error);
+                    else {
+                        results.goodtoggle = true;
+                       // console.log("good toggle\n");
+                    }
+                    var getAdminsQuery = `SELECT * FROM users where type = 'admin';`;
+                    var getNormsQuery = `SELECT * from users where type IS NULL;`;
+                    pool.query(getAdminsQuery, (error, result) => {
+                       // console.log("start loading table\n")
+                        if (error)
+                            res.end(error);
+                        //console.log(result.rows);
+                        results.admins = result.rows;
+                        pool.query(getNormsQuery, (error, result) => {
+                            if (error) {
+                                res.end(error);
+                            }
+                           // console.log(result.rows);
+                            results.norms = result.rows;
+                            results.name = name;
+                            res.render('pages/admintoggle', { 'rows': results });
+                        });
+                    });
+                });
+            }
+            else {
+                results.notexist = true;
+                var getAdminsQuery = `SELECT * FROM users where type = 'admin';`;
+                var getNormsQuery = `SELECT * from users where type IS NULL;`;
+                pool.query(getAdminsQuery, (error, result) => {
+                    //console.log("start loading table (else1)\n")
+                    if (error)
+                        res.end(error);
+                   // console.log(result.rows);
+                    results.admins = result.rows;
+                    pool.query(getNormsQuery, (error, result) => {
+                        if (error) {
+                            res.end(error);
+                        }
+                       // console.log(result.rows);
+                        results.norms = result.rows;
+                        results.name = name;
+                        res.render('pages/admintoggle', { 'rows': results });
+                    });
+                });
+
+            }
+        })
+    }
+    else {
+        results.selfchange = true;
+        var getAdminsQuery = `SELECT * FROM users where type = 'admin';`;
+        var getNormsQuery = `SELECT * from users where type IS NULL;`;
+        pool.query(getAdminsQuery, (error, result) => {
+           // console.log("start loading table (else2)\n")
+            if (error)
+                res.end(error);
+            //console.log(result.rows);
+            results.admins = result.rows;
+            pool.query(getNormsQuery, (error, result) => {
+                if (error) {
+                    res.end(error);
+                }
+               // console.log(result.rows);
+                results.norms = result.rows;
+                results.name = name;
+                res.render('pages/admintoggle', { 'rows': results });
+            });
+        });
+
+    }
+   
+});
+
+app.get('/club/admin/:name/songselect', (req, res) => {
+    let name = req.params.name;
+    console.log("in song select")
+    res.render('pages/selectsongs', { 'name': name });
+
+});
+
 // creating and joining rooms
-const rooms = { name:{} }
-const users = {  }
-app.get('/lobby', (req, res) => {
-  res.render('pages/lobby', { rooms: rooms })
+
+const rooms = { 
+  name: []
+}
+const users = {}
+app.get('/club/:name/lobby', (req, res) => {
+  res.render('pages/lobby', { rooms, username: req.params.name })
 })
 app.post('/room', (req, res) => {
-  if(rooms[req.body.room] != null) {
+  const {room, username} = req.body
+  if (rooms[room] != null) {
     return res.redirect('pages/lobby')
   }
-  rooms[req.body.room] = { users: {} }
-  res.redirect(req.body.room)
-  io.emit('room-created', req.body.room)
-})
-app.get('/:room', (req, res) => {
-  io.emit('user-joined', "hello")
-  res.render('pages/room', { roomName: req.params.room, users: users })
+  rooms[room] = []
+  console.log(`creating new room ${room}`)
+  io.of('lobby').emit('room-created', room)
+  res.redirect(`/room/${room}/${username}`)
 })
 
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+app.get('/room/:room/:username', (req, res) => {
+  const {room, username} = req.params
+  console.log(rooms[room].indexOf(username))
+  if(rooms[room].indexOf(username) != -1){
+    rooms[room].splice(rooms[room].indexOf(username), 1)
+  }
+  console.log(rooms[room])
+  if(rooms[room].length < 4){
+    res.render('pages/room', { roomName: room, users: rooms[room], username })
+  }else{
+    res.render('pages/lobby', {rooms, username, error: `room '${room}' is full`})
+  }
+})
 
-// })
+
+//The 404 Route (ALWAYS Keep this as the last route)
+app.get('*', function (req, res) {
+  res.statusCode = 404;
+  res.render('pages/404');
+});
+
+//sockets
+var playerCount = 0;
+var players = {};
+
+io.of('chat').on('connection', socket => {
+
+  socket.on('join', ({roomName: room, username}) => {
+    console.log(`user '${username}' joining room '${room}'`)
+    rooms[room].push(username)
+    socket.join(room)
+    io.of('chat').to(room).emit('userJoined', username);
+  })
+
+  socket.on('leave', ({roomName: room, username}) => {
+    console.log(`user '${username}' leaving room '${room}'`)
+    if(rooms[room].indexOf(username) != -1){
+      rooms[room].splice(rooms[room].indexOf(username), 1)
+    }
+    socket.leave(room)
+    io.of('chat').to(room).emit('userLeft', username); 
+  })
+
+  socket.on('message', (data) => {
+    const { message, room, username } = data;
+    console.log(`new message - ${room}:\n\t${username}: ${message}`)
+    io.of('chat').to(room).emit('newMessage', {username, message})
+  })
+
+  socket.on('disconnect', function () {
+    playerCount--;
+    console.log('user disconnected');
+    delete players[socket.id];
+    io.emit('disconnect', socket.id);
+  });
+
+
+  // create a new player and add it to the players object
+  players[socket.id] = {
+    //add position
+    colour: "blue",
+    playerId: socket.id,
+    username: socket.username,
+  }
+  io.on('updateColour', function (colourData) {
+    players[socket.id].colour = colourData.colour;
+    socket.broadcast.emit('updateSprite', players[socket.id]);
+  });
+})
+
+io.of("lobby").on('connection', socket => {
+  console.log("player joined lobby")
+  socket.on('disconnect', () => {
+    console.log('player leaving lobby')
+  } )
+})

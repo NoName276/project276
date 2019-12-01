@@ -24,7 +24,9 @@
 </div>
     <button type="button" onclick="window.location.href = '/<%= rows.name %>/delete';">DELETE A USER</button>
 	<button type="button" id= "stats" onclick="window.location.href = '/club/admin/<%= rows.name %>/stats';">STATS</button>
-  <button type="button" onclick="window.location.href = '/club';">LOG OUT</button
+	<button type="button" id= "leaderboard" onclick="window.location.href = '/club/admin/<%= rows.name %>/leaderboard';">LEADERBOARD</button>
+	<button type="button" id= "toggle" onclick="window.location.href = '/club/admin/<%= rows.name %>/toggleadmin';">TOGGLE ADMINS</button>
+	<button type="button" id= "toggle" onclick="window.location.href = '/club/admin/<%= rows.name %>/songselect';">LISTEN TO SONGS</button>
   </body>
 
   <script></script>

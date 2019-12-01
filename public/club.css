@@ -144,6 +144,9 @@ table, #table1, #table2{
     animation: animate 15s linear infinite;
     bottom: -175px;
 }
+.box li:hover{
+    background: url('music-note.png');
+}
 .box li:nth-child(1){
     left: 86%;
     width: 80px;
