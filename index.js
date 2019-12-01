@@ -187,26 +187,14 @@ app.post("/club/login", (req, res) => {
 })
 
 app.get("/club/:name/stats", (req, res) => {
-  let name = req.params.name;
-  let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
-  let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
-  let results = {};
-  pool.query(loadStats, (error, result) => {
-    if (error) {
-      res.send("error");
-      console.log(error);
-    }
-    results.stats = result.rows[0];
-    pool.query(loadRank, (error, result) => {
-      if (error) {
-        res.send("error");
-        console.log(error);
-      }
-      console.log(result);
-      findrank = (result) ? result.rows : null;
-      findrank.forEach(function (user) {
-        if (user.username == name) {
-          results.rank = user.rank;
+    let name = req.params.name;
+    let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
+    let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
+    let results = {};
+    pool.query(loadStats, (error, result) => {
+        if (error) {
+            res.send("error");
+            console.log(error);
         }
         results.stats = result.rows[0];
         pool.query(loadRank, (error, result) => {
@@ -214,14 +202,14 @@ app.get("/club/:name/stats", (req, res) => {
                 res.send("error");
                 console.log(error);
             }
-            //console.log(result);
+            // console.log(result);
             findrank = (result) ? result.rows : null;
             findrank.forEach(function (user) {
                 if (user.username == name) {
                     results.rank = user.rank;
                 }
             });
-           // console.log("rank of " + name + " :" + results.rank);
+            // console.log("rank of " + name + " :" + results.rank);
             //results.rank = result.rows[0].rank;
             if (results.rank == 1) {
                 results.color = "#D4AF37";
@@ -239,9 +227,7 @@ app.get("/club/:name/stats", (req, res) => {
             res.render('pages/stats', { 'rows': results });
         });
     });
-  });
 
-  });
 });
 
 app.get("/club/:name/leaderboard", (req, res) => {
