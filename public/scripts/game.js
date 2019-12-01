@@ -62,18 +62,20 @@ function player_move(num, e){
     gridEl = document.getElementById('game_grid');
     var pressed = e.which || e.keyCode;
     //console.log(pressed)
-    if(!key_flag){
-        key_flag = true;
-        if(valid_flag){
-            //gridEl.style.color = 'green';
-            document.getElementById('hit').innerHTML = "GREAT";
-            document.getElementById('hit').style.color = 'green';
-            if(bonus_flag){
-                //gridEl.style.color = 'orange';
-                document.getElementById('hit').innerHTML = "OKAY";
-                document.getElementById('hit').style.color = 'yellow';
-                if(multiplier < 2.0){
-                    multiplier += 0.1;
+    if(game_running){
+        if(!key_flag){
+            key_flag = true;
+            if(valid_flag){
+                //gridEl.style.color = 'green';
+                document.getElementById('hit').innerHTML = "GREAT";
+                document.getElementById('hit').style.color = 'green';
+                if(bonus_flag){
+                    //gridEl.style.color = 'orange';
+                    document.getElementById('hit').innerHTML = "OKAY";
+                    document.getElementById('hit').style.color = 'ORANGE';
+                    if(multiplier < 2.0){
+                        multiplier += 0.1;
+                    }
                 }
                 if( (pressed == last_player_move[num]) || (player_glasses[num].length < 5) ){
                     var hit_flag = false;
@@ -88,11 +90,6 @@ function player_move(num, e){
                                         if(player_glasses[num].length > 0){player_glasses[num].pop();}
                                     }
                                 }
-                              /*}
-                                 else if(game_grid[player_pos[0][0]-1][player_pos[0][1]] == 'T'){
-                                     while(player_glasses.length != 0){
-                                         score += player_glasses.pop()*10*multiplier;
-                                         document.getElementById('player score').innerHTML = score.toFixed(0);*/
                                 if(hit_flag){null;}
                                 else if(game_grid[player_pos[num][0]-1][player_pos[num][1]] == null){
                                     game_grid[player_pos[num][0]][player_pos[num][1]] = null;
@@ -209,7 +206,9 @@ function player_move(num, e){
                             break;
                         default:
                             key_flag = false;
-                            gridEl.style.color = 'blue';
+                            //gridEl.style.color = 'blue';
+                            document.getElementById('hit').innerHTML = "READY";
+                            document.getElementById('hit').style.color = 'blue';
                     }
                     last_player_move[num] = 0;
                 }
@@ -229,42 +228,19 @@ function player_move(num, e){
                     case 68:
                     case 83:
                     case 87:
-                        gridEl.style.color = 'red';
+                        //gridEl.style.color = 'red';
+                        document.getElementById('hit').innerHTML = "MISS";
+                        document.getElementById('hit').style.color = 'red';
                         multiplier = 1.0;
                         break;
                     default:
                         key_flag = false;
-                        //gridEl.style.color = 'blue';
-                        document.getElementById('hit').innerHTML = "READY";
-                        document.getElementById('hit').style.color = 'blue';
                 }
                 setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
             }
-
-            setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
         }
-        else{
-            switch(pressed){
-                case 37:
-                case 38:
-                case 39:
-                case 40:
-                case 65:
-                case 68:
-                case 83:
-                case 87:
-                    //gridEl.style.color = 'red';
-                    document.getElementById('hit').innerHTML = "MISS";
-                    document.getElementById('hit').style.color = 'red';
-                    multiplier = 1.0;
-                    break;
-                default:
-                    key_flag = false;
-            }
-            setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
-        }
-   }
-   e.preventDefault();
+        e.preventDefault();
+    }
 }
 
 function display_held_items(){
