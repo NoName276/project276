@@ -485,7 +485,7 @@ describe("Single Player", function () {
     });
  });
 
-describe("Multiplayer", function () { });
+describe("Multiplayer", function () {});
 
 describe("spotify web api authentication, song data from playback, Spotify play b", function () { 
     jsdom({
