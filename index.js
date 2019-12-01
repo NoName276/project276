@@ -6,6 +6,7 @@ const { Pool } = require('pg');
 var app = express();
 // variables for socket.io
 var server = require('http').Server(app);
+// var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 // server.listen(PORT);
 
@@ -355,9 +356,14 @@ app.post('/playing', (req,res) => {
     });
 })
 
+
+    
 app.get('/joji', (req,res) => {
     res.render('pages/slow-dancing-in-the-dark');
 })
+io.on('connection', function(socket){
+    console.log('a user connected');
+});
 app.get('/slow-dancing-in-the-dark.mp3', (req,res) => {
     res.sendFile(__dirname + '/audio/slow-dancing-in-the-dark.mp3')
 })
