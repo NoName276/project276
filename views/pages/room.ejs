@@ -6,41 +6,35 @@
   <title>tHe ClUb</title>
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="/scripts/socket.io.js"></script>
   <script>
     const roomName = "<%= roomName %>"
+    const socket = io('/chat')
+    socket.emit('join', roomName);
+    socket.on('user-joined', user => {
+      console.log("new user")
+    })
+    socket.on('newMessage', function (data) {
+      console.log(`new message: ${data}`)
+      document.getElementById('messageList').append(`<div class= "chatbox" >${data}</div>`);
+    })
     function openForm(formToShow) {
-      let form = ['form']
-      document.getElementById(form).className = form == formToshow ? '' : 'display';
+      document.getElementById(formToShow).className = '';
     }
     document.querySelectorAll("p.error").forEach(ele => {
       ele.className += 'hide';
     })
-    function closeForm(formToHide) {
-      let form = ['form']
-      document.getElementById(form).className = form == formToHide ? '' : 'none';
-    }
-  </script>
-  <script src="/scripts/socket.io.js"></script>
-  <script>
-    var socket = io()
-    userContainer = document.getElementById('user-container')
-    socket.on('user-joined', user => {
-      console.log("new user")
-    })
-    var socket = io.connect();
-    var $form = $('.form');
-    var $message = $('#message');
-    var $chat = $('.chat');
-    $message.submit(function (e) {
-      e.preventDefault();
-      socket.emit('send message', $message.val());
-      $message.val('');
+    function sendMessage(e) {
+      socket.emit('message', {
+        message: document.getElementById('userMessage').value,
+        room: roomName
+      });
       console.log("sent");
-    });
-    socket.on('new message', function (data) {
-      $chat.append(`<div class= "chatbox" >${data.msg}</div>`);
-    })
+      e.preventDefault();
+    }
+    function closeForm(formToHide) {
+      document.getElementById(formToHide).className = 'hide';
+    }
   </script>
 </head>
 
@@ -56,16 +50,16 @@
   </div>
 
 
-  <button class="open-button" onclick="openForm();">Chat</button>
+  <button class="open-button" onclick="openForm('message');">Chat</button>
 
   <div id="chatbox">
-    <form id="message" id="form">
+    <form id="message" class="">
       <div class="user-container">
         <h1>Chatbox</h1>
-        <label for="msg"><b>Enter message</b></label>
-        <textarea placeholder="Type message.." name="msg" required></textarea>
-        <button type="submit" class="button">Send</button>
-        <button type="button" class="cancel" onclick="closeForm()">Close</button>
+        <label id="messageList"><b>Enter message</b></label>
+        <textarea placeholder="Type message.." name="msg" id="userMessage" required></textarea>
+        <button class="button" onclick="sendMessage(event)">Send</button>
+        <button type="button" class="cancel" onclick="closeForm('message')">Close</button>
       </div>
     </form>
   </div>

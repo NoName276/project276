@@ -6,7 +6,7 @@ const { Pool } = require('pg');
 var app = express();
 // variables for socket.io
 var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
+var io = require('socket.io')(server);
 server.listen(PORT, () => {
   console.log(`Express App and Socket IO server listing on PORT ${PORT}`)
 });
@@ -708,36 +708,54 @@ app.get('/:room', (req, res) => {
 var playerCount = 0;
 var players = {};
 
-io.sockets.on('connection', function (socket) {
-  console.log('a user has now connected');
-  io.sockets.emit('numPlayers', playerCount);
-  // create a new player and add it to the players object
-  players[socket.id] = {
-    //add position
-    colour: "blue",
-    playerId: socket.id,
-    username: socket.username,
-  }
-  io.on('updateColour', function (colourData) {
-    players[socket.id].colour = colourData.colour;
-    socket.broadcast.emit('updateSprite', players[socket.id]);
+io.of('chat')
+  .on('connection', function (socket) {
+
+    console.log('a user has now connected');
+    socket.emit('numPlayers', playerCount);
+    socket.on('join', room => {
+      console.log(`joining room: ${room}`)
+      socket.join(room)
+    })
+    socket.on('leave', room => {
+      console.log(`leaving room: ${room}`)
+      socket.leave(room)
+    })
+    socket.on('message', (data) => {
+      const { message, room } = data;
+      console.log(`message: ${message} \n to room ${room}`)
+      io.of('chat').to(room).emit('newMessage', message)
+    })
+    socket.on('disconnect', function () {
+      playerCount--;
+      console.log('user disconnected');
+      delete players[socket.id];
+      io.emit('disconnect', socket.id);
+    });
+
+
+    // create a new player and add it to the players object
+    players[socket.id] = {
+      //add position
+      colour: "blue",
+      playerId: socket.id,
+      username: socket.username,
+    }
+    io.on('updateColour', function (colourData) {
+      players[socket.id].colour = colourData.colour;
+      socket.broadcast.emit('updateSprite', players[socket.id]);
+    });
+
+    //send players object to new player
+    io.emit('currentPlayers', players);
+
+    //update all other players of new player
+    socket.broadcast.emit('newPlayer', players[socket.id]);
   });
-
-  //send players object to new player
-  io.emit('currentPlayers', players);
-
-  //update all other players of new player
-  socket.broadcast.emit('newPlayer', players[socket.id]);
-});
 
 //disconnect
 
-io.on('disconnect', function () {
-  playerCount--;
-  console.log('user disconnected');
-  delete players[socket.id];
-  io.emit('disconnect', socket.id);
-});
+
 app.get('/club/:name/lobby', (req, res) => {
   res.render('pages/lobby', { rooms: rooms, props: { username: req.params.name } })
 })
@@ -746,7 +764,7 @@ app.get('/club/:name/lobby', (req, res) => {
 io.on('message', function (data) {
   console.log("catched")
   console.log(data);
-  io.emit('message', data);
+  io.broadcast('new message', data);
 })
 io.on('disconnect', function () {
   io.sockets.emit('numPlayers', playerCount);
