@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+      <h1>Now Playing: </h1>
+      <h2>How Do You Sleep?</h2>
+      <h2>Sam Smith</h2>
+      <h2>BPM: 111</h2>
+      <h2>Duration: 202 seconds</h2>
+
+      <audio id="audio" src="how-do-you-sleep.mp3" ></audio>
+      <script>
+        function play() {
+            var audio = document.getElementById("audio");
+            audio.play();
+        }
+      </script>
+      <input id = "playButton" type="button" value="PLAY" onclick="play()">
+      
+  </body>
+</html>
