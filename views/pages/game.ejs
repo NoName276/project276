@@ -2,24 +2,26 @@
 
 <html>
 	<head>
-        <title>The Club</title>
+        <title>Club Game Prototype</title>
         <link href='https://fonts.googleapis.com/css?family=Monofett' rel='stylesheet'>
         <script src="/scripts/socket.io.js"></script>
-        <link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />
+        <link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
         <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 	</head>
 
 	<body>
-			<div name="black">
             <h1>The Club</h1>
             <p id="p" >Now Playing: <%= name %> by <%= artist %></p>
 
             <form class= "form">
 
-
+                    <p id="score">Score:</p>
+                    <p id="player score">0</p>
+                    <p id="m">Multiplier:</p>
+                    <p id="player mult">x1.0</p>
                     <input type="number" class ="bpm" id="bpm" value='<%= tempo %>'/>
                     <input class="button" type="button" value="change bpm" onclick="change_bpm()" />
-            </form>
+                </form>
 
             <div class= "main" id="gamediv">
                 <div class ="row" id="game_grid">
@@ -40,15 +42,6 @@
                         <div id= "col1"> 00000||00000<br></div>
                         <div id= "col1">------------<br></div>
                     </div>
-										<div id="gamedata">
-											<p id="hit" style="color:blue; font-size:50px; display:inline; margin-left:5%;">READY</p><br>
-											<p id="score" style="color:black; display:inline; margin-left:5%;">Score:</p>
-	                    <p id="player score" style="color:black; display:inline;">0</p><br>
-	                    <p id="m" style="color:black; display:inline; margin-left:5%;">Multiplier:</p>
-	                    <p id="player mult" style="color:black; display:inline; margin-left:5%;">x1.0</p><br>
-											<p style="color:black; white-space:nowrap;display:inline; margin-left:5%;">Current Items:</p><br>
-					            <p id="items" style="margin-left: 5%"></p>
-										</div>
                 </div>
             <div id="musicdiv" align="center">
 
@@ -83,11 +76,11 @@
                         }
                     }
                     window.onload = countDown();
-
-
+    
+                    
                 </script>
-
-            </div>
+                    
+            </div>   
 
 	</body>
 </html>
