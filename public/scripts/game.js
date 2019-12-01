@@ -16,7 +16,7 @@ var game_grid = [
     [,,,,,,,,,,],
     ['0',,,,,,,,,'9',],
     ['1',,,,,,,,,'8',],
-    ['O','2','3',,'4','5',,'6','7','O',]
+    ['O','2','3','O','4','5','O','6','7','O',]
 ];
 var player_pos = [[1,3]];
 var glasses = [0,0,0,0,0,0,0,0,0,0,];
@@ -58,9 +58,9 @@ function player_move(e){
     if(!key_flag){
         key_flag = true;
         if(valid_flag){
-            gridEl.style.color = 'green';
+            //gridEl.style.color = 'green';
             if(bonus_flag){
-                gridEl.style.color = 'orange';
+                //gridEl.style.color = 'orange';
                 if(multiplier < 2.0){
                     multiplier += 0.1;
                 }
@@ -85,7 +85,7 @@ function player_move(e){
                             else if(game_grid[player_pos[0][0]-1][player_pos[0][1]] == 'T'){
                                 while(player_glasses.length != 0){
                                     score += player_glasses.pop()*10*multiplier;
-                                    document.getElementById('player score').innerHTML = score.toFixed(0)
+                                    document.getElementById('player score').innerHTML = score.toFixed(0);
                                 }
                             }
                         }
@@ -161,7 +161,7 @@ function player_move(e){
                         break;
                     default:
                         key_flag = false;
-                        gridEl.style.color = 'blue';
+                        //gridEl.style.color = 'blue';
                 }
                 last_player_move = 0;
             }
@@ -181,7 +181,7 @@ function player_move(e){
                 case 68:
                 case 83:
                 case 87:
-                    gridEl.style.color = 'red';
+                    //gridEl.style.color = 'red';
                     multiplier = 1.0;
                     break;
                 default:
@@ -195,7 +195,7 @@ function player_move(e){
 
 function display_game_grid(){
     gridEl = document.getElementById('game_grid');
-    gridEl.innerHTML = '############<br>';
+    gridEl.innerHTML = '<br>############<br>';
     for(var i = 0; i<10; ++i){
         gridEl.innerHTML += '#';
         for(var j=0; j<10; ++j){
@@ -203,10 +203,11 @@ function display_game_grid(){
                 gridEl.innerHTML += '<img src="/assets/player.png">';
             }
             else if( ( (i == x) && (j == y) ) || ( (i == x2) && (j == y2) ) || ( (i==third) && (j==thirdx) ) ){
-                gridEl.innerHTML += '<img src="/assets/enemy.gif">';
+              if(j == y2) gridEl.innerHTML += '<img src="/assets/enemy1.gif">';
+              else gridEl.innerHTML += '<img src="/assets/enemy2.gif">';
             }
             else if(game_grid[i][j] == null){
-                gridEl.innerHTML += '&nbsp;'
+              gridEl.innerHTML += '&nbsp;'
             }
             else if(!isNaN(game_grid[i][j])){
               if(glasses[game_grid[i][j]] == 1){
@@ -226,11 +227,11 @@ function display_game_grid(){
         }
         gridEl.innerHTML += '#<br>';
     }
-    gridEl.innerHTML += '############<br>';
+    gridEl.innerHTML += '############';
 }
 
 function generate_upcoming_beats(){
-    beat_shelf = [,,,,,'|',];
+    beat_shelf = [,,,,,,];
     //console.log(upcoming_beats)
     for(var i=0; i<upcoming_beats.length; ++i){
         upcoming_beats[i] += 1/fpb;
@@ -274,13 +275,15 @@ function generate_upcoming_beats(){
     for(var i=0; i<6; ++i){
         if(beat_shelf[i] == null){gridEl.innerHTML += '&nbsp;';}
         else{
-            gridEl.innerHTML += beat_shelf[i];
+            //gridEl.innerHTML += beat_shelf[i];
+            gridEl.innerHTML += '<img src="/assets/beat.png">';
         }
     }
     for(var i=5; i>=0; --i){
         if(beat_shelf[i] == null){gridEl.innerHTML += '&nbsp;';}
         else{
-            gridEl.innerHTML += beat_shelf[i];
+            //gridEl.innerHTML += beat_shelf[i];
+            gridEl.innerHTML += '<img src="/assets/beat.png">';
         }
     }
     gridEl.innerHTML += '<br>------------<br>';
@@ -321,7 +324,7 @@ function add_glass() {
 
 function reset_conditions() {
     gridEl = document.getElementById('game_grid');
-    gridEl.style.color = 'blue';
+    //gridEl.style.color = 'blue';
     key_flag = false;
 
 }

@@ -1,5 +1,5 @@
 #button1{
-	padding: 10px 24px; 
+	padding: 10px 24px;
 	width: 20%;
 	height: 6%;
 	text-align: center;
@@ -9,11 +9,11 @@
 	width: 20%;
 	height: 6%;
 	top: 76%;
-    border: 6px solid  #183E61;
+    border: 6px solid  #1f2028;
     background: none;
-    padding: 10px 24px;   
+    padding: 10px 24px;
     font-size: 20px;
-    font-family: "montserrat";
+    font-family: 'Press Start 2P', cursive;
     cursor: pointer;
     margin: 12px;
     transition: 0.8s;
@@ -24,19 +24,18 @@
 	text-align: center;
 }
 .button{
-    border: 6px solid  #183E61;
+    border: 6px solid  #1f2028;
     background: none;
-    padding: 10px 24px;   
+    padding: 10px 24px;
     font-size: 20px;
-    font-family: "montserrat";
+    font-family: 'Press Start 2P', cursive;
     cursor: pointer;
     margin: 12px;
     transition: 0.8s;
     position: relative;
     overflow: hidden;
     color: black;
-	font-weight: bold;
-	text-align: center;
+		text-align: center;
   }
 .button::before{
     content: "";
@@ -62,15 +61,16 @@ body {
     height: 100vh;
 }
 h1{
-	width: 100%;
-	font-family:"Monofett";
-	font-style: normal;
-	font-weight: normal;
-	font-size: 220px;
+	font-family:'Press Start 2P', cursive;
+	font-size: 100px;
 	align-items: center;
 	text-align: center;
-	letter-spacing: 0.015em;
-	color: rgba(255, 255, 255, 0.42);
+	color: #1f2028;
+}
+img{
+	width: 100%;
+	object-fit: contain;
+	margin-bottom: 5%;
 }
 .hide {
     display: none;
@@ -83,8 +83,8 @@ table, #table1, #table2{
     text-align: center;
 	border: solid;
     font-size: 30px;
-    font-family: "montserrat";
-    /* margin-left:35%; 
+    font-family: 'Press Start 2P', cursive;
+    /* margin-left:35%;
     margin-right:35%; */
 	color: rgba(255, 255, 255, 0.42);
 	padding: 1.5%;
@@ -92,7 +92,7 @@ table, #table1, #table2{
 #input{
 	text-align: center;
 	box-sizing: border-box;
-	
+
 }
 #frontbutton{
 	width: 20%;
@@ -100,9 +100,9 @@ table, #table1, #table2{
 	top: 66%;
     border: 6px solid  #183E61;
     background: none;
-    padding: 10px 24px;   
+    padding: 10px 24px;
     font-size: 20px;
-    font-family: "montserrat";
+    font-family: 'Press Start 2P', cursive;
     cursor: pointer;
     margin: 12px;
     transition: 0.8s;
@@ -141,7 +141,6 @@ table, #table1, #table2{
     list-style: none;
     width: 25px;
     height: 25px;
-    background:rgba(0, 0, 0, 0.2);
     animation: animate 15s linear infinite;
     bottom: -175px;
 }
@@ -167,8 +166,8 @@ table, #table1, #table2{
 }
 .box li:nth-child(4){
     left: 70%;
-    width: 150px;
-    height: 150px;
+    width: 50px;
+    height: 50px;
     animation-delay: 2s;
     animation-duration: 10s;
 }
@@ -188,8 +187,8 @@ table, #table1, #table2{
 }
 .box li:nth-child(7){
     left: 25%;
-    width: 90px;
-    height: 90px;
+    width: 110px;
+    height: 110px;
     animation-delay: 4.5s;
 }
 .box li:nth-child(8){

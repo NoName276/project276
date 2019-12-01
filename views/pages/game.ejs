@@ -18,7 +18,7 @@
 	</head>
 
 	<body>
-			<div>
+			<div name="black">
             <h1>The Club</h1>
             <p id="p" >Now Playing: <%= name %> by <%= artist %></>
 
@@ -30,7 +30,8 @@
                     <p id="player mult">x1.0</p>
                     <input type="number" class ="bpm" id="bpm" value='<%= tempo %>'/>
                     <input class="button" type="button" value="change bpm" onclick="change_bpm()" />
-                </form>
+            </form>
+
             <div class= "main" id="gamediv">
                 <div class ="row" id="game_grid">
                         <div id= "col1"class="top ">############</div><br>
@@ -50,6 +51,9 @@
                         <div id= "col1"> 00000||00000<br></div>
                         <div id= "col1">------------<br></div>
                     </div>
+										<div id="gamedata">
+					              <div id= "col1">0000<br></div>
+										</div>
                 </div>
             <div id="musicdiv" align="center">
                     <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" onload="access()"></iframe>
