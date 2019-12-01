@@ -28,9 +28,6 @@
       function openForm(formToShow) {
         document.getElementById(formToShow).className = '';
       }
-      document.querySelectorAll("p.error").forEach(ele => {
-        ele.className += 'hide';
-      })
       function sendMessage(e) {
         socket.emit('message', {
           message: document.getElementById('userMessage').value,
@@ -54,26 +51,19 @@
     <% Object.keys(users).forEach(user => { %>
     <p><%= user %></p>
     <% }) %>
-    <form class="form" class="hide">
   </div>
-  <form>
-    <button class="open-button" onclick="openForm();">Chat</button>
-  </form>
+  <button class="open-button" onclick="openForm();">Chat</button>
   <div id="chatbox">
-
-    <form id="message" id="form">
+    <form id="message">
       <div class="user-container">
         <h1>Chatbox</h1>
         <label for="msg">Enter messages<textarea class="text"></textarea></label>
         <textarea placeholder="Type message.." name="msg" required></textarea>
-        <button type="submit" class="button">Send</button>
+        <button class="button" onclick="sendMessage(event)">Send</button>
         <button type="button" class="cancel" onclick="closeForm()">Close</button>
       </div>
+    </form>
   </div>
-  </form>
-
-  </div>
-  </form>
 </body>
 
 </html>
