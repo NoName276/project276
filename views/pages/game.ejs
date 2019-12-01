@@ -56,6 +56,10 @@
 
             <audio id="audio" src="<%= track %>.mp3" ></audio>
             <script>
+                    function play() {
+                        var audio = document.getElementById("audio");
+                        audio.play();
+                    }
                     var title = document.getElementById("countTitle");
                     var display = document.getElementById("countDown");
                     var interval = setInterval(countDown,1000);
@@ -67,6 +71,7 @@
                             setTimeout(function(){setTimeout(function(){game_running = true; game_loop(); setTimeout(function(){game_end();}, 1000*<%= duration %>)}, 1000/FRAMERATE);}, 2000);
                             clearInterval(interval)
                             console.log("Play Now")
+                            play();
                         } else {
                             // console.log(seconds)
                             display.innerHTML = seconds
