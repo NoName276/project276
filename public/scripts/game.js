@@ -17,9 +17,8 @@ var game_grid = [
     [,,,,,,,,,,],
     ['0',,,,,,,,,'9',],
     ['1',,,,,,,,,'8',],
-    ['O','2','3','O','4','5','O','6','7','O',]
+    ['O','2','3',,'4','5',,'6','7','O',]
 ];
-var player_num = 1;
 var player_pos = [[1,0],[1,3],[1,6],[1,9],];
 var glasses = [0,0,0,0,0,0,0,0,0,0,];
 var filled_glasses = 0;
@@ -28,7 +27,6 @@ var score = 0;
 var multiplier = 1.0;
 var player_glasses = [[],[],[],[],];
 var last_player_move = [0,0,0,0,];
-var num_players = 4;
 let x2 = Math.floor(Math.random()* 4) + 2;
 let y2 = Math.floor(Math.random()* game_grid[x2].length);
 let x = Math.floor(Math.random()* 4) + 2;
@@ -36,19 +34,23 @@ let y = Math.floor(Math.random()* game_grid[x].length);
 let third = Math.floor(Math.random()*1)+7;
 let thirdx = Math.floor(Math.random()*7)+2;
 
+const socket = io('/game')
+socket.on("updatePos", ({player, pos}) => {
+    player_pos[player] = pos
+})
+socket.on("updateEnemies", data => {
+    [x, y, x2, y2, thirdx, third] = data;
+})
+socket.on("updateBpm", data => {
+    document.getElementById('bpm').value = data
+    fbp = FRAMERATE/data/60;
+})
 var beats = 0;
-if (x == x2){
-    if (x<=6){
-        x =x+1;
-    }
-    else{
-        x2=x2+1;
-    }
-}
 
 function change_bpm(){
     new_bpm = document.getElementById('bpm').value;
     if (new_bpm >= 1){
+        socket.emit('newBpm', new_bpm)
         fpb = FRAMERATE/new_bpm/60;
         console.log(`update FRAMERATE:${FRAMERATE} fpb:${fpb}`);
     }
@@ -66,13 +68,9 @@ function player_move(num, e){
         if(!key_flag){
             key_flag = true;
             if(valid_flag){
-                //gridEl.style.color = 'green';
-                document.getElementById('hit').innerHTML = "GREAT";
-                document.getElementById('hit').style.color = 'green';
+                gridEl.style.color = 'green';
                 if(bonus_flag){
-                    //gridEl.style.color = 'orange';
-                    document.getElementById('hit').innerHTML = "OKAY";
-                    document.getElementById('hit').style.color = 'ORANGE';
+                    gridEl.style.color = 'orange';
                     if(multiplier < 2.0){
                         multiplier += 0.1;
                     }
@@ -94,6 +92,7 @@ function player_move(num, e){
                                 else if(game_grid[player_pos[num][0]-1][player_pos[num][1]] == null){
                                     game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                     player_pos[num][0] -= 1;
+                                    socket.emit('newPos', {player: num, pos: player_pos[num]})
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]-1][player_pos[num][1]])){
@@ -125,6 +124,7 @@ function player_move(num, e){
                                 else if(game_grid[player_pos[num][0]+1][player_pos[num][1]] == null){
                                     game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                     player_pos[num][0] += 1;
+                                    socket.emit('newPos', {player: num, pos: player_pos[num]})
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]+1][player_pos[num][1]])){
@@ -156,6 +156,7 @@ function player_move(num, e){
                                 else if (game_grid[player_pos[num][0]][player_pos[num][1]-1] == null){
                                     game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                     player_pos[num][1] -= 1;
+                                    socket.emit('newPos', {player: num, pos: player_pos[num]})
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                             }
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]-1])){
@@ -187,6 +188,7 @@ function player_move(num, e){
                                 else if (game_grid[player_pos[num][0]][player_pos[num][1]+1] == null){
                                     game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                     player_pos[num][1] += 1;
+                                    socket.emit('newPos', {player: num, pos: player_pos[num]})
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]+1])){
@@ -206,9 +208,7 @@ function player_move(num, e){
                             break;
                         default:
                             key_flag = false;
-                            //gridEl.style.color = 'blue';
-                            document.getElementById('hit').innerHTML = "READY";
-                            document.getElementById('hit').style.color = 'blue';
+                            gridEl.style.color = 'blue';
                     }
                     last_player_move[num] = 0;
                 }
@@ -228,9 +228,7 @@ function player_move(num, e){
                     case 68:
                     case 83:
                     case 87:
-                        //gridEl.style.color = 'red';
-                        document.getElementById('hit').innerHTML = "MISS";
-                        document.getElementById('hit').style.color = 'red';
+                        gridEl.style.color = 'red';
                         multiplier = 1.0;
                         break;
                     default:
@@ -259,7 +257,7 @@ function display_held_items(){
 
 function display_game_grid(){
     gridEl = document.getElementById('game_grid');
-    gridEl.innerHTML = '<br>############<br>';
+    gridEl.innerHTML = '############<br>';
     for(var i = 0; i<10; ++i){
         gridEl.innerHTML += '#';
         for(var j=0; j<10; ++j){
@@ -267,7 +265,7 @@ function display_game_grid(){
             for(var num = 0; num < num_players; num++){
                 if( (i == player_pos[num][0]) && (j == player_pos[num][1]) && (!filled_flag)){
                     if (num == player_num){
-                        gridEl.innerHTML += '<img src="/assets/player.png">';
+                        gridEl.innerHTML += 'U';
                     }
                     else {
                         gridEl.innerHTML += 'P';
@@ -277,23 +275,13 @@ function display_game_grid(){
             }
             if(filled_flag){null;}
             else if( ( (i == x) && (j == y) ) || ( (i == x2) && (j == y2) ) || ( (i==third) && (j==thirdx) ) ){
-              if(j == y2) gridEl.innerHTML += '<img src="/assets/enemy1.gif">';
-              else gridEl.innerHTML += '<img src="/assets/enemy2.gif">';
+                gridEl.innerHTML += 'E'
             }
             else if(game_grid[i][j] == null){
-              gridEl.innerHTML += '&nbsp;'
+                gridEl.innerHTML += '&nbsp;'
             }
             else if(!isNaN(game_grid[i][j])){
-              if(glasses[game_grid[i][j]] == 1){
-                gridEl.innerHTML += '<img src="/assets/drink1.png">';
-              }
-              else if(glasses[game_grid[i][j]] == 2){
-                gridEl.innerHTML += '<img src="/assets/drink2.png">';
-              }
-              else if(glasses[game_grid[i][j]] == 3){
-                gridEl.innerHTML += '<img src="/assets/drink3.png">';
-              }
-              else gridEl.innerHTML += 0;//glasses[game_grid[i][j]];
+                gridEl.innerHTML += glasses[game_grid[i][j]];
             }
             else {
                 gridEl.innerHTML += game_grid[i][j];
@@ -301,11 +289,11 @@ function display_game_grid(){
         }
         gridEl.innerHTML += '#<br>';
     }
-    gridEl.innerHTML += '############';
+    gridEl.innerHTML += '############<br>';
 }
 
 function generate_upcoming_beats(){
-    beat_shelf = [,,,,,,];
+    beat_shelf = [,,,,,'|',];
     //console.log(upcoming_beats)
     for(var i=0; i<upcoming_beats.length; ++i){
         upcoming_beats[i] += 1/FRAMERATE;
@@ -349,15 +337,13 @@ function generate_upcoming_beats(){
     for(var i=0; i<6; ++i){
         if(beat_shelf[i] == null){gridEl.innerHTML += '&nbsp;';}
         else{
-            //gridEl.innerHTML += beat_shelf[i];
-            gridEl.innerHTML += '<img src="/assets/beat.png">';
+            gridEl.innerHTML += beat_shelf[i];
         }
     }
     for(var i=5; i>=0; --i){
         if(beat_shelf[i] == null){gridEl.innerHTML += '&nbsp;';}
         else{
-            //gridEl.innerHTML += beat_shelf[i];
-            gridEl.innerHTML += '<img src="/assets/beat.png">';
+            gridEl.innerHTML += beat_shelf[i];
         }
     }
     gridEl.innerHTML += '<br>------------<br>';
@@ -368,7 +354,6 @@ function game_loop(){
     attack();
     display_game_grid();
     generate_upcoming_beats();
-    display_held_items();
     document.getElementById('player mult').innerHTML = 'x' + multiplier.toFixed(1);
     beat_offset += 1;
     while (beat_offset>=fpb){beat_offset -= fpb;}
@@ -400,49 +385,50 @@ function add_glass() {
 
 function reset_conditions() {
     gridEl = document.getElementById('game_grid');
-    //gridEl.style.color = 'blue';
-    document.getElementById('hit').innerHTML = "READY";
-    document.getElementById('hit').style.color = 'blue';
+    gridEl.style.color = 'blue';
     key_flag = false;
 
 }
 
 function onCollisions() {
     gridEl = document.getElementById('game_grid');
-    if (y2 == 10) {
-        y2 = 0;
-    }
-    else {
-    y2 =y2+1;
-    }
-    /*game_grid[x2][y2] ="E";
-    game_grid[x2][y2-1]= null;*/
-    if (thirdx == 8){
-        game_grid[third][thirdx]=null;
-        thirdx = 1;
-    }
-    else{
-        thirdx = thirdx +1;
-    }
-    /*game_grid[third][thirdx] ="E";
-    if (thirdx != 1){
-        game_grid[third][thirdx-1]= null;
-    }*/
-
-    if ( beats == 1){
-        beats = 0;
-        if (y == 10) {
-            y = 0;
+    if(player_num == 0){
+        if (y2 == 10) {
+            y2 = 0;
         }
         else {
-            y =y+1;
+            y2 =y2+1;
         }
-        /*game_grid[x][y] ="E";
-        game_grid[x][y-1]= null;*/
+        /*game_grid[x2][y2] ="E";
+        game_grid[x2][y2-1]= null;*/
+        if (thirdx == 8){
+            game_grid[third][thirdx]=null;
+            thirdx = 1;
+        }
+        else{
+            thirdx = thirdx +1;
+        }
+        /*game_grid[third][thirdx] ="E";
+        if (thirdx != 1){
+            game_grid[third][thirdx-1]= null;
+        }*/
+
+        if ( beats == 1){
+            beats = 0;
+            if (y == 10) {
+                y = 0;
+            }
+            else {
+                y =y+1;
+            }
+            /*game_grid[x][y] ="E";
+            game_grid[x][y-1]= null;*/
+        }
+        else {
+            beats = beats+1;
+        }
     }
-    else {
-        beats = beats+1;
-    }
+    socket.emit("newEnemies", [x, y, x2, y2, thirdx, third])
 }
 
 function attack() {
