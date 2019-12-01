@@ -5,9 +5,11 @@ const PORT = process.env.PORT || 5000
 const { Pool } = require('pg');
 var app = express();
 // variables for socket.io
-var server = require('http').Server(app);
+var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-// server.listen(PORT);
+server.listen(PORT, () => {
+  console.log(`Express App and Socket IO server listing on PORT ${PORT}`)
+});
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
@@ -22,30 +24,30 @@ app.get('/test', (req, res) => res.send('test'))
 module.exports = server;
 
 app.get('/register', async (req, res) => {  //loads registerform
-    try {
-        res.render('pages/register', name);
-    } catch (err) {
-        console.error(err);
-        res.send("Error " + err);
-    }
+  try {
+    res.render('pages/register', name);
+  } catch (err) {
+    console.error(err);
+    res.send("Error " + err);
+  }
 })
 var pool = new Pool({
-    ssl: true,
-    connectionString: process.env.DATABASE_URL
-    //connectionString:"postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
+  ssl: true,
+  //connectionString: process.env.DATABASE_URL
+  connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
 });
 // var app = express();
 // app.use(express.urlencoded());
 // app.use(express.static(path.join(__dirname, 'public')));
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'ejs');
-app.get('/', (req, res) => res.render("pages/club", {"props": {loginFailed: false}}));
+app.get('/', (req, res) => res.render("pages/club", { "props": { loginFailed: false } }));
 app.get('/hello', (req, res) => res.send('Hello There!'));
 
-app.get('/play', (req,res) => {
+app.get('/play', (req, res) => {
   res.render("pages/play")
 })
-app.get('/game', (req,res) => {
+app.get('/game', (req, res) => {
   res.render("pages/game")
 })
 
@@ -82,9 +84,9 @@ app.post('/deleted', (req, res) => {
 
 app.get('/delete', (req, res) => res.render('pages/delete'))
 app.get('/:name/delete', (req, res) => {
-    var results = {};
-    results.name = req.params.name;
-    res.render('pages/delete', { 'user': results });
+  var results = {};
+  results.name = req.params.name;
+  res.render('pages/delete', { 'user': results });
 });
 
 app.get('/deleted', (req, res) => res.render('pages/admin'))
@@ -117,43 +119,43 @@ app.post('/:name/deleted', (req, res) => {
             //res.render('pages/admin', { 'rows': results })
         });
     });
-});
+  });
 
 //registration and login
-app.post('/club/reg', (req,res) => {        // loads new reg to database +check if username already exist
-  //console.log(req.body);
+app.post('/club/reg', (req, res) => {        // loads new reg to database +check if username already exist
+  console.log(req.body);
   let body = req.body;
-    let userCheck = `SELECT * FROM users WHERE username = '${body.username}';`;
-    //console.log(userCheck);
-    pool.query(userCheck, (error, result) => {
+  let userCheck = `SELECT * FROM users WHERE username = '${body.username}';`;
+  pool.query(userCheck, (error, result) => {
     if (result.rows.length > 0) {
-       //console.log("res: ", res);
-      res.render('pages/club', {'props': {regFailed: true}});
+      res.render('pages/club', { 'props': { regFailed: true } });
       return;
     }
-      var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
-      var getStatsQuery = `INSERT INTO stats (username , gamesplayed, gameswon, gameslost, gamesdrawn, highscore, totalpoints) VALUES ('${body.username}' , 0, 0, 0, 0, 0, 0);`;
-    pool.query(getUsersQuery,(error,result)=>{
-      if (error){
+    var getUsersQuery = `INSERT INTO users (username , password) VALUES ('${body.username}' , '${body.password}');`;
+    var getStatsQuery = `INSERT INTO stats (username , gamesplayed, gameswon, gameslost, gamesdrawn, highscore, totalpoints) VALUES ('${body.username}' , 0, 0, 0, 0, 0, 0);`;
+    console.log(getUsersQuery);
+    pool.query(getUsersQuery, (error, result) => {
+      if (error) {
         res.send("error");
         console.log(error);
-       }
-      });
-     // console.log("passed User Query\n");
+      }
+    });
+    console.log("passed User Query\n");
     pool.query(getStatsQuery, (error, result) => {
       if (error) {
-         res.send("error");
-         console.log(error);
-         }
-        });
-        //console.log("res: ", res);
-      res.render("pages/club", { props: { 'login': true } });
+        res.send("error");
+        console.log(error);
+      }
+    });
+    res.render("pages/club", { props: { 'login': true } });
   });
 })
 
 app.get("/club", (req, res) => {
-    res.render("pages/club", {"props": {loginFailed: false}})
+  res.render("pages/club", { "props": { loginFailed: false } })
 })
+
+
 
 app.post("/club/login", (req, res) => {
   //console.log(req.body);
@@ -185,14 +187,26 @@ app.post("/club/login", (req, res) => {
 })
 
 app.get("/club/:name/stats", (req, res) => {
-    let name = req.params.name;
-    let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
-    let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
-    let results = {};
-    pool.query(loadStats, (error, result) => {
-        if (error) {
-            res.send("error");
-            console.log(error);
+  let name = req.params.name;
+  let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
+  let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
+  let results = {};
+  pool.query(loadStats, (error, result) => {
+    if (error) {
+      res.send("error");
+      console.log(error);
+    }
+    results.stats = result.rows[0];
+    pool.query(loadRank, (error, result) => {
+      if (error) {
+        res.send("error");
+        console.log(error);
+      }
+      console.log(result);
+      findrank = (result) ? result.rows : null;
+      findrank.forEach(function (user) {
+        if (user.username == name) {
+          results.rank = user.rank;
         }
         results.stats = result.rows[0];
         pool.query(loadRank, (error, result) => {
@@ -225,26 +239,48 @@ app.get("/club/:name/stats", (req, res) => {
             res.render('pages/stats', { 'rows': results });
         });
     });
+  });
 
+  });
 });
 
 app.get("/club/:name/leaderboard", (req, res) => {
-    var name = req.params.name;
-    let loadLeaderboard = `SELECT username, highscore, RANK() OVER (ORDER BY highscore DESC) FROM stats limit 10;`;
-    let results = {};
-    var player;
-    pool.query(loadLeaderboard, (error, result) => {
+  var name = req.params.name;
+  let loadLeaderboard = `SELECT username, highscore, RANK() OVER (ORDER BY highscore DESC) FROM stats limit 10;`;
+  let results = {};
+  var player;
+  pool.query(loadLeaderboard, (error, result) => {
+    if (error) {
+      res.send(error);
+      console.log(error);
+    }
+    var foundplayer = false;
+    var leaderboard = (result) ? result.rows : null;
+    leaderboard.forEach(function (user) {
+      if (user.username == name) {
+        foundplayer = true;
+        player = user;
+      }
+    });
+    results.topten = leaderboard;
+    if (foundplayer == true) {
+      results.player = player;
+      console.log(results);
+      res.render('pages/leaderboard', { 'rows': results });
+    }
+    else {
+      let findplayer = `SELECT username, highscore, RANK() OVER (ORDER BY highscore DESC) FROM stats offset 10;`;
+      pool.query(findplayer, (error, result) => {
         if (error) {
-            res.send(error);
-            console.log(error);
+          res.send(error);
+          console.log(error);
         }
-        var foundplayer = false;
-        var leaderboard = (result) ? result.rows : null;
-        leaderboard.forEach(function (user) {
-            if (user.username == name) {
-                foundplayer = true;
-                player = user;
-            }
+        var lookforplayer = (result) ? result.rows : null;
+        console.log("look for player:\n", lookforplayer);
+        lookforplayer.forEach(function (user) {
+          if (user.username == name) {
+            player = user;
+          }
         });
         results.topten = leaderboard;
         if (foundplayer == true) {
@@ -272,6 +308,8 @@ app.get("/club/:name/leaderboard", (req, res) => {
             });
         }
     });
+  }
+  });
 });
 
 app.get("/club/admin/:name/leaderboard", (req, res) => {
@@ -292,15 +330,15 @@ app.get("/club/admin/:name/leaderboard", (req, res) => {
 });
 
 app.get('/music-client', function (req, res) {
-    res.render('pages/music-client');
+  res.render('pages/music-client');
 });
 
-app.get('/music', (req,res) => {
-    res.render('pages/music');
+app.get('/music', (req, res) => {
+  res.render('pages/music');
 })
 
-app.post('/testPost', (req,res) => {
-    console.log(req.body)
+app.post('/testPost', (req, res) => {
+  console.log(req.body)
 })
 
 app.post('/playing', (req,res) => {
@@ -423,14 +461,14 @@ var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
  * @param  {number} length The length of the string
  * @return {string} The generated string
  */
-var generateRandomString = function(length) {
-var text = '';
-var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+var generateRandomString = function (length) {
+  var text = '';
+  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-for (var i = 0; i < length; i++) {
+  for (var i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
-}
-return text;
+  }
+  return text;
 };
 
 var stateKey = 'spotify_auth_state';
@@ -441,55 +479,55 @@ app.use(express.static(__dirname + '/public'))
 app.use(cors())
 app.use(cookieParser());
 
-app.get('/spotify-login', function(req, res) {
+app.get('/spotify-login', function (req, res) {
 
-var state = generateRandomString(16);
-res.cookie(stateKey, state);
+  var state = generateRandomString(16);
+  res.cookie(stateKey, state);
 
-// your application requests authorization
-// var scope = 'user-read-private user-read-email';
-var scope = 'user-read-private user-read-email user-read-playback-state';
-res.redirect('https://accounts.spotify.com/authorize?' +
+  // your application requests authorization
+  // var scope = 'user-read-private user-read-email';
+  var scope = 'user-read-private user-read-email user-read-playback-state';
+  res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
-    response_type: 'code',
-    client_id: client_id,
-    scope: scope,
-    redirect_uri: redirect_uri,
-    state: state
+      response_type: 'code',
+      client_id: client_id,
+      scope: scope,
+      redirect_uri: redirect_uri,
+      state: state
     }));
 });
 
-app.get('/callback', function(req, res) {
+app.get('/callback', function (req, res) {
 
-// your application requests refresh and access tokens
-// after checking the state parameter
+  // your application requests refresh and access tokens
+  // after checking the state parameter
 
-var code = req.query.code || null;
-var state = req.query.state || null;
-var storedState = req.cookies ? req.cookies[stateKey] : null;
+  var code = req.query.code || null;
+  var state = req.query.state || null;
+  var storedState = req.cookies ? req.cookies[stateKey] : null;
 
-if (state === null || state !== storedState) {
+  if (state === null || state !== storedState) {
     res.redirect('/#' +
-    querystring.stringify({
+      querystring.stringify({
         error: 'state_mismatch'
-    }));
-} else {
+      }));
+  } else {
     res.clearCookie(stateKey);
     var authOptions = {
-    url: 'https://accounts.spotify.com/api/token',
-    form: {
+      url: 'https://accounts.spotify.com/api/token',
+      form: {
         code: code,
         redirect_uri: redirect_uri,
         grant_type: 'authorization_code'
-    },
-    headers: {
+      },
+      headers: {
         'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
-    },
-    json: true
+      },
+      json: true
     };
 
-    request.post(authOptions, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
+    request.post(authOptions, function (error, response, body) {
+      if (!error && response.statusCode === 200) {
 
         var access_token = body.access_token,
             refresh_token = body.refresh_token;
@@ -497,14 +535,14 @@ if (state === null || state !== storedState) {
         console.log('\n')
         console.log(body.refresh_token);
         var options = {
-        url: 'https://api.spotify.com/v1/me',
-        headers: { 'Authorization': 'Bearer ' + access_token },
-        json: true
+          url: 'https://api.spotify.com/v1/me',
+          headers: { 'Authorization': 'Bearer ' + access_token },
+          json: true
         };
 
         // use the access token to access the Spotify Web API
-        request.get(options, function(error, response, body) {
-        console.log(body);
+        request.get(options, function (error, response, body) {
+          console.log(body);
         });
 
         // we can also pass the token to the browser to make requests from there
@@ -512,111 +550,111 @@ if (state === null || state !== storedState) {
         // res.redirect('/#' +
         // res.redirect('http://localhost:5000/music/#' +
         res.redirect('./music/#' +
-        querystring.stringify({
+          querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token
-        }));
-    } else {
+          }));
+      } else {
         res.redirect('/#' +
-        querystring.stringify({
+          querystring.stringify({
             error: 'invalid_token'
-        }));
-    }
+          }));
+      }
     });
-}
+  }
 });
 
-app.get('/refresh_token', function(req, res) {
+app.get('/refresh_token', function (req, res) {
 
-// requesting access token from refresh token
-var refresh_token = req.query.refresh_token;
-var authOptions = {
+  // requesting access token from refresh token
+  var refresh_token = req.query.refresh_token;
+  var authOptions = {
     url: 'https://accounts.spotify.com/api/token',
     headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
     form: {
-    grant_type: 'refresh_token',
-    refresh_token: refresh_token
+      grant_type: 'refresh_token',
+      refresh_token: refresh_token
     },
     json: true
-};
+  };
 
-request.post(authOptions, function(error, response, body) {
+  request.post(authOptions, function (error, response, body) {
     if (!error && response.statusCode === 200) {
-    var access_token = body.access_token;
-    res.send({
+      var access_token = body.access_token;
+      res.send({
         'access_token': access_token
-    });
+      });
     }
-});
+  });
 });
 
 app.get("/club/:name/home", (req, res) => {
-    var name = req.params.name;
-    var queryString = `SELECT * FROM users WHERE username='${name}';`;
-    pool.query(queryString, (error, result) => {
-        if (error)
-            res.send(error);
-        if (result.rows.length > 0) {
-            if (result.rows[0].type === "admin") {
-                var getUserQuery = `SELECT * FROM users`;
-                pool.query(getUserQuery, (error, result) => {
-                    if (error)
-                        res.end(error);
-                    var results = { 'rows': result.rows };
-                    res.render('pages/admin', results)  // load admin page for admins
-                })
-                return;
-            }
-            else {
-                res.render("pages/play", { 'props': { username: name } });    // load user page for users
-                return;
-            }
-        }
-        res.render('pages/club', { 'props': { loginFailed: true } });
-    });
+  var name = req.params.name;
+  var queryString = `SELECT * FROM users WHERE username='${name}';`;
+  pool.query(queryString, (error, result) => {
+    if (error)
+      res.send(error);
+    if (result.rows.length > 0) {
+      if (result.rows[0].type === "admin") {
+        var getUserQuery = `SELECT * FROM users`;
+        pool.query(getUserQuery, (error, result) => {
+          if (error)
+            res.end(error);
+          var results = { 'rows': result.rows };
+          res.render('pages/admin', results)  // load admin page for admins
+        })
+        return;
+      }
+      else {
+        res.render("pages/play", { 'props': { username: name } });    // load user page for users
+        return;
+      }
+    }
+    res.render('pages/club', { 'props': { loginFailed: true } });
+  });
 });
 
 app.get("/club/admin/:name/stats", (req, res) => {
-    let name = req.params.name;
-    let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
-    let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
-    let results = {};
-    pool.query(loadStats, (error, result) => {
-        if (error) {
-            res.send("error");
-            console.log(error);
+  let name = req.params.name;
+  let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
+  let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
+  let results = {};
+  pool.query(loadStats, (error, result) => {
+    if (error) {
+      res.send("error");
+      console.log(error);
+    }
+    results.stats = result.rows[0];
+    pool.query(loadRank, (error, result) => {
+      if (error) {
+        res.send("error");
+        console.log(error);
+      }
+      // console.log(result);
+      findrank = (result) ? result.rows : null;
+      findrank.forEach(function (user) {
+        if (user.username == name) {
+          results.rank = user.rank;
         }
-        results.stats = result.rows[0];
-        pool.query(loadRank, (error, result) => {
-            if (error) {
-                res.send("error");
-                console.log(error);
-            }
-           // console.log(result);
-            findrank = (result) ? result.rows : null;
-            findrank.forEach(function (user) {
-                if (user.username == name) {
-                    results.rank = user.rank;
-                }
-            });
-            // console.log("rank of " + name + " :" + results.rank);
-            //results.rank = result.rows[0].rank;
-            if (results.rank == 1) {
-                results.color = "#D4AF37";
-            }
-            else if (results.rank == 2) {
-                results.color = "#C0C0C0";
-            }
-            else if (results.rank == 3) {
-                results.color = "#cd7f32";
-            }
-            else {
-                results.color = "white";
-            }
-            //console.log("color= ", results.color);
-            res.render('pages/stats_admin', { 'rows': results });
-        });
+      });
+      // console.log("rank of " + name + " :" + results.rank);
+      //results.rank = result.rows[0].rank;
+      if (results.rank == 1) {
+        results.color = "#D4AF37";
+      }
+      else if (results.rank == 2) {
+        results.color = "#C0C0C0";
+      }
+      else if (results.rank == 3) {
+        results.color = "#cd7f32";
+      }
+      else {
+        results.color = "white";
+      }
+      //console.log("color= ", results.color);
+      res.render('pages/stats_admin', { 'rows': results });
     });
+  });
 
 });
 
@@ -757,30 +795,91 @@ app.get('/club/admin/:name/songselect', (req, res) => {
 });
 
 // creating and joining rooms
-const rooms = { name:{} }
-const users = {  }
-app.get('/lobby', (req, res) => {
-  res.render('pages/lobby', { rooms: rooms })
+
+const rooms = { 
+  name: []
+}
+const users = {}
+app.get('/club/:name/lobby', (req, res) => {
+  res.render('pages/lobby', { rooms, username: req.params.name })
 })
 app.post('/room', (req, res) => {
-  if(rooms[req.body.room] != null) {
+  const {room, username} = req.body
+  if (rooms[room] != null) {
     return res.redirect('pages/lobby')
   }
-  rooms[req.body.room] = { users: {} }
-  res.redirect('/room/' + req.body.room)
-  io.emit('room-created', req.body.room)
-})
-app.get('/room/:room', (req, res) => {
-  io.emit('user-joined', "hello")
-  res.render('pages/room', { roomName: req.params.room, users: users })
+  rooms[room] = []
+  console.log(`creating new room ${room}`)
+  io.of('lobby').emit('room-created', room)
+  res.redirect(`/room/${room}/${username}`)
 })
 
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+app.get('/room/:room/:username', (req, res) => {
+  const {room, username} = req.params
+  if(rooms[room].length < 1){
+    res.render('pages/room', { roomName: room, users, username })
+  }else{
+    res.render('pages/lobby', {rooms, username, error: `room '${room}' is full`})
+  }
+})
 
 
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function (req, res) {
-    res.statusCode = 404;
-    res.render('pages/404');
+  res.statusCode = 404;
+  res.render('pages/404');
 });
-// })
+
+//sockets
+var playerCount = 0;
+var players = {};
+
+io.of('chat').on('connection', socket => {
+
+  socket.on('join', ({roomName: room, username}) => {
+    console.log(`user '${username}' joining room '${room}'`)
+    rooms[room].push(username)
+    socket.join(room)
+  })
+
+  socket.on('leave', ({roomName: room, username}) => {
+    console.log(`user '${username}' leaving room '${room}'`)
+    console.log(rooms)
+    rooms[room].splice(rooms[room].indexOf(username), 1)
+    console.log(rooms)
+    socket.leave(room)
+  })
+
+  socket.on('message', (data) => {
+    const { message, room } = data;
+    console.log(`message: ${message} \n to room ${room}`)
+    io.of('chat').to(room).emit('newMessage', message)
+  })
+
+  socket.on('disconnect', function () {
+    playerCount--;
+    console.log('user disconnected');
+    delete players[socket.id];
+    io.emit('disconnect', socket.id);
+  });
+
+
+  // create a new player and add it to the players object
+  players[socket.id] = {
+    //add position
+    colour: "blue",
+    playerId: socket.id,
+    username: socket.username,
+  }
+  io.on('updateColour', function (colourData) {
+    players[socket.id].colour = colourData.colour;
+    socket.broadcast.emit('updateSprite', players[socket.id]);
+  });
+})
+
+io.of("lobby").on('connection', socket => {
+  console.log("player joined lobby")
+  socket.on('disconnect', () => {
+    console.log('player leaving lobby')
+  } )
+})
