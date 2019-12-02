@@ -52,6 +52,11 @@ socket.on("updateFilledGlasses", data => {
 socket.on("updateScores", data => {
 
 })
+const playerScores = [0,0,0,0]
+socket.on("updateScore", ({player, score}) => {
+    playerScores[player] = score;
+})
+
 
 var beats = 0;
 
@@ -71,6 +76,7 @@ function game_end(){
     }
     console.log(document.getElementById('player score'));
     document.getElementById('scorenum').value = document.getElementById('player score').innerHTML;
+    socket.emit("newScore", {data: {player: player_num, score: score}, room})
 }
 
 function player_move(num, e){

@@ -1012,6 +1012,10 @@ io.of('game').on('connection', socket => {
     console.log(`user leaving ${room}, count: ${playerCount[room]}`)
     socket.leave(room)
   })
+socket.on("newScore", ({data, room}) => {
+  console.log(`${room}: ${JSON.stringify(data)}`)
+  io.of("game").to(room).emit("updateScore", data)
+  })
   socket.on("newPos", ({data, room}) => {
     console.log(`${room}: ${JSON.stringify(data)}`)
     io.of('game').to(room).emit('updatePos', data)
@@ -1032,6 +1036,7 @@ io.of('game').on('connection', socket => {
         io.of('game').to(room).emit('updateScores', data)
     })
 })
+
 
 
 io.of('results').on('connection', socket => {
