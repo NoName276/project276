@@ -767,7 +767,7 @@ app.post('/room', (req, res) => {
   res.redirect(`/room/${room}/${username}`)
 })
 
-app.get('/room/:room/:username', (req, res) => {
+app.get('/room/room/:room/:username', (req, res) => {
   const {room, username} = req.params
   if(rooms[room].indexOf(username) != -1){
     rooms[room].splice(rooms[room].indexOf(username), 1)
