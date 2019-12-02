@@ -23,7 +23,7 @@ function game_end(){
 }
 
 function player_move(num, e){
-    gridEl = document.getElementById('game_grid');
+    //gridEl = document.getElementById('game_grid');
     var pressed = e.which || e.keyCode;
     //console.log(pressed)
     if(game_running){
@@ -1002,7 +1002,7 @@ describe("CLEAN UP POST TEST", function () {
     });
 });
 
-describe("Automated Game Functions", function () {
+describe("Game Functions", function () {
     describe("game_end", function () {
         it("game_running true", function () {
             game_running = true;
@@ -1013,6 +1013,9 @@ describe("Automated Game Functions", function () {
             game_running = false;
             game_end()
             assert.equal(false, game_running)
+            var array = []
+            array[1] = "pasta"
+            console.log(array)
         })
     })
 });
