@@ -11,6 +11,7 @@ server.listen(PORT, () => {
   console.log(`Express App and Socket IO server listing on PORT ${PORT}`)
 });
 
+
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -34,7 +35,7 @@ app.get('/register', async (req, res) => {  //loads registerform
 var pool = new Pool({
   ssl: true,
   connectionString: process.env.DATABASE_URL
-  //connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
+  // connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
 });
 // var app = express();
 // app.use(express.urlencoded());
@@ -47,9 +48,9 @@ app.get('/hello', (req, res) => res.send('Hello There!'));
 app.get('/play', (req, res) => {
   res.render("pages/play")
 })
-app.get('/game', (req, res) => {
-  res.render("pages/game")
-})
+// app.get('/game', (req,res) => {
+//   res.render("pages/game")
+// })
 
 /*  IN CASE WE WANT TO REVERT BACK TO THESE DELETE VERSIONS
  *
@@ -376,7 +377,7 @@ app.post('/playing', (req,res) => {
                 queryData.duration = data.body.track.duration;
                 queryData.tempo = data.body.track.tempo;
                 // res.send(queryData)
-
+                queryData.track = "silence"
                 // res.render('pages/playing', queryData)
             res.render('pages/game', queryData)
             }, function(err) {
