@@ -847,7 +847,7 @@ app.get('/club/:room/:username/game/:playerNum', (req, res) => {
 })
 
 app.post('/club/:name/updatingstats', (req, res) => {
-    console.log("get");
+    console.log("post");
     var name = req.params.name;
     var playerscore = req.body.scorenum;
     console.log(playerscore);
