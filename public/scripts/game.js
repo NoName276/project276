@@ -46,7 +46,7 @@ socket.on("updateEnemies", data => {
 })
 socket.on("updateBpm", data => {
     document.getElementById('bpm').value = data
-    fbp = FRAMERATE/data/60;
+    fpb = FRAMERATE/data/60;
 })
 socket.on("updateGlasses", (data) => {
     glasses = data.glasses
@@ -122,7 +122,7 @@ function player_move(num, e){
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]-1][player_pos[num][1]])){
-                                    if(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] != 0 && player_glasses[num].length < 9){
+                                    if(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]]);
                                         bumphit.play();
                                         glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] = 0;
@@ -156,7 +156,7 @@ function player_move(num, e){
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]+1][player_pos[num][1]])){
-                                    if(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] != 0 && player_glasses[num].length < 9){
+                                    if(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]]);
                                         bumphit.play();
                                         glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] = 0;
@@ -190,7 +190,7 @@ function player_move(num, e){
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                             }
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]-1])){
-                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] != 0 && player_glasses[num].length < 9){
+                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]]);
                                         bumphit.play();
                                         glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] = 0;
@@ -224,7 +224,7 @@ function player_move(num, e){
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]+1])){
-                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] != 0 && player_glasses[num].length < 9){
+                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] != 0 && player_glasses[num].length < 8){
                                     player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]]);
                                     bumphit.play();
                                     glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] = 0;
