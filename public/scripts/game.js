@@ -27,12 +27,14 @@ var score = 0;
 var multiplier = 1.0;
 var player_glasses = [[],[],[],[],];
 var last_player_move = [0,0,0,0,];
-let x2 = Math.floor(Math.random()* 4) + 2;
-let y2 = Math.floor(Math.random()* game_grid[x2].length);
-let x = Math.floor(Math.random()* 4) + 2;
-let y = Math.floor(Math.random()* game_grid[x].length);
-let third = Math.floor(Math.random()*1)+7;
-let thirdx = Math.floor(Math.random()*7)+2;
+// if(player_num == 0){
+//     let x2 = Math.floor(Math.random()* 4) + 2;
+//     let y2 = Math.floor(Math.random()* 10);
+//     let x = Math.floor(Math.random()* 4) + 2;
+//     let y = Math.floor(Math.random()* 10);
+//     let third = Math.floor(Math.random()*1)+7;
+//     let thirdx = Math.floor(Math.random()*7)+2;
+// }
 
 const socket = io('/game')
 socket.on("updatePos", ({player, pos}) => {
@@ -431,8 +433,8 @@ function onCollisions() {
         else {
             beats = beats+1;
         } 
+        socket.emit("newEnemies", [x, y, x2, y2, thirdx, third])  
     }
-    socket.emit("newEnemies", [x, y, x2, y2, thirdx, third])  
 }
 
 function attack() {

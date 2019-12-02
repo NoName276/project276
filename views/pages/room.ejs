@@ -33,7 +33,7 @@
       })
 
       socket.on('launchGame', (members) => {
-        playerNum = members.indexOf(<%=username%>)
+        playerNum = members.indexOf('<%=username%>')
         window.location.href = `/club/<%=roomName%>/<%=username%>/game/${playerNum}`;
       })
 

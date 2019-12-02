@@ -54,7 +54,13 @@
             <script>
                 var player_num = <%= playerNumber %>
                 var num_players = <%= numberOfPlayers %>
-                var player_name = <%= username %>
+                var player_name = <% if(username){ %> '<%= username %>' <% }else{ %> <%= 'undefined' %> <%}%>
+                var x = <%= enemiesStart[0] %>
+                var y = <%= enemiesStart[1] %>
+                var x2 = <%= enemiesStart[2] %>
+                var y2 = <%= enemiesStart[3] %>
+                var thirdx = <%= enemiesStart[4] %>
+                var third = <%= enemiesStart[5] %>
             </script>
             <script type="text/javascript" src="/scripts/game.js"></script>  
             <input type="button" id="singleplayereturn" value="Back to Home"  /> 

@@ -333,15 +333,15 @@ app.get('/music-client', function (req, res) {
   res.render('pages/music-client');
 });
 
-app.get('/music/:username', (req, res) => {
-  res.render('pages/music', {username: res.params.username});
+app.get('/music', (req, res) => {
+  res.render('pages/music');
 })
 
 app.post('/testPost', (req, res) => {
   console.log(req.body)
 })
 
-app.post('/playing/:username', (req,res) => {
+app.post('/playing', (req,res) => {
     var token = req.body.tokenName;
     var spotifyApi = new SpotifyWebApi({
         clientId: '76399d6d66784fbd9b089a5363553e47',
@@ -355,7 +355,7 @@ app.post('/playing/:username', (req,res) => {
         // Output items
         console.log(data.body.is_playing)
         if (data.body.is_playing == false) {
-            res.redirect(`/music/${req.params.username}`)
+            res.redirect(`/music`)
             res.end('Play a song before playing!');
         } else {
             //console.log("Now Playing: ",data.body.item.artists[0].name);
@@ -370,7 +370,15 @@ app.post('/playing/:username', (req,res) => {
             queryData.accessToken = token + '';
             queryData.playerNumber = 0;
             queryData.numberOfPlayers = 1;
-            queryData.username = req.params.username
+            queryData.username = undefined;
+            queryData.enemiesStart = [
+              Math.floor(Math.random()* 4) + 2,
+              Math.floor(Math.random()* 10),
+              Math.floor(Math.random()* 4) + 2,
+              Math.floor(Math.random()* 10),
+              Math.floor(Math.random()*7)+2,
+              Math.floor(Math.random()*1)+7,
+            ]
             /* Get Audio Analysis for a Track */
             spotifyApi.getAudioAnalysisForTrack(queryData.uri)
             .then(function(data) {
@@ -455,8 +463,8 @@ var client_id = '76399d6d66784fbd9b089a5363553e47'; // 'CLIENT_ID'; // Your clie
 var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Your secret
 
 
-// var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
-var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
+var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
+// var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
 
 
 /**
@@ -482,7 +490,7 @@ app.use(express.static(__dirname + '/public'))
 app.use(cors())
 app.use(cookieParser());
 
-app.get('/spotify-login/:username', function (req, res) {
+app.get('/spotify-login', function (req, res) {
 
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
@@ -495,12 +503,12 @@ app.get('/spotify-login/:username', function (req, res) {
       response_type: 'code',
       client_id: client_id,
       scope: scope,
-      redirect_uri: `${redirect_uri}/${req.params.username}`,
+      redirect_uri: `${redirect_uri}`,
       state: state
     }));
 });
 
-app.get('/callback/:username', function (req, res) {
+app.get('/callback', function (req, res) {
 
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -828,11 +836,19 @@ app.get('/room/:room/:username', (req, res) => {
     res.render('pages/lobby', {rooms, username, error: `room '${room}' is full`})
   }
 })
-
+let enemiesStart = [
+  Math.floor(Math.random()* 4) + 2,
+  Math.floor(Math.random()* 10),
+  Math.floor(Math.random()* 4) + 2,
+  Math.floor(Math.random()* 10),
+  Math.floor(Math.random()*7)+2,
+  Math.floor(Math.random()*1)+7,
+]
 app.get('/club/:room/:username/game/:playerNum', (req, res) => {
+  console.log(enemiesStart)
   const {room, username, playerNum} = req.params
   res.render('pages/game', {
-    duration: 10,
+    duration: 60,
     playerNumber: playerNum,
     numberOfPlayers: rooms[room].length,
     username, 
@@ -840,6 +856,7 @@ app.get('/club/:room/:username/game/:playerNum', (req, res) => {
     name: 'someName',
     artist: 'someArtist',
     tempo: 60,
+    enemiesStart
   })
 })
 
@@ -884,6 +901,14 @@ io.of('chat').on('connection', socket => {
   });
 
   socket.on('startGame', (room) => {
+    enemiesStart = [
+      Math.floor(Math.random()* 4) + 2,
+      Math.floor(Math.random()* 10),
+      Math.floor(Math.random()* 4) + 2,
+      Math.floor(Math.random()* 10),
+      Math.floor(Math.random()*7)+2,
+      Math.floor(Math.random()*1)+7,
+    ]
     io.of('chat').to(room).emit('launchGame', rooms[room])
   })
 
@@ -914,9 +939,11 @@ io.of('game').on('connection', socket => {
     io.of('game').emit('updatePos', data)
   })
   socket.on("newEnemies", data => {
+    console.log(`new enemies: ${data}`)
     io.of('game').emit('updateEnemies', data)
   })
   socket.on("newBpm", data => {
+    console.log(`newBpm: ${data}`)
     io.of('game').emit('updateBpm', data)
   })
   socket.on("newGlasses", data => {
