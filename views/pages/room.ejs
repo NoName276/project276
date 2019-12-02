@@ -3,13 +3,6 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <title>tHe ClUb</title>
-  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-  <head>
     <meta charset="utf-8">
     <title>tHe ClUb</title>
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -22,21 +15,43 @@
       socket.emit('join', {roomName, username});
       socket.on('newMessage', function (data) {
         console.log(`new message: ${data}`)
+        const {message, username} = data;
         const newElement = document.createElement('li')
         newElement.className = 'message'
-        newElement.innerHTML = data;
+        newElement.innerHTML = `${username}: ${message}`;
         document.getElementById('messages').append(newElement);
       })
 
+      socket.on('userJoined', newUser => {
+        const userTag = document.createElement("p")
+        userTag.id = `user-${newUser}`
+        userTag.innerHTML = newUser;
+        document.getElementById('userList').append(userTag);
+      })
+
+      socket.on('userLeft', leavingUser => {
+        document.getElementById(`user-${leavingUser}`).remove()
+      })
+
+      socket.on('launchGame', () => {
+        window.location.href = '/club/<%=roomName%>/<%=username%>/game';
+      })
+
       function sendMessage(e) {
+        const messageNode = document.getElementById('userMessage')
         socket.emit('message', {
-          message: document.getElementById('userMessage').value,
-          room: roomName
+          message: messageNode.value,
+          room: roomName,
+          username
         });
+        messageNode.value = ''
         console.log("sent");
         e.preventDefault();
       }
 
+      function launch(){
+        socket.emit('startGame', roomName)
+      }
 
       function openForm(formToShow) {
         document.getElementById(formToShow).className = '';
@@ -56,12 +71,13 @@
   <div id="user-container">
     <h1>ThE ClUb</h1>
     <p>Invite players to this room: <%= roomName %></p>
-    <h2>Current players in this room:</h2>
-    <% Object.keys(users).forEach(user => { %>
-    <p><%= user %></p>
+    <div id="userList"><h2>Current players in this room:</h2>
+    <% users.forEach(user => { %>
+      <p id='user-<%=user%>'><%= user %></p>
     <% }) %>
+    </div>
   </div>
-  <button type="button" onclick="window.location.href = '/club/<%=username%>/game';">READY</button>
+  <button type="button" onclick="launch()">PLAY</button>
   <button type="button" onclick="window.location.href = '/club/<%=username%>/lobby';">BACK</button>
   <form action="/getSong" method="post"> 
     <select name="songs">

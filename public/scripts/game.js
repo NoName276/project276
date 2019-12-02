@@ -19,16 +19,14 @@ var game_grid = [
     ['1',,,,,,,,,'8',],
     ['O','2','3',,'4','5',,'6','7','O',]
 ];
-var player_num = 1;
 var player_pos = [[1,0],[1,3],[1,6],[1,9],];
-var glasses = [0,0,0,0,0,0,0,0,0,0,];
+var glasses = [0,0,0,0,0,0,0,0,0,0];
 var filled_glasses = 0;
 var next_glass_counter = 0;
 var score = 0;
 var multiplier = 1.0;
 var player_glasses = [[],[],[],[],];
 var last_player_move = [0,0,0,0,];
-var num_players = 4;
 let x2 = Math.floor(Math.random()* 4) + 2;
 let y2 = Math.floor(Math.random()* game_grid[x2].length);
 let x = Math.floor(Math.random()* 4) + 2;
@@ -36,19 +34,30 @@ let y = Math.floor(Math.random()* game_grid[x].length);
 let third = Math.floor(Math.random()*1)+7;
 let thirdx = Math.floor(Math.random()*7)+2;
 
+const socket = io('/game')
+socket.on("updatePos", ({player, pos}) => {
+    player_pos[player] = pos
+})
+socket.on("updateEnemies", data => {
+    [x, y, x2, y2, thirdx, third] = data;
+})
+socket.on("updateBpm", data => {
+    document.getElementById('bpm').value = data
+    fbp = FRAMERATE/data/60;
+})
+socket.on("updateGlasses", (data) => {
+    glasses = data.glasses
+    filled_glasses = data.filled_glasses
+})
+socket.on("updateFilledGlasses", data => {
+    filled_glasses = data 
+})
 var beats = 0;
-if (x == x2){
-    if (x<=6){
-        x =x+1;
-    }
-    else{
-        x2=x2+1;
-    }
-}
 
 function change_bpm(){
     new_bpm = document.getElementById('bpm').value;
     if (new_bpm >= 1){
+        socket.emit('newBpm', new_bpm)
         fpb = FRAMERATE/new_bpm/60;
         console.log(`update FRAMERATE:${FRAMERATE} fpb:${fpb}`);
     }
@@ -90,6 +99,7 @@ function player_move(num, e){
                                 else if(game_grid[player_pos[num][0]-1][player_pos[num][1]] == null){
                                     game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                     player_pos[num][0] -= 1;
+                                    socket.emit('newPos', {player: num, pos: player_pos[num]})
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]-1][player_pos[num][1]])){
@@ -97,6 +107,7 @@ function player_move(num, e){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]]);
                                         glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
+                                        socket.emit('newGlasses', {filled_glasses, glasses})
                                     }
                                 }
                                 else if(player_pos[num][0]-1 == 0 && player_pos[num][1] == 3*num){
@@ -121,6 +132,7 @@ function player_move(num, e){
                                 else if(game_grid[player_pos[num][0]+1][player_pos[num][1]] == null){
                                     game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                     player_pos[num][0] += 1;
+                                    socket.emit('newPos', {player: num, pos: player_pos[num]})
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]+1][player_pos[num][1]])){
@@ -128,6 +140,7 @@ function player_move(num, e){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]]);
                                         glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
+                                        socket.emit('newGlasses', {filled_glasses, glasses})
                                     }
                                 }
                                 else if(player_pos[num][0]+1 == 0 && player_pos[num][1] == 3*num){
@@ -152,6 +165,7 @@ function player_move(num, e){
                                 else if (game_grid[player_pos[num][0]][player_pos[num][1]-1] == null){
                                     game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                     player_pos[num][1] -= 1;
+                                    socket.emit('newPos', {player: num, pos: player_pos[num]})
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                             }
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]-1])){
@@ -159,6 +173,7 @@ function player_move(num, e){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]]);
                                         glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] = 0;
                                         filled_glasses -= 1;
+                                        socket.emit('newGlasses', {filled_glasses, glasses})
                                     }
                                 }
                                 else if(player_pos[num][0] == 0 && player_pos[num][1]-1 == 3*num){
@@ -183,6 +198,7 @@ function player_move(num, e){
                                 else if (game_grid[player_pos[num][0]][player_pos[num][1]+1] == null){
                                     game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                     player_pos[num][1] += 1;
+                                    socket.emit('newPos', {player: num, pos: player_pos[num]})
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]+1])){
@@ -190,6 +206,7 @@ function player_move(num, e){
                                     player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]]);
                                     glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] = 0;
                                     filled_glasses -= 1;
+                                    socket.emit('newGlasses', {filled_glasses, glasses})
                                     }
                                 }
                                 else if(player_pos[num][0] == 0 && player_pos[num][1]+1 == 3*num){
@@ -343,7 +360,7 @@ function game_loop(){
 }
 
 function add_glass() {
-    if(filled_glasses<10){
+    if(player_num == 0 && filled_glasses<10){
         glass_pos = parseInt(Math.random()*10);
         while( glasses[glass_pos] != 0){
             glass_pos = (glass_pos+1) % 10
@@ -359,6 +376,7 @@ function add_glass() {
             glasses[glass_pos] = 3;
         }
         filled_glasses += 1;
+        socket.emit('newGlasses', {filled_glasses, glasses})
     }
 
 }
@@ -372,40 +390,43 @@ function reset_conditions() {
 
 function onCollisions() {
     gridEl = document.getElementById('game_grid');
-    if (y2 == 10) {
-        y2 = 0;
-    }
-    else {
-    y2 =y2+1;
-    }
-    /*game_grid[x2][y2] ="E";
-    game_grid[x2][y2-1]= null;*/
-    if (thirdx == 8){
-        game_grid[third][thirdx]=null;
-        thirdx = 1;
-    }
-    else{
-        thirdx = thirdx +1;
-    }
-    /*game_grid[third][thirdx] ="E";
-    if (thirdx != 1){
-        game_grid[third][thirdx-1]= null;
-    }*/
-
-    if ( beats == 1){
-        beats = 0;
-        if (y == 10) {
-            y = 0;
+    if(player_num == 0){
+        if (y2 == 10) {
+            y2 = 0;
         }
         else {
-            y =y+1;
+            y2 =y2+1;
         }
-        /*game_grid[x][y] ="E";
-        game_grid[x][y-1]= null;*/
-    } 
-    else {
-        beats = beats+1;
-    }    
+        /*game_grid[x2][y2] ="E";
+        game_grid[x2][y2-1]= null;*/
+        if (thirdx == 8){
+            game_grid[third][thirdx]=null;
+            thirdx = 1;
+        }
+        else{
+            thirdx = thirdx +1;
+        }
+        /*game_grid[third][thirdx] ="E";
+        if (thirdx != 1){
+            game_grid[third][thirdx-1]= null;
+        }*/
+    
+        if ( beats == 1){
+            beats = 0;
+            if (y == 10) {
+                y = 0;
+            }
+            else {
+                y =y+1;
+            }
+            /*game_grid[x][y] ="E";
+            game_grid[x][y-1]= null;*/
+        } 
+        else {
+            beats = beats+1;
+        } 
+    }
+    socket.emit("newEnemies", [x, y, x2, y2, thirdx, third])  
 }
 
 function attack() {
