@@ -1,13 +1,14 @@
 div {
   background-color: black;
   padding: 2%;
-  margin: 5%;
+  margin: 2% 5%;
   font-family: 'Press Start 2P', cursive;
 }
 h1 {
     color: blue;
     font-size: 24pt;
     text-align: center;
+
 }
 h2 {
  color: blue;
@@ -17,12 +18,18 @@ input[type=submit], button, a.lobby{
   background-color: black;
   color: white;
   padding: 2% 2%;
-  display: inline-block;
+  float: center;
   border-radius: 0px;
   border: 0px;
-  margin: 1% 2%;
+  margin-left: 5%;
   font-size: 20px;
   font-family: 'Press Start 2P', cursive;
+  display: inline;
+  cursor: pointer;
+  transition-duration: 0.4s;
+}
+button:hover{
+  color: blue;
 }
 input[type=text]{
 	font-family: 'Press Start 2P', cursive;
