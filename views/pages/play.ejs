@@ -8,15 +8,15 @@
   </head>
   <body>
     <div>
-    <h1>ThE ClUb</h1>
-	<button type="button" id= "logoutnormal" onclick="window.location.href = '/club';">LOG OUT</button>
-  <p>Welcome, <%= props.username %>! This is your home page, where you can view your current stats, the global leaderboard, as well as start a new game!</p>
-  <p>Choose SINGLE PLAYER to play by yourself, or MULTIPLAYER to join a multiplayer room and invite your friends.</p>
-  <p>You must log into Spotify to play music. Use WASD on your keyboard to move.</p>
-</div>
-  <button type="button" id= "stats" onclick="window.location.href = '/club/<%= props.username %>/stats';">STATS</button>
-  <button type="button" id= "leaderboard" onclick="window.location.href = '/club/<%= props.username %>/leaderboard';">LEADERBOARD</button>
-  <button type="button" onclick="window.location.href = '/music';">SINGLE PLAYER</button>
-  <button type="button" onclick="window.location.href = '/club/<%= props.username %>/lobby';">MULTIPLAYER</button>
+      <h1>ThE ClUb</h1>
+	    <button type="button" id= "logoutnormal" onclick="window.location.href = '/club';">LOG OUT</button>
+      <p>Welcome, <%= props.username %>! This is your home page, where you can view your current stats, the global leaderboard, as well as start a new game!</p>
+      <p>Choose SINGLE PLAYER to play by yourself, or MULTIPLAYER to join a multiplayer room and invite your friends.</p>
+      <p>You must log into Spotify to play music. Use WASD on your keyboard to move.</p>
+    </div>
+    <button type="button" style="margin-left: 5%;" id= "stats" onclick="window.location.href = '/club/<%= props.username %>/stats';">STATS</button>
+    <button type="button" id= "leaderboard" onclick="window.location.href = '/club/<%= props.username %>/leaderboard';">LEADERBOARD</button>
+    <button type="button" onclick="window.location.href = '/music';">SINGLE PLAYER</button>
+    <button type="button" onclick="window.location.href = '/club/<%= props.username %>/lobby';">MULTIPLAYER</button>
   </body>
 </html>

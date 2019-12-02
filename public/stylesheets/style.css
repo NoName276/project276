@@ -1,7 +1,7 @@
 div {
   background-color: black;
   padding: 2%;
-  margin: 5%;
+  margin: 2% 5%;
   font-family: 'Press Start 2P', cursive;
 }
 h1 {
@@ -21,9 +21,15 @@ input[type=submit], button, a.lobby{
   float: center;
   border-radius: 0px;
   border: 0px;
-  margin: 0 5%;
+  margin-left: 5%;
   font-size: 20px;
   font-family: 'Press Start 2P', cursive;
+  display: inline;
+  cursor: pointer;
+  transition-duration: 0.4s;
+}
+button:hover{
+  color: blue;
 }
 input[type=text]{
 	font-family: 'Press Start 2P', cursive;
@@ -98,7 +104,7 @@ body{
   padding: 15px;
   border: none;
   background: #f1f1f1;
- 
+
   min-height: 10px;
 }
 #message textarea:focus {

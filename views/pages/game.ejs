@@ -2,27 +2,25 @@
 
 <html>
 	<head>
-        <title>Club Game Prototype</title>
+        <title>Club Game</title>
         <link href='https://fonts.googleapis.com/css?family=Monofett' rel='stylesheet'>
+				<link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
         <script src="/scripts/socket.io.js"></script>
-        <link rel="stylesheet" type="text/css" href="/stylesheets/game.css" />
-        <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />
 	</head>
 
 	<body>
             <h1>The Club</h1>
             <p id="p" >Now Playing: <%= name %> by <%= artist %></p>
 
-            <form class= "form" id="formscore" method="post" action='/club/<%= username %>/updatingstats'>
-
-                    <p id="score">Score:</p>
-                    <p id="player score">0</p>
-                    <p id="m">Multiplier:</p>
-                    <p id="player mult">x1.0</p>
-                    <input type="number" class ="bpm" id="bpm" value='<%= tempo %>'/>
-                    <input class="button" type="button" value="change bpm" onclick="change_bpm()" />
-					 <input type="hidden" id="scorenum" name="scorenum" value="-10">
-                </form>
+            <form class= "form">
+								<p id="score">Score:</p>
+								<p id="player score">0</p><br>
+								<p id="m">Multiplier:</p>
+								<p id="player mult">x1.0</p><br>
+                <input type="number" class ="bpm" id="bpm" value='<%= tempo %>'/>
+                <input class="button" type="button" value="change bpm" onclick="change_bpm()" />
+            </form>
 
             <div class= "main" id="gamediv">
                 <div class ="row" id="game_grid">
@@ -38,22 +36,29 @@
                         #<div id= "col1">0000000000</div>#<br>
                         #<div id= "col1">0000000000</div>#<br>
                         <div id= "col1" class="bottom">############<br>
-                        <br id= "col1" ></div>
+												<br id= "col1" ></div>
                         <div id= "col1" >------------<br></div>
                         <div id= "col1"> 00000||00000<br></div>
                         <div id= "col1">------------<br></div>
                     </div>
-                </div>
-            <div id="musicdiv" align="center">
-
-                    <p id = "countTitle">Start music in: </p>
-                    <p id = "countDown"></p>
-                    <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" ></iframe>
-                    <p id= 'songDur'> Duration: <%= duration %> </p>
-                    <p id="songUri"> Song Uri: <%= uri %> </p>
-            </div>
+										<div id="gamedata">
+                                            <p style="white-space:nowrap;display:inline; margin-left:5%;" id="playerColour">Your colour is: </p>
+											<p id="hit" style="color:blue; font-size:50px; display:inline; margin-left:5%;">READY</p><br>
+                                            <p style="color:black; white-space:nowrap;display:inline; margin-left:5%;">Current Items:</p><br>
+											<p id="items" style="margin-left: 5%"></p>
+										</div>
+		             </div>
+							 </div>
+			      <div id="musicdiv" align="center">
+			         <p id = "countTitle">Start music in: </p>
+				       <p id = "countDown"></p>
+				       <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" ></iframe>
+				       <p id= 'songDur'> Duration: <%= duration %> </p>
+				       <!-- <p id="songUri"> Song Uri: <%= uri %> </p> -->
+				    </div>
             <script>
                 var player_num = <%= playerNumber %>
+                var room = '<%= room %>'
                 var num_players = <%= numberOfPlayers %>
                 var player_name = <% if(username){ %> '<%= username %>' <% }else{ %> <%= 'undefined' %> <%}%>
                 var x = <%= enemiesStart[0] %>
@@ -63,11 +68,15 @@
                 var thirdx = <%= enemiesStart[4] %>
                 var third = <%= enemiesStart[5] %>
             </script>
-            <script type="text/javascript" src="/scripts/game.js"></script> 
-            <button type="submit" class="button" id="multiplayerexit" value="Exit" form="formscore"/> 
+            <%if(!singlePlayer){%>
+                <audio id="audio" src="/audio/<%= track %>.mp3" ></audio>
+            <%}%>
+            <script type="text/javascript" src="/scripts/game.js"></script>
+            <input type="button" id="singleplayereturn" value="Back to Home"  />
+            <input type="button" id="multiplayerexit" value="Exit"/>
             <script>
-                    
-                    
+                    document.getElementById('multiplayerexit').style.visibility = 'hidden';
+                    document.getElementById('singleplayereturn').style.visibility = 'hidden';
                     var title = document.getElementById("countTitle");
                     var display = document.getElementById("countDown");
                     var interval = setInterval(countDown,1000);
@@ -79,6 +88,7 @@
                             setTimeout(function(){setTimeout(function(){game_running = true; game_loop(); setTimeout(function(){game_end();}, 1000*<%= duration %>)}, 1000/FRAMERATE);}, 2000);
                             clearInterval(interval)
                             console.log("Play Now")
+                            document.getElementById('audio').play()
                         } else {
                             // console.log(seconds)
                             display.innerHTML = seconds
@@ -86,10 +96,16 @@
                         }
                     }
                     window.onload = countDown();
-    
-                    
+                    window.addEventListener('unload', (event) => {
+                        socket.emit('leave', room)
+                    })
+                    let colours = ['blue', 'green', 'purple', 'orange']
+                    document.getElementById("playerColour").innerHTML += ` ${colours[player_num]}` 
+                    document.getElementById("playerColour").style.color = colours[player_num]
                 </script>
-            </div>   
+                 <input type="button" id="singleplayereturn" value="Back to Home"  />
+				<input type="button" id="multiplayerexit" value="Exit"/>
+            </div>
 
 	</body>
 </html>
