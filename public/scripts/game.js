@@ -45,7 +45,7 @@ socket.on("updateEnemies", data => {
 })
 socket.on("updateBpm", data => {
     document.getElementById('bpm').value = data
-    fbp = FRAMERATE/data/60;
+    fpb = FRAMERATE/data/60;
 })
 socket.on("updateGlasses", (data) => {
     glasses = data.glasses
