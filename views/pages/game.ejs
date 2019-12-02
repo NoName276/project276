@@ -66,7 +66,9 @@
                 var thirdx = <%= enemiesStart[4] %>
                 var third = <%= enemiesStart[5] %>
             </script>
-            <audio id="audio" src="/audio/<%= track %>.mp3" ></audio>
+            <%if(!singlePlayer){%>
+                <audio id="audio" src="/audio/<%= track %>.mp3" ></audio>
+            <%}%>
             <script type="text/javascript" src="/scripts/game.js"></script>
             <input type="button" id="singleplayereturn" value="Back to Home"  />
             <input type="button" id="multiplayerexit" value="Exit"/>

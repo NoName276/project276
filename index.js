@@ -357,6 +357,7 @@ app.post('/playing', (req,res) => {
             queryData.playerNumber = 0;
             queryData.numberOfPlayers = 1;
             queryData.username = undefined;
+            queryData.singlePlayer = true;
             queryData.enemiesStart = [
               Math.floor(Math.random()* 4) + 2,
               Math.floor(Math.random()* 10),
@@ -399,7 +400,7 @@ var client_id = '76399d6d66784fbd9b089a5363553e47'; // 'CLIENT_ID'; // Your clie
 var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Your secret
 
 
-//var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
+// var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
 var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
 
 
@@ -846,7 +847,8 @@ app.get('/club/:room/:username/game/:playerNum', (req, res) => {
     tempo: tempoDict[song],
     enemiesStart,
     accessToken: 0,
-    track: song
+    track: song,
+    singlePlayer: false
   })
 })
 
