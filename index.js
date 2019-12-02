@@ -333,15 +333,15 @@ app.get('/music-client', function (req, res) {
   res.render('pages/music-client');
 });
 
-app.get('/music', (req, res) => {
-  res.render('pages/music');
+app.get('/music/:username', (req, res) => {
+  res.render('pages/music', {username: res.params.username});
 })
 
 app.post('/testPost', (req, res) => {
   console.log(req.body)
 })
 
-app.post('/playing', (req,res) => {
+app.post('/playing/:username', (req,res) => {
     var token = req.body.tokenName;
     var spotifyApi = new SpotifyWebApi({
         clientId: '76399d6d66784fbd9b089a5363553e47',
@@ -355,7 +355,7 @@ app.post('/playing', (req,res) => {
         // Output items
         console.log(data.body.is_playing)
         if (data.body.is_playing == false) {
-            res.redirect('/music')
+            res.redirect(`/music/${req.params.username}`)
             res.end('Play a song before playing!');
         } else {
             //console.log("Now Playing: ",data.body.item.artists[0].name);
@@ -370,6 +370,7 @@ app.post('/playing', (req,res) => {
             queryData.accessToken = token + '';
             queryData.playerNumber = 0;
             queryData.numberOfPlayers = 1;
+            queryData.username = req.params.username
             /* Get Audio Analysis for a Track */
             spotifyApi.getAudioAnalysisForTrack(queryData.uri)
             .then(function(data) {
@@ -481,7 +482,7 @@ app.use(express.static(__dirname + '/public'))
 app.use(cors())
 app.use(cookieParser());
 
-app.get('/spotify-login', function (req, res) {
+app.get('/spotify-login/:username', function (req, res) {
 
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
@@ -494,12 +495,12 @@ app.get('/spotify-login', function (req, res) {
       response_type: 'code',
       client_id: client_id,
       scope: scope,
-      redirect_uri: redirect_uri,
+      redirect_uri: `${redirect_uri}/${req.params.username}`,
       state: state
     }));
 });
 
-app.get('/callback', function (req, res) {
+app.get('/callback/:username', function (req, res) {
 
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -828,13 +829,13 @@ app.get('/room/:room/:username', (req, res) => {
   }
 })
 
-app.get('/club/:room/:username/game', (req, res) => {
-  const {room, username} = req.params
-  console.log(username)
+app.get('/club/:room/:username/game/:playerNum', (req, res) => {
+  const {room, username, playerNum} = req.params
   res.render('pages/game', {
-    duration: 500,
-    playerNumber: rooms[room].indexOf(username),
+    duration: 10,
+    playerNumber: playerNum,
     numberOfPlayers: rooms[room].length,
+    username, 
     uri: 'wad',
     name: 'someName',
     artist: 'someArtist',
@@ -856,6 +857,7 @@ io.of('chat').on('connection', socket => {
   socket.on('join', ({roomName: room, username}) => {
     console.log(`user '${username}' joining room '${room}'`)
     rooms[room].push(username)
+    console.log(`members of '${room}': ${rooms[room]}`)
     socket.join(room)
     io.of('chat').to(room).emit('userJoined', username)
   })
@@ -865,6 +867,7 @@ io.of('chat').on('connection', socket => {
     if(rooms[room].indexOf(username) != -1){
       rooms[room].splice(rooms[room].indexOf(username), 1)
     }
+    console.log(`members of '${room}': ${rooms[room]}`)
     socket.leave(room)
     io.of('chat').to(room).emit('userLeft', username)
   })
@@ -877,13 +880,11 @@ io.of('chat').on('connection', socket => {
 
   socket.on('disconnect', function () {
     playerCount--;
-    console.log('user disconnected');
     delete players[socket.id];
-    io.emit('disconnect', socket.id);
   });
 
   socket.on('startGame', (room) => {
-    io.of('chat').to(room).emit('launchGame')
+    io.of('chat').to(room).emit('launchGame', rooms[room])
   })
 
   // create a new player and add it to the players object

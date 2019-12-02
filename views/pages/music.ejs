@@ -11,14 +11,14 @@
     </style>
   </head>
   <body>
-      <a href="/spotify-login">
+      <a href="/spotify-login/<%=username%>">
           <button id = "loginButton">Login With Spotify</button>
       </a>
       <button id = "getToken">Get Access Token</button>
 
       <p id = "token"></p>
 
-      <form class="" action="/playing" method="post">
+      <form class="" action="/playing/<%=username%>" method="post">
         <input id ="tokenid" type="text" name="tokenName" placeholder="Click Get Access Token" readonly required>
         <input id ="getPlaying" type="submit" name="" value="Get Now Playing">
       </form>
