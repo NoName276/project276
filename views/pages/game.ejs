@@ -63,12 +63,11 @@
                 var thirdx = <%= enemiesStart[4] %>
                 var third = <%= enemiesStart[5] %>
             </script>
-            <script type="text/javascript" src="/scripts/game.js"></script>  
-            <input class="button" type="button" id="singleplayereturn" value="Home"  onclick="window.location.href = '/club/<%= username %>/home';" /> 
+            <script type="text/javascript" src="/scripts/game.js"></script> 
             <button type="submit" class="button" id="multiplayerexit" value="Exit" form="formscore"/> 
             <script>
                     
-                    document.getElementById('singleplayereturn').style.visibility = 'hidden';
+                    
                     var title = document.getElementById("countTitle");
                     var display = document.getElementById("countDown");
                     var interval = setInterval(countDown,1000);

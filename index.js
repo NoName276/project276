@@ -449,8 +449,8 @@ var client_id = '76399d6d66784fbd9b089a5363553e47'; // 'CLIENT_ID'; // Your clie
 var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Your secret
 
 
- var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
-//var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
+// var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
+var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
 
 
 /**
@@ -851,11 +851,27 @@ app.post('/club/:name/updatingstats', (req, res) => {
     var name = req.params.name;
     var playerscore = req.body.scorenum;
     console.log(playerscore);
-    let updateStatsofUser = `SELECT * FROM stats WHERE username = '${name}';`;
-    let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore} WHERE username = '${name}';`;
-    console.log(updateStatsofUser);
-    console.log(updateGameStatus);
-    res.redirect(`/club/${name}/home`);
+    let updatehighscore = `SELECT highscore FROM stats WHERE username = '${name}';`;
+    //let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore} WHERE username = '${name}';`;
+    console.log(updatehighscore);
+    //console.log(updateGameStatus);
+    pool.query(updatehighscore, (error, result) => {
+        if (error) {
+            res.end(error);
+        }
+        var oldhighscore = result.rows[0].highscore;
+        console.log(oldhighscore);
+        var newhighscore = (oldhighscore >= playerscore ? oldhighscore : playerscore);
+        let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore}, highscore=${newhighscore} WHERE username = '${name}';`;
+        console.log(updateGameStatus);
+        pool.query(updateGameStatus, (error, result) => {
+            if (error) {
+                res.end(error);
+            }
+            res.redirect(`/club/${name}/home`);
+        });
+    });
+   // res.redirect(`/club/${name}/home`);
 });
 
 /*app.get('/club/:name/updatingstats', (req, res) => {

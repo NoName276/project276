@@ -71,7 +71,7 @@ function game_end(){
         document.getElementById('multiplayerexit').style.visibility = '';
     }
     else {
-        document.getElementById('singleplayereturn').style.visibility = '';
+       // document.getElementById('singleplayereturn').style.visibility = '';
     }
     console.log(document.getElementById('player score'));
     document.getElementById('scorenum').value = document.getElementById('player score').innerHTML;
