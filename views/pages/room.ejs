@@ -80,7 +80,7 @@
     </div>
   </div>
   <button type="button" onclick="launch()">PLAY</button>
-  <button type="button" onclick="window.location.href = '/club/<%=username%>/lobby';">BACK</button>
+  <button id="backButton" type="button" onclick="window.location.href = '/club/<%=username%>/lobby';">BACK</button>
   <!-- <form action="/getSong" method="post"> 
     <select name="songs">
       <option value="slow-dancing-in-the-dark">SLOW DANCING IN THE DARK</option>
@@ -129,7 +129,7 @@
         <ul id="messages">
         </ul>
         <textarea id="userMessage" placeholder="Type message.." name="msg" required></textarea>
-        <button class="button" onclick="sendMessage(event)">Send</button>
+        <button id= "sendButton" class="button" onclick="sendMessage(event)">Send</button>
         <button type="button" class="cancel" onclick="closeForm('chatbox')">Close</button>
       </div>
     </form>
