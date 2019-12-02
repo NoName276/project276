@@ -375,7 +375,7 @@ app.post('/playing', (req,res) => {
             // console.log(queryData)
             // res.send(queryData)
             // res.render('pages/playing', queryData)
-        }      
+        }
     }, function(err) {
     console.log('Something went wrong!', err);
     });
@@ -440,8 +440,8 @@ var client_id = '76399d6d66784fbd9b089a5363553e47'; // 'CLIENT_ID'; // Your clie
 var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Your secret
 
 
- //var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
-var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
+ var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
+//var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
 
 
 /**
@@ -772,7 +772,7 @@ app.post("/club/admin/:name/toggleadmin", (req, res) => {
         });
 
     }
-   
+
 });
 
 app.get('/club/admin/:name/songselect', (req, res) => {
@@ -784,7 +784,7 @@ app.get('/club/admin/:name/songselect', (req, res) => {
 
 // creating and joining rooms
 
-const rooms = { 
+const rooms = {
   name: []
 }
 const users = {}
