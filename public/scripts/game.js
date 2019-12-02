@@ -284,7 +284,7 @@ function display_held_items(){
 
 function display_game_grid(){
     gridEl = document.getElementById('game_grid');
-    gridEl.innerHTML = '<br>############<br>';
+    gridEl.innerHTML = '############<br>';
     for(var i = 0; i<10; ++i){
         gridEl.innerHTML += '#';
         for(var j=0; j<10; ++j){
