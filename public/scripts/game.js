@@ -111,7 +111,7 @@ function player_move(num, e){
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]-1][player_pos[num][1]])){
-                                    if(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] != 0 && player_glasses[num].length < 9){
+                                    if(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]]);
                                         glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
@@ -144,7 +144,7 @@ function player_move(num, e){
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]+1][player_pos[num][1]])){
-                                    if(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] != 0 && player_glasses[num].length < 9){
+                                    if(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]]);
                                         glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
@@ -177,7 +177,7 @@ function player_move(num, e){
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                             }
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]-1])){
-                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] != 0 && player_glasses[num].length < 9){
+                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]]);
                                         glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] = 0;
                                         filled_glasses -= 1;
@@ -210,7 +210,7 @@ function player_move(num, e){
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]+1])){
-                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] != 0 && player_glasses[num].length < 9){
+                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] != 0 && player_glasses[num].length < 8){
                                     player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]]);
                                     glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] = 0;
                                     filled_glasses -= 1;
