@@ -34,13 +34,8 @@ app.get('/register', async (req, res) => {  //loads registerform
 })
 var pool = new Pool({
   ssl: true,
-<<<<<<< HEAD
 //   connectionString: process.env.DATABASE_URL
   connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
-=======
-  connectionString: process.env.DATABASE_URL
-  //connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
->>>>>>> bd8c6afd8a448b380cf07da5628303552e25a893
 });
 // var app = express();
 // app.use(express.urlencoded());
@@ -398,126 +393,6 @@ app.post('/playing', (req,res) => {
     });
 })
 
-<<<<<<< HEAD
-app.post('/getSong', (req,res)=> {
-    var songData = {}
-    console.log("hello")
-    console.log(req.body.songs)
-    songData.track = req.body.songs
-    var durationDict = {
-        "slow-dancing-in-the-dark": 209,
-        "breathe": 126,
-        "bad-guy": 194,
-        "dont-start-now": 183,
-        "how-do-you-sleep": 202,
-        "its-you": 214,
-        "dear-evan-hansen": 236,
-        "hadestown": 230
-
-    }
-    var tempoDict = {
-        "slow-dancing-in-the-dark": 89,
-        "breathe": 113,
-        "bad-guy": 135,
-        "dont-start-now": 124,
-        "how-do-you-sleep": 111,
-        "its-you": 96,
-        "dear-evan-hansen": 144,
-        "hadestown": 120
-    }
-    var artistDict = {
-        "slow-dancing-in-the-dark": "Joji",
-        "breathe": "88rising, Joji, Don Krez",
-        "bad-guy": "Billie Eilish",
-        "dont-start-now": "Dua Lipa",
-        "how-do-you-sleep": "Sam Smith",
-        "its-you": "Ali Gatie",
-        "dear-evan-hansen": "DEAR EVAN HANSEN Original Broadway Cast",
-        "hadestown": "Hadestown Original Broadway Cast"
-    }
-    var nameDict = {
-        "slow-dancing-in-the-dark": "SLOW DANCING IN THE DARK",
-        "breathe": "Breathe",
-        "bad-guy": "bad guy",
-        "dont-start-now": "Don't Start Now",
-        "how-do-you-sleep": "How Do You Sleep?",
-        "its-you": "It's You",
-        "dear-evan-hansen": "Waving Through a Window",
-        "hadestown": "Way down Hadestown II"
-    }
-    var uriDict = {
-        "slow-dancing-in-the-dark": "0rKtyWc8bvkriBthvHKY8d",
-        "breathe": "72hSRAHg4hXE5ApwSQQZPn",
-        "bad-guy": "2Fxmhks0bxGSBdJ92vM42m",
-        "dont-start-now": "6WrI0LAC5M1Rw2MnX2ZvEg",
-        "how-do-you-sleep": "spotify:track:6b2RcmUt1g9N9mQ3CbjX2Y",
-        "its-you": "5DqdesEfbRyOlSS3Tf6c29",
-        "dear-evan-hansen": "2GlsXuQV0YOOwPy3XKFIS9",
-        "hadestown": "1FomWvYH5RqagHVHYj9OfC"
-    }
-    songData.duration = durationDict[songData.track]
-    songData.tempo = tempoDict[songData.track]
-    songData.artist = artistDict[songData.track]
-    songData.name = nameDict[songData.track]
-    songData.uri = uriDict[songData.track]
-    songData.accessToken = 0 
-    res.render('pages/game', songData)
-})
-app.get('/silence.mp3', (req,res) => {
-    res.sendFile(__dirname + '/audio/silence.mp3')
-})
-app.get('/joji', (req,res) => {
-    res.render('pages/slow-dancing-in-the-dark');
-})
-app.get('/slow-dancing-in-the-dark.mp3', (req,res) => {
-    res.sendFile(__dirname + '/audio/slow-dancing-in-the-dark.mp3')
-})
-app.get('/hadestown', (req, res) => {
-    res.render('pages/way-down-hadestown-ii');
-})
-app.get('/hadestown.mp3', (req,res) => {
-    res.sendFile(__dirname + '/audio/hadestown.mp3')
-})
-app.get('/dear-evan-hansen', (req,res) => {
-    res.render('pages/waving-through-a-window');
-})
-app.get('/waving-through-a-window.mp3', (req,res) => {
-    res.sendFile(__dirname + '/audio/waving-through-a-window.mp3')
-})
-app.get('/88rising', (req,res) => {
-    res.render('pages/breathe');
-})
-app.get('/breathe.mp3', (req,res) => {
-    res.sendFile(__dirname + '/audio/breathe.mp3')
-})
-app.get('/billie-eilish', (req,res) => {
-    res.render('pages/bad-guy');
-})
-app.get('/bad-guy.mp3', (req, res) => {
-    console.log("loading badguy");
-    res.sendFile(__dirname + '/audio/bad-guy.mp3')
-})
-app.get('/dua-lipa', (req,res) => {
-    res.render('pages/dont-start-now');
-})
-app.get('/dont-start-now.mp3', (req,res) => {
-    res.sendFile(__dirname + '/audio/dont-start-now.mp3')
-})
-app.get('/sam-smith', (req,res) => {
-    res.render('pages/how-do-you-sleep');
-})
-app.get('/how-do-you-sleep.mp3', (req,res) => {
-    res.sendFile(__dirname + '/audio/how-do-you-sleep.mp3')
-})
-app.get('/ali-gatie', (req,res) => {
-    res.render('pages/its-you');
-})
-app.get('/its-you.mp3', (req,res) => {
-    res.sendFile(__dirname + '/audio/its-you.mp3')
-})
-
-=======
->>>>>>> bd8c6afd8a448b380cf07da5628303552e25a893
 var request = require('request'); // "Request" library
 var cors = require('cors');
 var querystring = require('querystring');
@@ -527,8 +402,8 @@ var client_id = '76399d6d66784fbd9b089a5363553e47'; // 'CLIENT_ID'; // Your clie
 var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Your secret
 
 
-// var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
-var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
+var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
+// var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
 
 
 /**

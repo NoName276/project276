@@ -23,15 +23,6 @@
 	                <input type="number" class ="bpm" style="color:rgba(255, 0, 0, 0); background-color:rgba(255, 0, 0, 0);" id="bpm" value='<%= tempo %>'/>
 	                <input class="button" type="button" value="change bpm" style="color:rgba(255, 0, 0, 0); background-color:rgba(255, 0, 0, 0);" onclick="change_bpm()" />
 
-<<<<<<< HEAD
-                    <p id = "countTitle">Start music in: </p>
-                    <p id = "countDown"></p>
-                    <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" ></iframe>
-                    <p id= 'songDur'> Duration: <%= duration %> </p>
-                    <!-- <p id="songUri"> Song Uri: <%= uri %> </p> -->
-                    <!-- <p id="p"> Token: <%= accessToken %> </p> -->
-            </div>
-=======
 	                <input type="hidden" id="scorenum" name="scorenum" value="0">
 	            </form>
                   <span style="padding-bottom: 100px;">
@@ -67,7 +58,6 @@
 				       <p id= 'songDur'> Duration: <%= duration %> </p>
 				       <!-- <p id="songUri"> Song Uri: <%= uri %> </p> -->
 				    </div>
->>>>>>> bd8c6afd8a448b380cf07da5628303552e25a893
             <script>
                 var player_num = <%= playerNumber %>
                 var room = '<%= room %>'
@@ -90,32 +80,6 @@
             <audio id="audio" src="<%= track %>.mp3" ></audio>
             
             <script>
-<<<<<<< HEAD
-                function play() {
-                    var audio = document.getElementById("audio");
-                    audio.play();
-                }
-                var title = document.getElementById("countTitle");
-                var display = document.getElementById("countDown");
-                var interval = setInterval(countDown,1000);
-                var seconds = 3;
-                function countDown() {
-                    if (seconds == 0) {
-                        title.innerHTML = "Play"
-                        display.innerHTML = "Now";
-                        setTimeout(function(){setTimeout(function(){game_running = true; game_loop(); setTimeout(function(){game_end();}, 1000*<%= duration %>)}, 1000/FRAMERATE);}, 2000);
-                        clearInterval(interval)
-                        play()
-                        console.log("Play Now")
-                    } else {
-                        // console.log(seconds)
-                        display.innerHTML = seconds
-                        seconds = seconds - 1;
-                    }
-                }
-                window.onload = countDown();
-     
-=======
                    // document.getElementById('multiplayerexit').style.visibility = 'hidden';
                     var title = document.getElementById("countTitle");
                     var display = document.getElementById("countDown");
@@ -142,7 +106,6 @@
                     let colours = ['blue', 'green', 'purple', 'orange']
                     document.getElementById("playerColour").innerHTML += ` ${colours[player_num]}`
                     document.getElementById("playerColour").style.color = colours[player_num]
->>>>>>> bd8c6afd8a448b380cf07da5628303552e25a893
                 </script>
 
             </div>

@@ -648,7 +648,7 @@ describe("spotify web api authentication, song data from playback, Spotify play 
 
 });
 
-describe("ROOMS/SOCKET", function () { });
+describe("ROOMS/SOCKET", function () {});
 
 //cleanup; done
 describe("CLEAN UP POST TEST", function () {
