@@ -355,7 +355,9 @@ function generate_upcoming_beats(){
     //
 }
 
-function game_loop(){
+function game_loop() {
+    document.getElementById('multiplayerexit').style.visibility = 'hidden';
+    document.getElementById('singleplayereturn').style.visibility = 'hidden';
     attack();
     display_game_grid();
     generate_upcoming_beats();
