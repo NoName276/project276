@@ -34,8 +34,13 @@ app.get('/register', async (req, res) => {  //loads registerform
 })
 var pool = new Pool({
   ssl: true,
+<<<<<<< HEAD
 //   connectionString: process.env.DATABASE_URL
   connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
+=======
+  connectionString: process.env.DATABASE_URL
+  //connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
+>>>>>>> bd8c6afd8a448b380cf07da5628303552e25a893
 });
 // var app = express();
 // app.use(express.urlencoded());
@@ -188,26 +193,14 @@ app.post("/club/login", (req, res) => {
 })
 
 app.get("/club/:name/stats", (req, res) => {
-  let name = req.params.name;
-  let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
-  let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
-  let results = {};
-  pool.query(loadStats, (error, result) => {
-    if (error) {
-      res.send("error");
-      console.log(error);
-    }
-    results.stats = result.rows[0];
-    pool.query(loadRank, (error, result) => {
-      if (error) {
-        res.send("error");
-        console.log(error);
-      }
-      console.log(result);
-      findrank = (result) ? result.rows : null;
-      findrank.forEach(function (user) {
-        if (user.username == name) {
-          results.rank = user.rank;
+    let name = req.params.name;
+    let loadStats = `SELECT * FROM stats WHERE username = '${name}';`;
+    let loadRank = `SELECT username, RANK() OVER(ORDER BY highscore DESC) from stats;`;
+    let results = {};
+    pool.query(loadStats, (error, result) => {
+        if (error) {
+            res.send("error");
+            console.log(error);
         }
         results.stats = result.rows[0];
         pool.query(loadRank, (error, result) => {
@@ -215,14 +208,14 @@ app.get("/club/:name/stats", (req, res) => {
                 res.send("error");
                 console.log(error);
             }
-            //console.log(result);
+            // console.log(result);
             findrank = (result) ? result.rows : null;
             findrank.forEach(function (user) {
                 if (user.username == name) {
                     results.rank = user.rank;
                 }
             });
-           // console.log("rank of " + name + " :" + results.rank);
+            // console.log("rank of " + name + " :" + results.rank);
             //results.rank = result.rows[0].rank;
             if (results.rank == 1) {
                 results.color = "#D4AF37";
@@ -240,9 +233,7 @@ app.get("/club/:name/stats", (req, res) => {
             res.render('pages/stats', { 'rows': results });
         });
     });
-  });
 
-  });
 });
 
 app.get("/club/:name/leaderboard", (req, res) => {
@@ -356,7 +347,7 @@ app.post('/playing', (req,res) => {
         // Output items
         console.log(data.body.is_playing)
         if (data.body.is_playing == false) {
-            res.redirect('/music')
+            res.redirect(`/music`)
             res.end('Play a song before playing!');
         } else {
             //console.log("Now Playing: ",data.body.item.artists[0].name);
@@ -371,6 +362,17 @@ app.post('/playing', (req,res) => {
             queryData.accessToken = token + '';
             queryData.playerNumber = 0;
             queryData.numberOfPlayers = 1;
+            queryData.username = undefined;
+            queryData.singlePlayer = true;
+            queryData.room = undefined;
+            queryData.enemiesStart = [
+              Math.floor(Math.random()* 4) + 2,
+              Math.floor(Math.random()* 10),
+              Math.floor(Math.random()* 4) + 2,
+              Math.floor(Math.random()* 10),
+              Math.floor(Math.random()*7)+2,
+              Math.floor(Math.random()*1)+7,
+            ]
             /* Get Audio Analysis for a Track */
             spotifyApi.getAudioAnalysisForTrack(queryData.uri)
             .then(function(data) {
@@ -390,12 +392,13 @@ app.post('/playing', (req,res) => {
             // console.log(queryData)
             // res.send(queryData)
             // res.render('pages/playing', queryData)
-        }      
+        }
     }, function(err) {
     console.log('Something went wrong!', err);
     });
 })
 
+<<<<<<< HEAD
 app.post('/getSong', (req,res)=> {
     var songData = {}
     console.log("hello")
@@ -513,6 +516,8 @@ app.get('/its-you.mp3', (req,res) => {
     res.sendFile(__dirname + '/audio/its-you.mp3')
 })
 
+=======
+>>>>>>> bd8c6afd8a448b380cf07da5628303552e25a893
 var request = require('request'); // "Request" library
 var cors = require('cors');
 var querystring = require('querystring');
@@ -562,7 +567,7 @@ app.get('/spotify-login', function (req, res) {
       response_type: 'code',
       client_id: client_id,
       scope: scope,
-      redirect_uri: redirect_uri,
+      redirect_uri: `${redirect_uri}`,
       state: state
     }));
 });
@@ -854,7 +859,7 @@ app.post("/club/admin/:name/toggleadmin", (req, res) => {
         });
 
     }
-   
+
 });
 
 app.get('/club/admin/:name/songselect', (req, res) => {
@@ -866,8 +871,11 @@ app.get('/club/admin/:name/songselect', (req, res) => {
 
 // creating and joining rooms
 
-const rooms = { 
+const rooms = {
   name: []
+}
+const roomsOpen = {
+  name: true
 }
 const users = {}
 app.get('/club/:name/lobby', (req, res) => {
@@ -879,6 +887,7 @@ app.post('/room', (req, res) => {
     return res.redirect('pages/lobby')
   }
   rooms[room] = []
+  roomsOpen[room] = true
   console.log(`creating new room ${room}`)
   io.of('lobby').emit('room-created', room)
   res.redirect(`/room/${room}/${username}`)
@@ -889,26 +898,135 @@ app.get('/room/:room/:username', (req, res) => {
   if(rooms[room].indexOf(username) != -1){
     rooms[room].splice(rooms[room].indexOf(username), 1)
   }
-  if(rooms[room].length < 4){
+  console.log(`${room} : ${roomsOpen[room]}`)
+  if(roomsOpen[room] && rooms[room].length < 4){
     res.render('pages/room', { roomName: room, users: rooms[room], username })
-  }else{
+  }else if(roomsOpen[room]){
     res.render('pages/lobby', {rooms, username, error: `room '${room}' is full`})
+  }else{
+    res.render('pages/lobby', {rooms, username, error: `room '${room}' is currently in-game`})
   }
 })
+let enemiesStart = [
+  Math.floor(Math.random()* 4) + 2,
+  Math.floor(Math.random()* 10),
+  Math.floor(Math.random()* 4) + 2,
+  Math.floor(Math.random()* 10),
+  Math.floor(Math.random()*7)+2,
+  Math.floor(Math.random()*1)+7,
+]
+app.get('/club/:room/:username/game/:playerNum', (req, res) => {
+  console.log(enemiesStart)
+  let {song} = req.query
+  var durationDict = {
+  "slow-dancing-in-the-dark": 209,
+  "breathe": 126,
+  "bad-guy": 194,
+  "dont-start-now": 183,
+  "how-do-you-sleep": 202,
+  "its-you": 214,
+  "dear-evan-hansen": 236,
+  "hadestown": 230
 
-app.get('/club/:room/:username/game', (req, res) => {
-  const {room, username} = req.params
-  console.log(username)
+  }
+  var tempoDict = {
+    "slow-dancing-in-the-dark": 89,
+    "breathe": 113,
+    "bad-guy": 135,
+    "dont-start-now": 124,
+    "how-do-you-sleep": 111,
+    "its-you": 96,
+    "dear-evan-hansen": 144,
+    "hadestown": 120
+  }
+  var artistDict = {
+    "slow-dancing-in-the-dark": "Joji",
+    "breathe": "88rising, Joji, Don Krez",
+    "bad-guy": "Billie Eilish",
+    "dont-start-now": "Dua Lipa",
+    "how-do-you-sleep": "Sam Smith",
+    "its-you": "Ali Gatie",
+    "dear-evan-hansen": "DEAR EVAN HANSEN Original Broadway Cast",
+    "hadestown": "Hadestown Original Broadway Cast"
+  }
+  var nameDict = {
+    "slow-dancing-in-the-dark": "SLOW DANCING IN THE DARK",
+    "breathe": "Breathe",
+    "bad-guy": "bad guy",
+    "dont-start-now": "Don't Start Now",
+    "how-do-you-sleep": "How Do You Sleep?",
+    "its-you": "It's You",
+    "dear-evan-hansen": "Waving Through a Window",
+    "hadestown": "Way down Hadestown II"
+  }
+  var uriDict = {
+    "slow-dancing-in-the-dark": "0rKtyWc8bvkriBthvHKY8d",
+    "breathe": "72hSRAHg4hXE5ApwSQQZPn",
+    "bad-guy": "2Fxmhks0bxGSBdJ92vM42m",
+    "dont-start-now": "6WrI0LAC5M1Rw2MnX2ZvEg",
+    "how-do-you-sleep": "spotify:track:6b2RcmUt1g9N9mQ3CbjX2Y",
+    "its-you": "5DqdesEfbRyOlSS3Tf6c29",
+    "dear-evan-hansen": "2GlsXuQV0YOOwPy3XKFIS9",
+    "hadestown": "1FomWvYH5RqagHVHYj9OfC"
+  }
+  const {room, username, playerNum} = req.params
   res.render('pages/game', {
-    duration: 500,
-    playerNumber: rooms[room].indexOf(username),
+    duration: durationDict[song],
+    playerNumber: playerNum,
     numberOfPlayers: rooms[room].length,
-    uri: 'wad',
-    name: 'someName',
-    artist: 'someArtist',
-    tempo: 60,
+    username,
+    uri: uriDict[song],
+    name: nameDict[song],
+    artist: artistDict[song],
+    tempo: tempoDict[song],
+    enemiesStart,
+    accessToken: 0,
+    track: song,
+    room,
+    singlePlayer: false
   })
 })
+
+app.post('/club/:name/updatingstats', (req, res) => {
+    console.log("post");
+    var name = req.params.name;
+    var playerscore = req.body.scorenum;
+    console.log(playerscore);
+    let updatehighscore = `SELECT highscore FROM stats WHERE username = '${name}';`;
+    //let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore} WHERE username = '${name}';`;
+    console.log(updatehighscore);
+    //console.log(updateGameStatus);
+    pool.query(updatehighscore, (error, result) => {
+        if (error) {
+            res.end(error);
+        }
+        var oldhighscore = result.rows[0].highscore;
+        console.log(oldhighscore);
+        var newhighscore = (oldhighscore >= playerscore ? oldhighscore : playerscore);
+        let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore}, highscore=${newhighscore} WHERE username = '${name}';`;
+        console.log(updateGameStatus);
+        pool.query(updateGameStatus, (error, result) => {
+            if (error) {
+                res.end(error);
+            }
+            res.redirect(`/club/${name}/home`);
+        });
+    });
+   // res.redirect(`/club/${name}/home`);
+});
+
+/*app.get('/club/:name/updatingstats', (req, res) => {
+    console.log("get");
+    var name = req.params.name;
+    var playerscore = req.body.scorenum;
+    console.log(playerscore);
+    let updateStatsofUser = `SELECT * FROM stats WHERE username = '${name}';`;
+    let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore} whereHERE username = '${name}';`;
+    console.log(updateStatsofUser);
+    console.log(updateGameStatus);
+    res.redirect(`/club/${name}/home`);
+});*/
+
 
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function (req, res) {
@@ -917,22 +1035,22 @@ app.get('*', function (req, res) {
 });
 
 //sockets
-const players = {};
-var playerCount =0;
 io.of('chat').on('connection', socket => {
 
   socket.on('join', ({roomName: room, username}) => {
     console.log(`user '${username}' joining room '${room}'`)
     rooms[room].push(username)
+    console.log(`members of '${room}': ${rooms[room]}`)
     socket.join(room)
     io.of('chat').to(room).emit('userJoined', username)
   })
 
   socket.on('leave', ({roomName: room, username}) => {
     console.log(`user '${username}' leaving room '${room}'`)
-    if(rooms[room].indexOf(username) != -1){
+    if(rooms[room] != undefined && rooms[room].indexOf(username) != -1){
       rooms[room].splice(rooms[room].indexOf(username), 1)
     }
+    console.log(`members of '${room}': ${rooms[room]}`)
     socket.leave(room)
     io.of('chat').to(room).emit('userLeft', username)
   })
@@ -943,28 +1061,30 @@ io.of('chat').on('connection', socket => {
     io.of('chat').to(room).emit('newMessage', {username, message})
   })
 
-  socket.on('disconnect', function () {
-    playerCount--;
-    console.log('user disconnected');
-    delete players[socket.id];
-    io.emit('disconnect', socket.id);
-  });
-
-  socket.on('startGame', (room) => {
-    io.of('chat').to(room).emit('launchGame')
+  socket.on('startGame', ({roomName: room, song}) => {
+    roomsOpen[room] = false
+    enemiesStart = [
+      Math.floor(Math.random()* 4) + 2,
+      Math.floor(Math.random()* 10),
+      Math.floor(Math.random()* 4) + 2,
+      Math.floor(Math.random()* 10),
+      Math.floor(Math.random()*7)+2,
+      Math.floor(Math.random()*1)+7,
+    ]
+    io.of('chat').to(room).emit('launchGame', {members: rooms[room], song})
   })
 
   // create a new player and add it to the players object
-  players[socket.id] = {
-    //add position
-    colour: "blue",
-    playerId: socket.id,
-    username: socket.username,
-  }
-  io.on('updateColour', function (colourData) {
-    players[socket.id].colour = colourData.colour;
-    socket.broadcast.emit('updateSprite', players[socket.id]);
-  });
+  // players[socket.id] = {
+  //   //add position
+  //   colour: "blue",
+  //   playerId: socket.id,
+  //   username: socket.username,
+  // }
+  // io.on('updateColour', function (colourData) {
+  //   players[socket.id].colour = colourData.colour;
+  //   socket.broadcast.emit('updateSprite', players[socket.id]);
+  // });
 })
 
 io.of("lobby").on('connection', socket => {
@@ -974,20 +1094,44 @@ io.of("lobby").on('connection', socket => {
   } )
 })
 
-
+const playerCount = {
+  name: 0
+}
 io.of('game').on('connection', socket => {
-  socket.on("newPos", data => {
-    console.log(data)
-    io.of('game').emit('updatePos', data)
+  socket.on("join", (room) => {
+    if (playerCount[room] != undefined){
+      playerCount[room]++
+    }else{
+      playerCount[room] = 1
+    }
+    console.log(`user joining ${room}, count: ${playerCount[room]}`)
+    socket.join(room)
   })
-  socket.on("newEnemies", data => {
-    io.of('game').emit('updateEnemies', data)
+  socket.on("leave", (room) => {
+    if (playerCount[room]){
+      playerCount[room]--
+      if (playerCount[room] <= 0){
+        roomsOpen[room] = true
+        playerCount[room] = 0
+      }
+    }
+    console.log(`user leaving ${room}, count: ${playerCount[room]}`)
+    socket.leave(room)
   })
-  socket.on("newBpm", data => {
-    io.of('game').emit('updateBpm', data)
+  socket.on("newPos", ({data, room}) => {
+    console.log(`${room}: ${JSON.stringify(data)}`)
+    io.of('game').to(room).emit('updatePos', data)
   })
-  socket.on("newGlasses", data => {
-    console.log(data)
-    io.of('game').emit('updateGlasses', data)
+  socket.on("newEnemies", ({data, room}) => {
+    console.log(`${room}: new enemies - ${data}`)
+    io.of('game').to(room).emit('updateEnemies', data)
+  })
+  socket.on("newBpm", ({data, room}) => {
+    console.log(`${room}: newBpm - ${data}`)
+    io.of('game').to(room).emit('updateBpm', data)
+  })
+  socket.on("newGlasses", ({data, room}) => {
+    console.log(`${room}: ${JSON.stringify(data)}`)
+    io.of('game').to(room).emit('updateGlasses', data)
   })
 })

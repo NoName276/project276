@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>tHe ClUb</title>
+    <title>ThE ClUb</title>
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
     <script src="/scripts/socket.io.js"></script>
@@ -32,8 +32,9 @@
         document.getElementById(`user-${leavingUser}`).remove()
       })
 
-      socket.on('launchGame', () => {
-        window.location.href = '/club/<%=roomName%>/<%=username%>/game';
+      socket.on('launchGame', ({members, song}) => {
+        playerNum = members.indexOf('<%=username%>')
+        window.location.href = `/club/<%=roomName%>/<%=username%>/game/${playerNum}?song=${song}`;
       })
 
       function sendMessage(e) {
@@ -44,12 +45,13 @@
           username
         });
         messageNode.value = ''
-        console.log("sent");
         e.preventDefault();
       }
 
       function launch(){
-        socket.emit('startGame', roomName)
+        let songlist = document.getElementById("songList")
+        let song = songlist.options[songlist.selectedIndex].value
+        socket.emit('startGame', {roomName, song})
       }
 
       function openForm(formToShow) {
@@ -105,6 +107,7 @@
     </div>
   </div> -->
 
+<<<<<<< HEAD
   <script>
     /* When the user clicks on the button, 
     toggle between hiding and showing the dropdown content */
@@ -126,6 +129,20 @@
       }
     }
     </script>
+=======
+  <select name="songs" id="songList">
+    <option value="slow-dancing-in-the-dark">SLOW DANCING IN THE DARK</option>
+    <option value="breathe">Breathe</option>
+    <option value="bad-guy">bad guy</option>
+    <option value="dont-start-now">Don't Start Now</option>
+    <option value="how-do-you-sleep">How Do You Sleep?</option>
+    <option value="its-you">It's You</option>
+    <option value="dear-evan-hansen">Waving Through a Window</option>
+    <option value="hadestown">Hadestown</option>
+  </select>
+
+
+>>>>>>> bd8c6afd8a448b380cf07da5628303552e25a893
 
   <button class="open-button" onclick="openForm('chatbox');">Chat</button>
   <div id="chatbox" class='hide'>
