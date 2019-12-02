@@ -14,9 +14,13 @@
             <p id="p" >Now Playing: <%= name %> by <%= artist %></p>
 
             <form class= "form">
-                    <input type="number" class ="bpm" id="bpm" value='<%= tempo %>'/>
-                    <input class="button" type="button" value="change bpm" onclick="change_bpm()" />
-                </form>
+								<p id="score">Score:</p>
+								<p id="player score">0</p><br>
+								<p id="m">Multiplier:</p>
+								<p id="player mult">x1.0</p><br>
+                <input type="number" class ="bpm" id="bpm" value='<%= tempo %>'/>
+                <input class="button" type="button" value="change bpm" onclick="change_bpm()" />
+            </form>
 
             <div class= "main" id="gamediv">
                 <div class ="row" id="game_grid">
@@ -39,10 +43,6 @@
                     </div>
 										<div id="gamedata">
 											<p id="hit" style="color:blue; font-size:50px; display:inline; margin-left:5%;">READY</p><br>
-											<p id="score" style="color:black; display:inline; margin-left:5%;">Score:</p>
-											<p id="player score" style="color:black; display:inline;">0</p><br>
-											<p id="m" style="color:black; display:inline; margin-left:5%;">Multiplier:</p>
-											<p id="player mult" style="color:black; display:inline; margin-left:5%;">x1.0</p><br>
 											<p style="color:black; white-space:nowrap;display:inline; margin-left:5%;">Current Items:</p><br>
 											<p id="items" style="margin-left: 5%"></p>
 										</div>
