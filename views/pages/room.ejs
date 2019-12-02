@@ -32,9 +32,9 @@
         document.getElementById(`user-${leavingUser}`).remove()
       })
 
-      socket.on('launchGame', (members) => {
+      socket.on('launchGame', ({members, song}) => {
         playerNum = members.indexOf('<%=username%>')
-        window.location.href = `/club/<%=roomName%>/<%=username%>/game/${playerNum}`;
+        window.location.href = `/club/<%=roomName%>/<%=username%>/game/${playerNum}?song=${song}`;
       })
 
       function sendMessage(e) {
@@ -45,12 +45,13 @@
           username
         });
         messageNode.value = ''
-        console.log("sent");
         e.preventDefault();
       }
 
       function launch(){
-        socket.emit('startGame', roomName)
+        let songlist = document.getElementById("songList")
+        let song = songlist.options[songlist.selectedIndex].value
+        socket.emit('startGame', {roomName, song})
       }
 
       function openForm(formToShow) {
@@ -79,6 +80,18 @@
   </div>
   <button type="button" onclick="launch()">PLAY</button>
   <button type="button" onclick="window.location.href = '/club/<%=username%>/lobby';">BACK</button>
+
+  <select name="songs" id="songList">
+    <option value="slow-dancing-in-the-dark">SLOW DANCING IN THE DARK</option>
+    <option value="breathe">Breathe</option>
+    <option value="bad-guy">bad guy</option>
+    <option value="dont-start-now">Don't Start Now</option>
+    <option value="how-do-you-sleep">How Do You Sleep?</option>
+    <option value="its-you">It's You</option>
+    <option value="dear-evan-hansen">Waving Through a Window</option>
+    <option value="hadestown">Hadestown</option>
+  </select>
+
 
 
   <button class="open-button" onclick="openForm('chatbox');">Chat</button>
