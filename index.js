@@ -449,8 +449,8 @@ var client_id = '76399d6d66784fbd9b089a5363553e47'; // 'CLIENT_ID'; // Your clie
 var client_secret = '5d6ec7245f5a4902af2f5b40c6315a63'; // 'CLIENT_SECRET'; // Your secret
 
 
- //var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
-var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
+ var redirect_uri =  'http://localhost:5000/callback'; // 'REDIRECT_URI'; // Your redirect uri
+//var redirect_uri = 'http://sleepy-lake-49832.herokuapp.com/callback';
 
 
 /**
@@ -845,6 +845,31 @@ app.get('/club/:room/:username/game/:playerNum', (req, res) => {
     enemiesStart
   })
 })
+
+app.post('/club/:name/updatingstats', (req, res) => {
+    console.log("get");
+    var name = req.params.name;
+    var playerscore = req.body.scorenum;
+    console.log(playerscore);
+    let updateStatsofUser = `SELECT * FROM stats WHERE username = '${name}';`;
+    let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore} WHERE username = '${name}';`;
+    console.log(updateStatsofUser);
+    console.log(updateGameStatus);
+    res.redirect(`/club/${name}/home`);
+});
+
+/*app.get('/club/:name/updatingstats', (req, res) => {
+    console.log("get");
+    var name = req.params.name;
+    var playerscore = req.body.scorenum;
+    console.log(playerscore);
+    let updateStatsofUser = `SELECT * FROM stats WHERE username = '${name}';`;
+    let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore} whereHERE username = '${name}';`;
+    console.log(updateStatsofUser);
+    console.log(updateGameStatus);
+    res.redirect(`/club/${name}/home`);
+});*/
+
 
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function (req, res) {

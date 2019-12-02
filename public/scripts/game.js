@@ -73,6 +73,8 @@ function game_end(){
     else {
         document.getElementById('singleplayereturn').style.visibility = '';
     }
+    console.log(document.getElementById('player score'));
+    document.getElementById('scorenum').value = document.getElementById('player score').innerHTML;
 }
 
 function player_move(num, e){
@@ -356,8 +358,8 @@ function generate_upcoming_beats(){
 }
 
 function game_loop() {
-    document.getElementById('multiplayerexit').style.visibility = 'hidden';
-    document.getElementById('singleplayereturn').style.visibility = 'hidden';
+    //document.getElementById('multiplayerexit').style.visibility = 'hidden';
+    //document.getElementById('singleplayereturn').style.visibility = 'hidden';
     attack();
     display_game_grid();
     generate_upcoming_beats();

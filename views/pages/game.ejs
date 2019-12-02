@@ -13,7 +13,7 @@
             <h1>The Club</h1>
             <p id="p" >Now Playing: <%= name %> by <%= artist %></p>
 
-            <form class= "form">
+            <form class= "form" id="formscore" method="post" action='/club/<%= username %>/updatingstats'>
 
                     <p id="score">Score:</p>
                     <p id="player score">0</p>
@@ -21,6 +21,7 @@
                     <p id="player mult">x1.0</p>
                     <input type="number" class ="bpm" id="bpm" value='<%= tempo %>'/>
                     <input class="button" type="button" value="change bpm" onclick="change_bpm()" />
+					 <input type="hidden" id="scorenum" name="scorenum" value="-10">
                 </form>
 
             <div class= "main" id="gamediv">
@@ -63,10 +64,10 @@
                 var third = <%= enemiesStart[5] %>
             </script>
             <script type="text/javascript" src="/scripts/game.js"></script>  
-            <input type="button" id="singleplayereturn" value="Back to Home"  /> 
-            <input type="button" id="multiplayerexit" value="Exit"/> 
+            <input class="button" type="button" id="singleplayereturn" value="Home"  onclick="window.location.href = '/club/<%= username %>/home';" /> 
+            <button type="submit" class="button" id="multiplayerexit" value="Exit" form="formscore"/> 
             <script>
-                    document.getElementById('multiplayerexit').style.visibility = 'hidden';
+                    
                     document.getElementById('singleplayereturn').style.visibility = 'hidden';
                     var title = document.getElementById("countTitle");
                     var display = document.getElementById("countDown");
