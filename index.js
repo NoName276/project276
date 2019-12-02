@@ -550,7 +550,7 @@ app.get("/club/:name/home", (req, res) => {
           if (error)
             res.end(error);
           var results = { 'rows': result.rows };
-          res.render('pages/admin', results)  // load admin page for admins
+            res.redirect(`/club/admin/${name}/home`);  // load admin page for admins
         })
         return;
       }
@@ -883,7 +883,22 @@ app.post('/club/:name/updatingstats', (req, res) => {
             if (error) {
                 res.end(error);
             }
-            res.redirect(`/club/${name}/home`);
+            var updateWinLoseDraw
+            if (playerscore > 200) {
+                updateWinLoseDraw = `UPDATE STATS set gameswon= gameswon+1 WHERE username = '${name}';`;
+            }
+            else if (playerscore <= 200 && playerscore >= 190) {
+                updateWinLoseDraw = `UPDATE STATS set gamesdrawn= gamesdrawn+1 WHERE username = '${name}';`;
+            }
+            else {
+                updateWinLoseDraw = `UPDATE STATS set gameslost= gameslost+1 WHERE username = '${name}';`;
+            }
+            pool.query(updateWinLoseDraw, (error, result) => {
+                if (error) {
+                    res.end(error);
+                }
+                res.redirect(`/club/${name}/home`);
+            });
         });
     });
    // res.redirect(`/club/${name}/home`);

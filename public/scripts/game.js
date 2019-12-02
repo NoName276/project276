@@ -71,9 +71,6 @@ function game_end(){
     if (num_players > 1) { //multiplayer
         document.getElementById('multiplayerexit').style.visibility = 'visible';
     }
-    else {
-       // document.getElementById('singleplayereturn').style.visibility = '';
-    }
     console.log(document.getElementById('player score'));
     document.getElementById('scorenum').value = document.getElementById('player score').innerHTML;
 }
@@ -389,7 +386,7 @@ function generate_upcoming_beats(){
 }
 
 function game_loop() {
-    document.getElementById('multiplayerexit').style.visibility = 'hidden';
+    
     
     attack();
     display_game_grid();
