@@ -87,10 +87,13 @@ function player_move(num, e){
                 //gridEl.style.color = 'green';
                 document.getElementById('hit').innerHTML = "GREAT";
                 document.getElementById('hit').style.color = 'green';
+                var audiohit = new Audio('/assets/hit.wav');
+                audiohit.play();
                 if(bonus_flag){
                     //gridEl.style.color = 'orange';
                     document.getElementById('hit').innerHTML = "OKAY";
                     document.getElementById('hit').style.color = 'orange';
+                    audiohit.play();
                     if(multiplier < 2.0){
                         multiplier += 0.1;
                     }
@@ -257,6 +260,8 @@ function player_move(num, e){
                         //gridEl.style.color = 'red';
                         document.getElementById('hit').innerHTML = "MISS";
                         document.getElementById('hit').style.color = 'red';
+                        var missaudio = new Audio('/assets/miss.wav');
+                        missaudio.play();
                         multiplier = 1.0;
                         break;
                     default:
@@ -280,6 +285,7 @@ function display_held_items(){
         displaystring += '<img src="/assets/drink3.png">';
     }
   }
+  if(player_glasses[player_num].length == 8) displaystring += 'Inventory Full';
   document.getElementById('items').innerHTML = displaystring;
 }
 
