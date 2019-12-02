@@ -42,8 +42,9 @@
                         <div id= "col1">------------<br></div>
                     </div>
 										<div id="gamedata">
+                                            <p style="white-space:nowrap;display:inline; margin-left:5%;" id="playerColour">Your colour is: </p>
 											<p id="hit" style="color:blue; font-size:50px; display:inline; margin-left:5%;">READY</p><br>
-											<p style="color:black; white-space:nowrap;display:inline; margin-left:5%;">Current Items:</p><br>
+                                            <p style="color:black; white-space:nowrap;display:inline; margin-left:5%;">Current Items:</p><br>
 											<p id="items" style="margin-left: 5%"></p>
 										</div>
 		             </div>
@@ -98,7 +99,9 @@
                     window.addEventListener('unload', (event) => {
                         socket.emit('leave', room)
                     })
-
+                    let colours = ['blue', 'green', 'purple', 'orange']
+                    document.getElementById("playerColour").innerHTML += ` ${colours[player_num]}` 
+                    document.getElementById("playerColour").style.color = colours[player_num]
                 </script>
                  <input type="button" id="singleplayereturn" value="Back to Home"  />
 				<input type="button" id="multiplayerexit" value="Exit"/>

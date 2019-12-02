@@ -775,8 +775,10 @@ app.get('/room/:room/:username', (req, res) => {
   console.log(`${room} : ${roomsOpen[room]}`)
   if(roomsOpen[room] && rooms[room].length < 4){
     res.render('pages/room', { roomName: room, users: rooms[room], username })
-  }else{
+  }else if(roomsOpen[room]){
     res.render('pages/lobby', {rooms, username, error: `room '${room}' is full`})
+  }else{
+    res.render('pages/lobby', {rooms, username, error: `room '${room}' is currently in-game`})
   }
 })
 let enemiesStart = [
