@@ -104,7 +104,7 @@ table, #table1, #table2{
   font-size: 20px;
   font-family: 'Press Start 2P', cursive;
   cursor: pointer;
-  argin: 12px;
+  margin: 12px;
   transition: 0.8s;
   position: relative;
   overflow: hidden;

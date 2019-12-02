@@ -34,7 +34,7 @@ app.get('/register', async (req, res) => {  //loads registerform
 var pool = new Pool({
   ssl: true,
   connectionString: process.env.DATABASE_URL
-  // connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
+  //connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
 });
 // var app = express();
 // app.use(express.urlencoded());
@@ -358,6 +358,7 @@ app.post('/playing', (req,res) => {
             queryData.numberOfPlayers = 1;
             queryData.username = undefined;
             queryData.singlePlayer = true;
+            queryData.room = undefined;
             queryData.enemiesStart = [
               Math.floor(Math.random()* 4) + 2,
               Math.floor(Math.random()* 10),
@@ -747,6 +748,9 @@ app.get('/club/admin/:name/songselect', (req, res) => {
 const rooms = {
   name: []
 }
+const roomsOpen = {
+  name: true
+}
 const users = {}
 app.get('/club/:name/lobby', (req, res) => {
   res.render('pages/lobby', { rooms, username: req.params.name })
@@ -757,6 +761,7 @@ app.post('/room', (req, res) => {
     return res.redirect('pages/lobby')
   }
   rooms[room] = []
+  roomsOpen[room] = true
   console.log(`creating new room ${room}`)
   io.of('lobby').emit('room-created', room)
   res.redirect(`/room/${room}/${username}`)
@@ -767,10 +772,13 @@ app.get('/room/:room/:username', (req, res) => {
   if(rooms[room].indexOf(username) != -1){
     rooms[room].splice(rooms[room].indexOf(username), 1)
   }
-  if(rooms[room].length < 4){
+  console.log(`${room} : ${roomsOpen[room]}`)
+  if(roomsOpen[room] && rooms[room].length < 4){
     res.render('pages/room', { roomName: room, users: rooms[room], username })
-  }else{
+  }else if(roomsOpen[room]){
     res.render('pages/lobby', {rooms, username, error: `room '${room}' is full`})
+  }else{
+    res.render('pages/lobby', {rooms, username, error: `room '${room}' is currently in-game`})
   }
 })
 let enemiesStart = [
@@ -848,9 +856,51 @@ app.get('/club/:room/:username/game/:playerNum', (req, res) => {
     enemiesStart,
     accessToken: 0,
     track: song,
+    room,
     singlePlayer: false
   })
 })
+
+app.post('/club/:name/updatingstats', (req, res) => {
+    console.log("post");
+    var name = req.params.name;
+    var playerscore = req.body.scorenum;
+    console.log(playerscore);
+    let updatehighscore = `SELECT highscore FROM stats WHERE username = '${name}';`;
+    //let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore} WHERE username = '${name}';`;
+    console.log(updatehighscore);
+    //console.log(updateGameStatus);
+    pool.query(updatehighscore, (error, result) => {
+        if (error) {
+            res.end(error);
+        }
+        var oldhighscore = result.rows[0].highscore;
+        console.log(oldhighscore);
+        var newhighscore = (oldhighscore >= playerscore ? oldhighscore : playerscore);
+        let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore}, highscore=${newhighscore} WHERE username = '${name}';`;
+        console.log(updateGameStatus);
+        pool.query(updateGameStatus, (error, result) => {
+            if (error) {
+                res.end(error);
+            }
+            res.redirect(`/club/${name}/home`);
+        });
+    });
+   // res.redirect(`/club/${name}/home`);
+});
+
+/*app.get('/club/:name/updatingstats', (req, res) => {
+    console.log("get");
+    var name = req.params.name;
+    var playerscore = req.body.scorenum;
+    console.log(playerscore);
+    let updateStatsofUser = `SELECT * FROM stats WHERE username = '${name}';`;
+    let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore} whereHERE username = '${name}';`;
+    console.log(updateStatsofUser);
+    console.log(updateGameStatus);
+    res.redirect(`/club/${name}/home`);
+});*/
+
 
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function (req, res) {
@@ -859,8 +909,6 @@ app.get('*', function (req, res) {
 });
 
 //sockets
-const players = {};
-var playerCount =0;
 io.of('chat').on('connection', socket => {
 
   socket.on('join', ({roomName: room, username}) => {
@@ -873,7 +921,7 @@ io.of('chat').on('connection', socket => {
 
   socket.on('leave', ({roomName: room, username}) => {
     console.log(`user '${username}' leaving room '${room}'`)
-    if(rooms[room].indexOf(username) != -1){
+    if(rooms[room] != undefined && rooms[room].indexOf(username) != -1){
       rooms[room].splice(rooms[room].indexOf(username), 1)
     }
     console.log(`members of '${room}': ${rooms[room]}`)
@@ -887,12 +935,8 @@ io.of('chat').on('connection', socket => {
     io.of('chat').to(room).emit('newMessage', {username, message})
   })
 
-  socket.on('disconnect', function () {
-    playerCount--;
-    delete players[socket.id];
-  });
-
   socket.on('startGame', ({roomName: room, song}) => {
+    roomsOpen[room] = false
     enemiesStart = [
       Math.floor(Math.random()* 4) + 2,
       Math.floor(Math.random()* 10),
@@ -905,16 +949,16 @@ io.of('chat').on('connection', socket => {
   })
 
   // create a new player and add it to the players object
-  players[socket.id] = {
-    //add position
-    colour: "blue",
-    playerId: socket.id,
-    username: socket.username,
-  }
-  io.on('updateColour', function (colourData) {
-    players[socket.id].colour = colourData.colour;
-    socket.broadcast.emit('updateSprite', players[socket.id]);
-  });
+  // players[socket.id] = {
+  //   //add position
+  //   colour: "blue",
+  //   playerId: socket.id,
+  //   username: socket.username,
+  // }
+  // io.on('updateColour', function (colourData) {
+  //   players[socket.id].colour = colourData.colour;
+  //   socket.broadcast.emit('updateSprite', players[socket.id]);
+  // });
 })
 
 io.of("lobby").on('connection', socket => {
@@ -924,22 +968,44 @@ io.of("lobby").on('connection', socket => {
   } )
 })
 
-
+const playerCount = {
+  name: 0
+}
 io.of('game').on('connection', socket => {
-  socket.on("newPos", data => {
-    console.log(data)
-    io.of('game').emit('updatePos', data)
+  socket.on("join", (room) => {
+    if (playerCount[room] != undefined){
+      playerCount[room]++
+    }else{
+      playerCount[room] = 1
+    }
+    console.log(`user joining ${room}, count: ${playerCount[room]}`)
+    socket.join(room)
   })
-  socket.on("newEnemies", data => {
-    console.log(`new enemies: ${data}`)
-    io.of('game').emit('updateEnemies', data)
+  socket.on("leave", (room) => {
+    if (playerCount[room]){
+      playerCount[room]--
+      if (playerCount[room] <= 0){
+        roomsOpen[room] = true
+        playerCount[room] = 0
+      }
+    }
+    console.log(`user leaving ${room}, count: ${playerCount[room]}`)
+    socket.leave(room)
   })
-  socket.on("newBpm", data => {
-    console.log(`newBpm: ${data}`)
-    io.of('game').emit('updateBpm', data)
+  socket.on("newPos", ({data, room}) => {
+    console.log(`${room}: ${JSON.stringify(data)}`)
+    io.of('game').to(room).emit('updatePos', data)
   })
-  socket.on("newGlasses", data => {
-    console.log(data)
-    io.of('game').emit('updateGlasses', data)
+  socket.on("newEnemies", ({data, room}) => {
+    console.log(`${room}: new enemies - ${data}`)
+    io.of('game').to(room).emit('updateEnemies', data)
+  })
+  socket.on("newBpm", ({data, room}) => {
+    console.log(`${room}: newBpm - ${data}`)
+    io.of('game').to(room).emit('updateBpm', data)
+  })
+  socket.on("newGlasses", ({data, room}) => {
+    console.log(`${room}: ${JSON.stringify(data)}`)
+    io.of('game').to(room).emit('updateGlasses', data)
   })
 })
