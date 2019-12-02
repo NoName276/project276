@@ -392,6 +392,57 @@ app.post('/playing', (req,res) => {
     });
 })
 
+app.get('/joji', (req, res) => {
+    res.render('pages/slow-dancing-in-the-dark');
+})
+app.get('/slow-dancing-in-the-dark.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/slow-dancing-in-the-dark.mp3')
+})
+app.get('/hadestown', (req, res) => {
+    res.render('pages/way-down-hadestown-ii');
+})
+app.get('/hadestown-original-broadway-cast-way-down-hadestown-ii-lyrics.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/hadestown-original-broadway-cast-way-down-hadestown-ii-lyrics.mp3')
+})
+app.get('/dear-evan-hansen', (req, res) => {
+    res.render('pages/waving-through-a-window');
+})
+app.get('/waving-through-a-window-from-the-dear-evan-hansen-original-broadway-cast-recording.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/waving-through-a-window-from-the-dear-evan-hansen-original-broadway-cast-recording.mp3')
+})
+app.get('/88rising', (req, res) => {
+    res.render('pages/breathe');
+})
+app.get('/breathe.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/breathe.mp3')
+})
+app.get('/billie-eilish', (req, res) => {
+    res.render('pages/bad-guy');
+})
+app.get('/bad-guy.mp3', (req, res) => {
+    console.log("loading badguy");
+    res.sendFile(__dirname + '/audio/bad-guy.mp3')
+})
+app.get('/dua-lipa', (req, res) => {
+    res.render('pages/dont-start-now');
+})
+app.get('/dont-start-now.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/dont-start-now.mp3')
+})
+app.get('/sam-smith', (req, res) => {
+    res.render('pages/how-do-you-sleep');
+})
+app.get('/how-do-you-sleep.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/how-do-you-sleep.mp3')
+})
+app.get('/ali-gatie', (req, res) => {
+    res.render('pages/its-you');
+})
+app.get('/its-you.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/its-you.mp3')
+})
+
+
 var request = require('request'); // "Request" library
 var cors = require('cors');
 var querystring = require('querystring');
