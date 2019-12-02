@@ -265,6 +265,15 @@ describe("Stats and Leaderboard", function () {
                     done();
                 });
         })
+        it("Stats update post-game", function (done) {
+            chai.request(app)
+                .post(`/club/testingregister/updatingstats`)
+                .send({ scorenum: 15 })
+                .end(function (err, res) {
+                    expect(res.status).to.be.eq(200);
+                    res.text.should.include("Log Out"); //back to homepage
+                });
+        })
     });
  
     describe("Leaderboard", function () {

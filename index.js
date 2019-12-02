@@ -861,6 +861,47 @@ app.get('/club/:room/:username/game/:playerNum', (req, res) => {
   })
 })
 
+app.post('/club/:name/updatingstats', (req, res) => {
+    console.log("post");
+    var name = req.params.name;
+    var playerscore = req.body.scorenum;
+    console.log(playerscore);
+    let updatehighscore = `SELECT highscore FROM stats WHERE username = '${name}';`;
+    //let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore} WHERE username = '${name}';`;
+    console.log(updatehighscore);
+    //console.log(updateGameStatus);
+    pool.query(updatehighscore, (error, result) => {
+        if (error) {
+            res.end(error);
+        }
+        var oldhighscore = result.rows[0].highscore;
+        console.log(oldhighscore);
+        var newhighscore = (oldhighscore >= playerscore ? oldhighscore : playerscore);
+        let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore}, highscore=${newhighscore} WHERE username = '${name}';`;
+        console.log(updateGameStatus);
+        pool.query(updateGameStatus, (error, result) => {
+            if (error) {
+                res.end(error);
+            }
+            res.redirect(`/club/${name}/home`);
+        });
+    });
+   // res.redirect(`/club/${name}/home`);
+});
+
+/*app.get('/club/:name/updatingstats', (req, res) => {
+    console.log("get");
+    var name = req.params.name;
+    var playerscore = req.body.scorenum;
+    console.log(playerscore);
+    let updateStatsofUser = `SELECT * FROM stats WHERE username = '${name}';`;
+    let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore} whereHERE username = '${name}';`;
+    console.log(updateStatsofUser);
+    console.log(updateGameStatus);
+    res.redirect(`/club/${name}/home`);
+});*/
+
+
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function (req, res) {
   res.statusCode = 404;
