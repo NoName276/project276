@@ -2,6 +2,7 @@ process.env.DATABASE_URL = "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35
 var request = require("request"),
     assert = require('assert'),
     app = require("./index.js"),
+    //game = require('./public/scripts/game.js')
     base_url = "http://localhost:5000/";
 
     
@@ -15,6 +16,350 @@ chai.use(chaiHttp);
 const { expect } = chai;
 
 var jsdom = require('mocha-jsdom')
+
+// <GAME FUNCTIONS>
+function game_end(){
+    game_running = false;
+}
+
+function player_move(num, e){
+    //gridEl = document.getElementById('game_grid');
+    var pressed = e.which || e.keyCode;
+    //console.log(pressed)
+    if(game_running){
+        if(!key_flag){
+            key_flag = true;
+            if(valid_flag){
+                //gridEl.style.color = 'green';
+                if(bonus_flag){
+                    //gridEl.style.color = 'orange';
+                    if(multiplier < 2.0){
+                        multiplier += 0.1;
+                    }
+                }
+                if( (pressed == last_player_move[num]) || (player_glasses[num].length < 5) ){
+                    var hit_flag = false;
+                    switch(pressed){
+                        case 87:
+                        case 38:
+                            if(player_pos[num][0] > 0){
+                                for(i=1; i<num_players;i++){
+                                    if(player_pos[num][0]-1 == player_pos[i%4][0] && player_pos[num][1] == player_pos[i%4][1]){
+                                        hit_flag = true;
+                                        if(player_glasses[i].length > 0){player_glasses[i].pop();}
+                                        if(player_glasses[num].length > 0){player_glasses[num].pop();}
+                                    }
+                                }
+                                if(hit_flag){null;}
+                                else if(game_grid[player_pos[num][0]-1][player_pos[num][1]] == null){
+                                    game_grid[player_pos[num][0]][player_pos[num][1]] = null;
+                                    player_pos[num][0] -= 1;
+                                    //socket.emit('newPos', {player: num, pos: player_pos[num]})
+                                    //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
+                                }
+                                else if(!isNaN(game_grid[player_pos[num][0]-1][player_pos[num][1]])){
+                                    if(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] != 0 && player_glasses[num].length < 8){
+                                        player_glasses[num].push(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]]);
+                                        glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] = 0;
+                                        filled_glasses -= 1;
+                                        //socket.emit('newGlasses', {filled_glasses, glasses})
+                                    }
+                                }
+                                else if(player_pos[num][0]-1 == 0 && player_pos[num][1] == 3*num){
+                                    while(player_glasses[num].length != 0){
+                                        score += player_glasses[num].pop()*10*multiplier;
+                                        //document.getElementById('player score').innerHTML = score.toFixed(0)
+                                    }
+                                }
+                            }
+                            break;
+                        case 83:
+                        case 40:
+                            if(player_pos[num][0] < 9){
+                                for(i=1; i<num_players;i++){
+                                    if(player_pos[num][0]+1 == player_pos[i%4][0] && player_pos[num][1] == player_pos[i%4][1]){
+                                        hit_flag = true;
+                                        if(player_glasses[i].length > 0){player_glasses[i].pop();}
+                                        if(player_glasses[num].length > 0){player_glasses[num].pop();}
+                                    }
+                                }
+                                if(hit_flag){null;}
+                                else if(game_grid[player_pos[num][0]+1][player_pos[num][1]] == null){
+                                    game_grid[player_pos[num][0]][player_pos[num][1]] = null;
+                                    player_pos[num][0] += 1;
+                                    //socket.emit('newPos', {player: num, pos: player_pos[num]})
+                                    //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
+                                }
+                                else if(!isNaN(game_grid[player_pos[num][0]+1][player_pos[num][1]])){
+                                    if(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] != 0 && player_glasses[num].length < 8){
+                                        player_glasses[num].push(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]]);
+                                        glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] = 0;
+                                        filled_glasses -= 1;
+                                        //socket.emit('newGlasses', {filled_glasses, glasses})
+                                    }
+                                }
+                                else if(player_pos[num][0]+1 == 0 && player_pos[num][1] == 3*num){
+                                    while(player_glasses[num].length != 0){
+                                        score += player_glasses[num].pop()*10*multiplier;
+                                        //document.getElementById('player score').innerHTML = score.toFixed(0)
+                                    }
+                                }
+                            }
+                            break;
+                        case 65:
+                        case 37:
+                            if(player_pos[num][1] > 0){
+                                for(i=1; i<num_players;i++){
+                                    if(player_pos[num][0] == player_pos[i%4][0] && player_pos[num][1]-1 == player_pos[i%4][1]){
+                                        hit_flag = true;
+                                        if(player_glasses[i].length > 0){player_glasses[i].pop();}
+                                        if(player_glasses[num].length > 0){player_glasses[num].pop();}
+                                    }
+                                }
+                                if(hit_flag){null;}
+                                else if (game_grid[player_pos[num][0]][player_pos[num][1]-1] == null){
+                                    game_grid[player_pos[num][0]][player_pos[num][1]] = null;
+                                    player_pos[num][1] -= 1;
+                                    //socket.emit('newPos', {player: num, pos: player_pos[num]})
+                                    //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
+                            }
+                                else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]-1])){
+                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] != 0 && player_glasses[num].length < 8){
+                                        player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]]);
+                                        glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] = 0;
+                                        filled_glasses -= 1;
+                                        //socket.emit('newGlasses', {filled_glasses, glasses})
+                                    }
+                                }
+                                else if(player_pos[num][0] == 0 && player_pos[num][1]-1 == 3*num){
+                                    while(player_glasses[num].length != 0){
+                                        score += player_glasses[num].pop()*10*multiplier;
+                                        //document.getElementById('player score').innerHTML = score.toFixed(0)
+                                    }
+                                }
+                            }
+                            break;
+                        case 68:
+                        case 39:
+                            if(player_pos[num][1] < 9){
+                                for(i=1; i<num_players;i++){
+                                    if(player_pos[num][0] == player_pos[i%4][0] && player_pos[num][1]+1 == player_pos[i%4][1]){
+                                        hit_flag = true;
+                                        if(player_glasses[i].length > 0){player_glasses[i].pop();}
+                                        if(player_glasses[num].length > 0){player_glasses[num].pop();}
+                                    }
+                                }
+                                if(hit_flag){null;}
+                                else if (game_grid[player_pos[num][0]][player_pos[num][1]+1] == null){
+                                    game_grid[player_pos[num][0]][player_pos[num][1]] = null;
+                                    player_pos[num][1] += 1;
+                                    //socket.emit('newPos', {player: num, pos: player_pos[num]})
+                                    //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
+                                }
+                                else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]+1])){
+                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] != 0 && player_glasses[num].length < 8){
+                                    player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]]);
+                                    glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] = 0;
+                                    filled_glasses -= 1;
+                                    //socket.emit('newGlasses', {filled_glasses, glasses})
+                                    }
+                                }
+                                else if(player_pos[num][0] == 0 && player_pos[num][1]+1 == 3*num){
+                                    while(player_glasses[num].length != 0){
+                                        score += player_glasses[num].pop()*10*multiplier;
+                                        //document.getElementById('player score').innerHTML = score.toFixed(0)
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+                            key_flag = false;
+                            //gridEl.style.color = 'blue';
+                            //document.getElementById('hit').innerHTML = "READY";
+                            //document.getElementById('hit').style.color = 'blue';
+                    }
+                    last_player_move[num] = 0;
+                }
+                else{
+                    last_player_move[num] = pressed;
+                }
+
+                //setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
+            }
+            else{
+                switch(pressed){
+                    case 37:
+                    case 38:
+                    case 39:
+                    case 40:
+                    case 65:
+                    case 68:
+                    case 83:
+                    case 87:
+                        //gridEl.style.color = 'red';
+                        //document.getElementById('hit').innerHTML = "MISS";
+                        //document.getElementById('hit').style.color = 'red';
+                        multiplier = 1.0;
+                        break;
+                    default:
+                        key_flag = false;
+                }
+                //setTimeout(function(){reset_conditions();}, 1000/FRAMERATE*fpb*2/3);
+            }
+        }
+        e.preventDefault();
+    }
+}
+
+function generate_upcoming_beats(){
+    beat_shelf = [,,,,,,];
+    //console.log(upcoming_beats)
+    for(var i=0; i<upcoming_beats.length; ++i){
+        upcoming_beats[i] += 1/FRAMERATE;
+        if(upcoming_beats[i]>=1){
+            onCollisions();
+            upcoming_beats.shift();
+            --i;
+            valid_flag = false;
+            bonus_flag = false;
+            if(!key_flag){
+                multiplier = 1.0
+            }
+            if(next_glass_counter == 3){
+                add_glass();
+                next_glass_counter = 0;
+            }
+            else{
+                next_glass_counter += 1;
+            }
+        }
+
+        else{
+            if(upcoming_beats[i]>=0.7){
+                valid_flag=true;
+            }
+            if(upcoming_beats[i]>=0.85){
+                bonus_flag=true;
+            }
+            var temp = parseInt(upcoming_beats[i]*6)
+            if(temp<6){beat_shelf[temp] = 0}
+        }
+    }
+    if(beat_offset<1){
+        upcoming_beats.push(0);
+        beat_shelf[0]=0;
+    }
+}
+    
+    function game_loop() {
+    /*document.getElementById('multiplayerexit').style.visibility = 'hidden';
+    document.getElementById('singleplayereturn').style.visibility = 'hidden';*/
+    attack();
+    display_game_grid();
+    generate_upcoming_beats();
+    display_held_items();
+    //document.getElementById('player mult').innerHTML = 'x' + multiplier.toFixed(1);
+    beat_offset += 1;
+    while (beat_offset>=fpb){beat_offset -= fpb;}
+    if(game_running){
+        setTimeout(function(){game_loop();}, 1000/FRAMERATE);
+    }
+}
+
+function add_glass() {
+    if(player_num == 0 && filled_glasses<10){
+        glass_pos = parseInt(Math.random()*10);
+        while( glasses[glass_pos] != 0){
+            glass_pos = (glass_pos+1) % 10
+        }
+        glass_value = Math.random();
+        if(glass_value<=0.5){
+            glasses[glass_pos] = 1;
+        }
+        else if(glass_value<=0.9){
+            glasses[glass_pos] = 2;
+        }
+        else {
+            glasses[glass_pos] = 3;
+        }
+        filled_glasses += 1;
+        //socket.emit('newGlasses', {filled_glasses, glasses})
+    }
+
+}
+
+function reset_conditions() {
+    /*gridEl = document.getElementById('game_grid');
+    //gridEl.style.color = 'blue';
+    document.getElementById('hit').innerHTML = "READY";
+    document.getElementById('hit').style.color = 'blue';*/
+    key_flag = false;
+
+}
+
+function onCollisions() {
+    //gridEl = document.getElementById('game_grid');
+    if(player_num == 0){
+        if (y2 == 10) {
+            y2 = 0;
+        }
+        else {
+            y2 =y2+1;
+        }
+        game_grid[x2][y2] ="E";
+        game_grid[x2][y2-1]= null
+        if (thirdx == 8){
+            game_grid[third][thirdx]=null;
+            thirdx = 1;
+        }
+        else{
+            thirdx = thirdx +1;
+        }
+        game_grid[third][thirdx] ="E";
+        if (thirdx != 1){
+            game_grid[third][thirdx-1]= null;
+        }
+        
+
+        if ( beats == 1){
+            beats = 0;
+            if (y == 10) {
+                y = 0;
+            }
+            else {
+                y =y+1;
+            }
+            game_grid[x][y] ="E";
+            game_grid[x][y-1]= null;
+        }
+        else {
+            beats = beats+1;
+        }
+        //socket.emit("newEnemies", [x, y, x2, y2, thirdx, third])
+    }
+}
+
+function attack() {
+  //  console.log(player_pos[i], [x,y])
+    for(i=0; i<4; i++){
+        if (player_pos[i][0] == x && player_pos[i][1] == y){
+            player_pos[i] = [x+1, y];
+            if(player_glasses[i].length > 0){player_glasses[i].pop();}
+        //  console.log('fight me');
+        }
+        if (player_pos[i][0] == x2 && player_pos[i][1] == y2){
+            player_pos[i] = [x2+1,y2];
+            if(player_glasses[i].length > 0){player_glasses[i].pop();}
+        }
+        if (player_pos[i][0] == third && player_pos[i][1] == thirdx){
+            player_pos[i] = [third+1 ,thirdx];
+            if(player_glasses[i].length > 0){player_glasses[i].pop();}
+        }
+    }
+}
+//setTimeout(function(){game_loop(); setTimeout(function{game_end();}, 1000*duration)}, 1000/FRAMERATE);
+// <GAME FUNCTIONS/> 
+
 
 //done
 
@@ -677,4 +1022,105 @@ describe("CLEAN UP POST TEST", function () {
     });
 });
 
-    
+describe("Game Functions", function () {
+    describe("game_end()", function () {
+        it("game_running true", function () {
+            game_running = true;
+            game_end()
+            assert.equal(false, game_running);
+        })
+        it("game_running false", function(){
+            game_running = false;
+            game_end()
+            assert.equal(false, game_running)
+        })
+    })
+    describe("reset_conditions()", function(){
+        it("key_flag true", function (){
+            key_flag = true;
+            reset_conditions()
+            assert.equal(false, key_flag)
+        })
+        it("key_flag false", function(){
+            key_flag = false;
+            reset_conditions()
+            assert.equal(false, key_flag)
+        })
+    })
+
+    describe("add_glass()", function(){
+        describe("player_num == 0", function(){
+            player_num = 0;
+            filled_glasses = 0;
+            glasses = [0,0,0,0,0,0,0,0,0,0];
+            
+            it("adds glass somewhere in glasses", function(){
+                add_glass()
+                var glass_added = false
+                for(i=0; i<10; i++){
+                    if (glasses[i] != 0) {glass_added = true}
+                }
+                assert.equal(true, glass_added)
+                assert.equal(1, filled_glasses)
+            })
+
+            it("fills available spaces", function(){
+                for(i=0; i<10; i++){add_glass()}                
+                var all_added = true
+                for(i=0; i<10; i++){
+                    if (glasses[i] == 0) {all_added = false}
+                }
+                //console.log(glasses)
+                assert.equal(true, all_added)
+                assert.equal(10, filled_glasses)
+            })
+
+            it("does not change once full", function(){
+                for(i=0; i<10; i++){add_glass()}                
+                var all_added = true
+                for(i=0; i<10; i++){
+                    if (glasses[i] == 0) {all_added = false}
+                }
+                //console.log(glasses)
+                assert.equal(true, all_added)
+                assert.equal(10, filled_glasses)
+            })
+        })
+        for(num=1; num<4; num++)
+            describe("player_num == " + num, function(){
+                player_num = num;
+                filled_glasses = 0;
+                glasses = [0,0,0,0,0,0,0,0,0,0];
+                add_glass()
+                
+                it("adds glass somewhere in glasses", function(){
+                    var glass_added = false
+                    for(i=0; i<10; i++){
+                        if (glasses[i] != 0) {glass_added = true}
+                    }
+                    assert.equal(false, glass_added)
+                    assert.equal(0, filled_glasses)
+                })
+
+                it("fills available spaces", function(){
+                    for(i=0; i<10; i++){add_glass()}                
+                    var all_added = true
+                    for(i=0; i<10; i++){
+                        if (glasses[i] == 0) {all_added = false}
+                    }
+                    assert.equal(false, all_added)
+                    assert.equal(0, filled_glasses)
+                })
+
+                it("does not change once full", function(){
+                    for(i=0; i<10; i++){add_glass()}                
+                    var all_added = true
+                    for(i=0; i<10; i++){
+                        if (glasses[i] == 0) {all_added = false}
+                    }
+                    assert.equal(false, all_added)
+                    assert.equal(0, filled_glasses)
+                })
+            })
+    })
+});
