@@ -32,8 +32,9 @@
         document.getElementById(`user-${leavingUser}`).remove()
       })
 
-      socket.on('launchGame', () => {
-        window.location.href = '/club/<%=roomName%>/<%=username%>/game';
+      socket.on('launchGame', (members) => {
+        playerNum = members.indexOf('<%=username%>')
+        window.location.href = `/club/<%=roomName%>/<%=username%>/game/${playerNum}`;
       })
 
       function sendMessage(e) {

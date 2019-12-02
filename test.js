@@ -365,6 +365,7 @@ describe("Toggling Admin", function () {
     });
 });
 
+//done
 describe("Listen to Songs", function () {
     it("Proper Page shows up", function (done) {
         chai.request(app)
@@ -497,7 +498,7 @@ describe("Single Player", function () {
     });
  });
 
-describe("Multiplayer", function () { });
+describe("Multiplayer", function () {});
 
 describe("spotify web api authentication, song data from playback, Spotify play b", function () { 
     jsdom({
