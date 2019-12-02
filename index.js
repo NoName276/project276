@@ -341,7 +341,7 @@ app.post('/playing', (req,res) => {
         // Output items
         console.log(data.body.is_playing)
         if (data.body.is_playing == false) {
-            res.redirect('/music')
+            res.redirect(`/music`)
             res.end('Play a song before playing!');
         } else {
             //console.log("Now Playing: ",data.body.item.artists[0].name);
@@ -356,6 +356,15 @@ app.post('/playing', (req,res) => {
             queryData.accessToken = token + '';
             queryData.playerNumber = 0;
             queryData.numberOfPlayers = 1;
+            queryData.username = undefined;
+            queryData.enemiesStart = [
+              Math.floor(Math.random()* 4) + 2,
+              Math.floor(Math.random()* 10),
+              Math.floor(Math.random()* 4) + 2,
+              Math.floor(Math.random()* 10),
+              Math.floor(Math.random()*7)+2,
+              Math.floor(Math.random()*1)+7,
+            ]
             /* Get Audio Analysis for a Track */
             spotifyApi.getAudioAnalysisForTrack(queryData.uri)
             .then(function(data) {
@@ -480,7 +489,7 @@ app.get('/spotify-login', function (req, res) {
       response_type: 'code',
       client_id: client_id,
       scope: scope,
-      redirect_uri: redirect_uri,
+      redirect_uri: `${redirect_uri}`,
       state: state
     }));
 });
@@ -813,18 +822,27 @@ app.get('/room/:room/:username', (req, res) => {
     res.render('pages/lobby', {rooms, username, error: `room '${room}' is full`})
   }
 })
-
-app.get('/club/:room/:username/game', (req, res) => {
-  const {room, username} = req.params
-  console.log(username)
+let enemiesStart = [
+  Math.floor(Math.random()* 4) + 2,
+  Math.floor(Math.random()* 10),
+  Math.floor(Math.random()* 4) + 2,
+  Math.floor(Math.random()* 10),
+  Math.floor(Math.random()*7)+2,
+  Math.floor(Math.random()*1)+7,
+]
+app.get('/club/:room/:username/game/:playerNum', (req, res) => {
+  console.log(enemiesStart)
+  const {room, username, playerNum} = req.params
   res.render('pages/game', {
-    duration: 500,
-    playerNumber: rooms[room].indexOf(username),
+    duration: 60,
+    playerNumber: playerNum,
     numberOfPlayers: rooms[room].length,
+    username, 
     uri: 'wad',
     name: 'someName',
     artist: 'someArtist',
     tempo: 60,
+    enemiesStart
   })
 })
 
@@ -842,6 +860,7 @@ io.of('chat').on('connection', socket => {
   socket.on('join', ({roomName: room, username}) => {
     console.log(`user '${username}' joining room '${room}'`)
     rooms[room].push(username)
+    console.log(`members of '${room}': ${rooms[room]}`)
     socket.join(room)
     io.of('chat').to(room).emit('userJoined', username)
   })
@@ -851,6 +870,7 @@ io.of('chat').on('connection', socket => {
     if(rooms[room].indexOf(username) != -1){
       rooms[room].splice(rooms[room].indexOf(username), 1)
     }
+    console.log(`members of '${room}': ${rooms[room]}`)
     socket.leave(room)
     io.of('chat').to(room).emit('userLeft', username)
   })
@@ -863,13 +883,19 @@ io.of('chat').on('connection', socket => {
 
   socket.on('disconnect', function () {
     playerCount--;
-    console.log('user disconnected');
     delete players[socket.id];
-    io.emit('disconnect', socket.id);
   });
 
   socket.on('startGame', (room) => {
-    io.of('chat').to(room).emit('launchGame')
+    enemiesStart = [
+      Math.floor(Math.random()* 4) + 2,
+      Math.floor(Math.random()* 10),
+      Math.floor(Math.random()* 4) + 2,
+      Math.floor(Math.random()* 10),
+      Math.floor(Math.random()*7)+2,
+      Math.floor(Math.random()*1)+7,
+    ]
+    io.of('chat').to(room).emit('launchGame', rooms[room])
   })
 
   // create a new player and add it to the players object
@@ -899,9 +925,11 @@ io.of('game').on('connection', socket => {
     io.of('game').emit('updatePos', data)
   })
   socket.on("newEnemies", data => {
+    console.log(`new enemies: ${data}`)
     io.of('game').emit('updateEnemies', data)
   })
   socket.on("newBpm", data => {
+    console.log(`newBpm: ${data}`)
     io.of('game').emit('updateBpm', data)
   })
   socket.on("newGlasses", data => {
