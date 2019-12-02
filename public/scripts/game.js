@@ -27,14 +27,8 @@ var score = 0;
 var multiplier = 1.0;
 var player_glasses = [[],[],[],[],];
 var last_player_move = [0,0,0,0,];
-// if(player_num == 0){
-//     let x2 = Math.floor(Math.random()* 4) + 2;
-//     let y2 = Math.floor(Math.random()* 10);
-//     let x = Math.floor(Math.random()* 4) + 2;
-//     let y = Math.floor(Math.random()* 10);
-//     let third = Math.floor(Math.random()*1)+7;
-//     let thirdx = Math.floor(Math.random()*7)+2;
-// }
+
+var allscores = [,,,,]
 
 const socket = io('/game')
 socket.emit("join", room)
@@ -55,6 +49,10 @@ socket.on("updateGlasses", (data) => {
 socket.on("updateFilledGlasses", data => {
     filled_glasses = data
 })
+socket.on("updateScores", data => {
+
+})
+
 var beats = 0;
 
 function change_bpm(){
@@ -386,8 +384,6 @@ function generate_upcoming_beats(){
 }
 
 function game_loop() {
-    
-    
     attack();
     display_game_grid();
     generate_upcoming_beats();

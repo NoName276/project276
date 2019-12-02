@@ -897,13 +897,18 @@ app.post('/club/:name/updatingstats', (req, res) => {
                 if (error) {
                     res.end(error);
                 }
-                res.redirect(`/club/${name}/home`);
+                res.redirect(`/club/${name}/${playerscore}/gameres`);
             });
         });
     });
-   // res.redirect(`/club/${name}/home`);
 });
 
+
+app.get('/club/:name/:score/gameres', (req, res) => {
+   let name = req.params.name;
+    var score = req.params.score;
+    res.render("pages/gameres", { name: name, score: score });
+});
 /*app.get('/club/:name/updatingstats', (req, res) => {
     console.log("get");
     var name = req.params.name;
@@ -1022,5 +1027,19 @@ io.of('game').on('connection', socket => {
   socket.on("newGlasses", ({data, room}) => {
     console.log(`${room}: ${JSON.stringify(data)}`)
     io.of('game').to(room).emit('updateGlasses', data)
-  })
+    })
+    socket.on("getScores", ({ data, room }) => {
+        io.of('game').to(room).emit('updateScores', data)
+    })
 })
+
+
+io.of('results').on('connection', socket => {
+    socket.on('player', (data) => {
+        const { player, name, score } = data;
+        console.log(`new player - ${room}:\n\t${name}: ${score}`)
+        io.of('chat').to(room).emit('enterPlayer', { name, score })
+    })
+
+})
+

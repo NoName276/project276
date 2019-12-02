@@ -648,7 +648,15 @@ describe("spotify web api authentication, song data from playback, Spotify play 
 
 });
 
-describe("ROOMS/SOCKET", function () { });
+describe("ROOMS/SOCKET", function () {
+    it("room loads", function (done) {
+        chai.request(app)
+            .get(`/room/name/Quiette`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+            });
+    });
+});
 
 //cleanup; done
 describe("CLEAN UP POST TEST", function () {

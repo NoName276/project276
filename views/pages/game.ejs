@@ -86,7 +86,7 @@
                         if (seconds == 0) {
                             title.innerHTML = "Play"
                             display.innerHTML = "Now";
-                            setTimeout(function(){setTimeout(function(){game_running = true; game_loop(); setTimeout(function(){game_end();}, 1000*<%= duration %>)}, 1000/FRAMERATE);}, 2000);
+                            setTimeout(function(){setTimeout(function(){game_running = true; game_loop(); setTimeout(function(){game_end();}, 1000*0*<%= duration %>)}, 1000/FRAMERATE);}, 2000);
                             clearInterval(interval)
                             console.log("Play Now")
                             document.getElementById('audio').play()
