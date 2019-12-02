@@ -353,11 +353,7 @@ function generate_upcoming_beats(){
     //
 }
 
-<<<<<<< Updated upstream
 function game_loop(){
-=======
-function game_loop() {
->>>>>>> Stashed changes
     attack();
     display_game_grid();
     generate_upcoming_beats();
