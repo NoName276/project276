@@ -638,7 +638,21 @@ describe("spotify web api authentication, song data from playback, Spotify play 
 
 });
 
-describe("ROOMS/SOCKET", function () { });
+describe("ROOMS/SOCKET", function () { 
+    chai.request(app)
+    it('chatbox emits correct message to players in room', (done) => {
+        
+    })
+    it('multiplayer movement is synchronized', (done) => {
+
+    })
+    it('lobby', (done) => {
+
+    })
+    it('room', (done) => {
+
+    })
+});
 
 //cleanup; done
 describe("CLEAN UP POST TEST", function () {
