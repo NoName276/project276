@@ -40,7 +40,7 @@ socket.on("updateEnemies", data => {
 })
 socket.on("updateBpm", data => {
     document.getElementById('bpm').value = data
-    fbp = FRAMERATE/data/60;
+    fpb = FRAMERATE/data/60;
 })
 socket.on("updateGlasses", (data) => {
     glasses = data.glasses
@@ -90,10 +90,14 @@ function player_move(num, e){
                 //gridEl.style.color = 'green';
                 document.getElementById('hit').innerHTML = "GREAT";
                 document.getElementById('hit').style.color = 'green';
+                var audiohit = new Audio('/assets/hit.wav');
+                var bumphit = new Audio('/assets/bump.wav');
+                audiohit.play();
                 if(bonus_flag){
                     //gridEl.style.color = 'orange';
                     document.getElementById('hit').innerHTML = "OKAY";
                     document.getElementById('hit').style.color = 'orange';
+                    audiohit.play();
                     if(multiplier < 2.0){
                         multiplier += 0.1;
                     }
@@ -119,8 +123,9 @@ function player_move(num, e){
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]-1][player_pos[num][1]])){
-                                    if(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] != 0 && player_glasses[num].length < 9){
+                                    if(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]]);
+                                        bumphit.play();
                                         glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
                                         socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
@@ -152,8 +157,9 @@ function player_move(num, e){
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]+1][player_pos[num][1]])){
-                                    if(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] != 0 && player_glasses[num].length < 9){
+                                    if(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]]);
+                                        bumphit.play();
                                         glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
                                         socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
@@ -185,8 +191,9 @@ function player_move(num, e){
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                             }
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]-1])){
-                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] != 0 && player_glasses[num].length < 9){
+                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]]);
+                                        bumphit.play();
                                         glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] = 0;
                                         filled_glasses -= 1;
                                         socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
@@ -218,8 +225,9 @@ function player_move(num, e){
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]+1])){
-                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] != 0 && player_glasses[num].length < 9){
+                                    if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] != 0 && player_glasses[num].length < 8){
                                     player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]]);
+                                    bumphit.play();
                                     glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] = 0;
                                     filled_glasses -= 1;
                                     socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
@@ -260,6 +268,8 @@ function player_move(num, e){
                         //gridEl.style.color = 'red';
                         document.getElementById('hit').innerHTML = "MISS";
                         document.getElementById('hit').style.color = 'red';
+                        var missaudio = new Audio('/assets/miss.wav');
+                        missaudio.play();
                         multiplier = 1.0;
                         break;
                     default:
@@ -283,6 +293,7 @@ function display_held_items(){
         displaystring += '<img src="/assets/drink3.png">';
     }
   }
+  if(player_glasses[player_num].length == 8) displaystring += 'Inventory Full';
   document.getElementById('items').innerHTML = displaystring;
 }
 
@@ -390,6 +401,7 @@ function generate_upcoming_beats(){
 }
 
 function game_loop() {
+
     attack();
     display_game_grid();
     generate_upcoming_beats();
