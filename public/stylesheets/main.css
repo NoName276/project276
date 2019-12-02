@@ -33,7 +33,7 @@ h1 {
 }
 #game_grid{
   margin-left: 46px;
-  color: rgba(255, 0, 0, 1);
+  color: rgba(255, 0, 0, 0);
   font-size: 16pt;
   font-family: monospace !important;
   letter-spacing: 1.1em;
