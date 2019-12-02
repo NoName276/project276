@@ -343,6 +343,57 @@ app.post('/playing', (req,res) => {
     });
 })
 
+app.get('/joji', (req, res) => {
+    res.render('pages/slow-dancing-in-the-dark');
+})
+app.get('/slow-dancing-in-the-dark.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/slow-dancing-in-the-dark.mp3')
+})
+app.get('/hadestown', (req, res) => {
+    res.render('pages/way-down-hadestown-ii');
+})
+app.get('/hadestown-original-broadway-cast-way-down-hadestown-ii-lyrics.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/hadestown-original-broadway-cast-way-down-hadestown-ii-lyrics.mp3')
+})
+app.get('/dear-evan-hansen', (req, res) => {
+    res.render('pages/waving-through-a-window');
+})
+app.get('/waving-through-a-window-from-the-dear-evan-hansen-original-broadway-cast-recording.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/waving-through-a-window-from-the-dear-evan-hansen-original-broadway-cast-recording.mp3')
+})
+app.get('/88rising', (req, res) => {
+    res.render('pages/breathe');
+})
+app.get('/breathe.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/breathe.mp3')
+})
+app.get('/billie-eilish', (req, res) => {
+    res.render('pages/bad-guy');
+})
+app.get('/bad-guy.mp3', (req, res) => {
+    console.log("loading badguy");
+    res.sendFile(__dirname + '/audio/bad-guy.mp3')
+})
+app.get('/dua-lipa', (req, res) => {
+    res.render('pages/dont-start-now');
+})
+app.get('/dont-start-now.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/dont-start-now.mp3')
+})
+app.get('/sam-smith', (req, res) => {
+    res.render('pages/how-do-you-sleep');
+})
+app.get('/how-do-you-sleep.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/how-do-you-sleep.mp3')
+})
+app.get('/ali-gatie', (req, res) => {
+    res.render('pages/its-you');
+})
+app.get('/its-you.mp3', (req, res) => {
+    res.sendFile(__dirname + '/audio/its-you.mp3')
+})
+
+
 var request = require('request'); // "Request" library
 var cors = require('cors');
 var querystring = require('querystring');
@@ -491,7 +542,7 @@ app.get("/club/:name/home", (req, res) => {
           if (error)
             res.end(error);
           var results = { 'rows': result.rows };
-          res.render('pages/admin', results)  // load admin page for admins
+            res.redirect(`/club/admin/${name}/home`);  // load admin page for admins
         })
         return;
       }
@@ -802,6 +853,67 @@ app.get('/club/:room/:username/game/:playerNum', (req, res) => {
   })
 })
 
+app.post('/club/:name/updatingstats', (req, res) => {
+    console.log("post");
+    var name = req.params.name;
+    var playerscore = req.body.scorenum;
+    console.log(playerscore);
+    let updatehighscore = `SELECT highscore FROM stats WHERE username = '${name}';`;
+    //let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore} WHERE username = '${name}';`;
+    console.log(updatehighscore);
+    //console.log(updateGameStatus);
+    pool.query(updatehighscore, (error, result) => {
+        if (error) {
+            res.end(error);
+        }
+        var oldhighscore = result.rows[0].highscore;
+        console.log(oldhighscore);
+        var newhighscore = (oldhighscore >= playerscore ? oldhighscore : playerscore);
+        let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore}, highscore=${newhighscore} WHERE username = '${name}';`;
+        console.log(updateGameStatus);
+        pool.query(updateGameStatus, (error, result) => {
+            if (error) {
+                res.end(error);
+            }
+            var updateWinLoseDraw
+            if (playerscore > 200) {
+                updateWinLoseDraw = `UPDATE STATS set gameswon= gameswon+1 WHERE username = '${name}';`;
+            }
+            else if (playerscore <= 200 && playerscore >= 190) {
+                updateWinLoseDraw = `UPDATE STATS set gamesdrawn= gamesdrawn+1 WHERE username = '${name}';`;
+            }
+            else {
+                updateWinLoseDraw = `UPDATE STATS set gameslost= gameslost+1 WHERE username = '${name}';`;
+            }
+            pool.query(updateWinLoseDraw, (error, result) => {
+                if (error) {
+                    res.end(error);
+                }
+                res.redirect(`/club/${name}/${playerscore}/gameres`);
+            });
+        });
+    });
+});
+
+
+app.get('/club/:name/:score/gameres', (req, res) => {
+   let name = req.params.name;
+    var score = req.params.score;
+    res.render("pages/gameres", { name: name, score: score });
+});
+/*app.get('/club/:name/updatingstats', (req, res) => {
+    console.log("get");
+    var name = req.params.name;
+    var playerscore = req.body.scorenum;
+    console.log(playerscore);
+    let updateStatsofUser = `SELECT * FROM stats WHERE username = '${name}';`;
+    let updateGameStatus = `UPDATE STATS set gamesplayed= gamesplayed+1, totalpoints= totalpoints+${playerscore} whereHERE username = '${name}';`;
+    console.log(updateStatsofUser);
+    console.log(updateGameStatus);
+    res.redirect(`/club/${name}/home`);
+});*/
+
+
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function (req, res) {
   res.statusCode = 404;
@@ -881,6 +993,10 @@ io.of('game').on('connection', socket => {
     console.log(`user leaving ${room}, count: ${playerCount[room]}`)
     socket.leave(room)
   })
+socket.on("newScore", ({data, room}) => {
+  console.log(`${room}: ${JSON.stringify(data)}`)
+  io.of("game").to(room).emit("updateScore", data)
+  })
   socket.on("newPos", ({data, room}) => {
     console.log(`${room}: ${JSON.stringify(data)}`)
     io.of('game').to(room).emit('updatePos', data)
@@ -896,5 +1012,20 @@ io.of('game').on('connection', socket => {
   socket.on("newGlasses", ({data, room}) => {
     console.log(`${room}: ${JSON.stringify(data)}`)
     io.of('game').to(room).emit('updateGlasses', data)
-  })
+    })
+    socket.on("getScores", ({ data, room }) => {
+        io.of('game').to(room).emit('updateScores', data)
+    })
 })
+
+
+
+io.of('results').on('connection', socket => {
+    socket.on('player', (data) => {
+        const { player, name, score } = data;
+        console.log(`new player - ${room}:\n\t${name}: ${score}`)
+        io.of('chat').to(room).emit('enterPlayer', { name, score })
+    })
+
+})
+
