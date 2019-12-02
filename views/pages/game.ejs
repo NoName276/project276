@@ -54,10 +54,11 @@
 				       <p id = "countDown"></p>
 				       <iframe src="https://open.spotify.com/embed/track/<%= uri %>" id="iframeId" width="350" height="470" frameborder="0" allowtransparency="true" allow="encrypted-media" ></iframe>
 				       <p id= 'songDur'> Duration: <%= duration %> </p>
-				       <p id="songUri"> Song Uri: <%= uri %> </p>
+				       <!-- <p id="songUri"> Song Uri: <%= uri %> </p> -->
 				    </div>
             <script>
                 var player_num = <%= playerNumber %>
+                var room = '<%= room %>'
                 var num_players = <%= numberOfPlayers %>
                 var player_name = <% if(username){ %> '<%= username %>' <% }else{ %> <%= 'undefined' %> <%}%>
                 var x = <%= enemiesStart[0] %>
@@ -67,6 +68,9 @@
                 var thirdx = <%= enemiesStart[4] %>
                 var third = <%= enemiesStart[5] %>
             </script>
+            <%if(!singlePlayer){%>
+                <audio id="audio" src="/audio/<%= track %>.mp3" ></audio>
+            <%}%>
             <script type="text/javascript" src="/scripts/game.js"></script>
             <input type="button" id="singleplayereturn" value="Back to Home"  />
             <input type="button" id="multiplayerexit" value="Exit"/>
@@ -84,6 +88,7 @@
                             setTimeout(function(){setTimeout(function(){game_running = true; game_loop(); setTimeout(function(){game_end();}, 1000*<%= duration %>)}, 1000/FRAMERATE);}, 2000);
                             clearInterval(interval)
                             console.log("Play Now")
+                            document.getElementById('audio').play()
                         } else {
                             // console.log(seconds)
                             display.innerHTML = seconds
@@ -91,8 +96,12 @@
                         }
                     }
                     window.onload = countDown();
-
-
+                    window.addEventListener('unload', (event) => {
+                        socket.emit('leave', room)
+                    })
+                    let colours = ['blue', 'green', 'purple', 'orange']
+                    document.getElementById("playerColour").innerHTML += ` ${colours[player_num]}`
+                    document.getElementById("playerColour").style.color = colours[player_num]
                 </script>
                  <input type="button" id="singleplayereturn" value="Back to Home"  />
 				<input type="button" id="multiplayerexit" value="Exit"/>
