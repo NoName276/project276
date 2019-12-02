@@ -306,8 +306,8 @@ function onCollisions() {
         else {
             y2 =y2+1;
         }
-        /*game_grid[x2][y2] ="E";
-        game_grid[x2][y2-1]= null;*/
+        game_grid[x2][y2] ="E";
+        game_grid[x2][y2-1]= null
         if (thirdx == 8){
             game_grid[third][thirdx]=null;
             thirdx = 1;
@@ -315,10 +315,11 @@ function onCollisions() {
         else{
             thirdx = thirdx +1;
         }
-        /*game_grid[third][thirdx] ="E";
+        game_grid[third][thirdx] ="E";
         if (thirdx != 1){
             game_grid[third][thirdx-1]= null;
-        }*/
+        }
+        
 
         if ( beats == 1){
             beats = 0;
@@ -328,8 +329,8 @@ function onCollisions() {
             else {
                 y =y+1;
             }
-            /*game_grid[x][y] ="E";
-            game_grid[x][y-1]= null;*/
+            game_grid[x][y] ="E";
+            game_grid[x][y-1]= null;
         }
         else {
             beats = beats+1;
@@ -1012,7 +1013,7 @@ describe("CLEAN UP POST TEST", function () {
 });
 
 describe("Game Functions", function () {
-    describe("game_end", function () {
+    describe("game_end()", function () {
         it("game_running true", function () {
             game_running = true;
             game_end()
@@ -1022,9 +1023,94 @@ describe("Game Functions", function () {
             game_running = false;
             game_end()
             assert.equal(false, game_running)
-            var array = []
-            array[1] = "pasta"
-            console.log(array)
         })
+    })
+    describe("reset_conditions()", function(){
+        it("key_flag true", function (){
+            key_flag = true;
+            reset_conditions()
+            assert.equal(false, key_flag)
+        })
+        it("key_flag false", function(){
+            key_flag = false;
+            reset_conditions()
+            assert.equal(false, key_flag)
+        })
+    })
+
+    describe("add_glass()", function(){
+        describe("player_num == 0", function(){
+            player_num = 0;
+            filled_glasses = 0;
+            glasses = [0,0,0,0,0,0,0,0,0,0];
+            
+            it("adds glass somewhere in glasses", function(){
+                add_glass()
+                var glass_added = false
+                for(i=0; i<10; i++){
+                    if (glasses[i] != 0) {glass_added = true}
+                }
+                assert.equal(true, glass_added)
+                assert.equal(1, filled_glasses)
+            })
+
+            it("fills available spaces", function(){
+                for(i=0; i<10; i++){add_glass()}                
+                var all_added = true
+                for(i=0; i<10; i++){
+                    if (glasses[i] == 0) {all_added = false}
+                }
+                //console.log(glasses)
+                assert.equal(true, all_added)
+                assert.equal(10, filled_glasses)
+            })
+
+            it("does not change once full", function(){
+                for(i=0; i<10; i++){add_glass()}                
+                var all_added = true
+                for(i=0; i<10; i++){
+                    if (glasses[i] == 0) {all_added = false}
+                }
+                //console.log(glasses)
+                assert.equal(true, all_added)
+                assert.equal(10, filled_glasses)
+            })
+        })
+        for(num=1; num<4; num++)
+            describe("player_num == " + num, function(){
+                player_num = num;
+                filled_glasses = 0;
+                glasses = [0,0,0,0,0,0,0,0,0,0];
+                add_glass()
+                
+                it("adds glass somewhere in glasses", function(){
+                    var glass_added = false
+                    for(i=0; i<10; i++){
+                        if (glasses[i] != 0) {glass_added = true}
+                    }
+                    assert.equal(false, glass_added)
+                    assert.equal(0, filled_glasses)
+                })
+
+                it("fills available spaces", function(){
+                    for(i=0; i<10; i++){add_glass()}                
+                    var all_added = true
+                    for(i=0; i<10; i++){
+                        if (glasses[i] == 0) {all_added = false}
+                    }
+                    assert.equal(false, all_added)
+                    assert.equal(0, filled_glasses)
+                })
+
+                it("does not change once full", function(){
+                    for(i=0; i<10; i++){add_glass()}                
+                    var all_added = true
+                    for(i=0; i<10; i++){
+                        if (glasses[i] == 0) {all_added = false}
+                    }
+                    assert.equal(false, all_added)
+                    assert.equal(0, filled_glasses)
+                })
+            })
     })
 });
