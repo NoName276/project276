@@ -37,6 +37,7 @@ var last_player_move = [0,0,0,0,];
 // }
 
 const socket = io('/game')
+socket.emit("join", room)
 socket.on("updatePos", ({player, pos}) => {
     player_pos[player] = pos
 })
@@ -59,7 +60,7 @@ var beats = 0;
 function change_bpm(){
     new_bpm = document.getElementById('bpm').value;
     if (new_bpm >= 1){
-        socket.emit('newBpm', new_bpm)
+        socket.emit('newBpm', {data: new_bpm, room})
         fpb = FRAMERATE/new_bpm/60;
         console.log(`update FRAMERATE:${FRAMERATE} fpb:${fpb}`);
     }
@@ -111,7 +112,7 @@ function player_move(num, e){
                                 else if(game_grid[player_pos[num][0]-1][player_pos[num][1]] == null){
                                     game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                     player_pos[num][0] -= 1;
-                                    socket.emit('newPos', {player: num, pos: player_pos[num]})
+                                    socket.emit('newPos', {data: {player: num, pos: player_pos[num]}, room})
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]-1][player_pos[num][1]])){
@@ -119,7 +120,7 @@ function player_move(num, e){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]]);
                                         glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
-                                        socket.emit('newGlasses', {filled_glasses, glasses})
+                                        socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
                                     }
                                 }
                                 else if(player_pos[num][0]-1 == 0 && player_pos[num][1] == 3*num){
@@ -144,7 +145,7 @@ function player_move(num, e){
                                 else if(game_grid[player_pos[num][0]+1][player_pos[num][1]] == null){
                                     game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                     player_pos[num][0] += 1;
-                                    socket.emit('newPos', {player: num, pos: player_pos[num]})
+                                    socket.emit('newPos', {data: {player: num, pos: player_pos[num]}, room})
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]+1][player_pos[num][1]])){
@@ -152,7 +153,7 @@ function player_move(num, e){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]]);
                                         glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
-                                        socket.emit('newGlasses', {filled_glasses, glasses})
+                                        socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
                                     }
                                 }
                                 else if(player_pos[num][0]+1 == 0 && player_pos[num][1] == 3*num){
@@ -177,7 +178,7 @@ function player_move(num, e){
                                 else if (game_grid[player_pos[num][0]][player_pos[num][1]-1] == null){
                                     game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                     player_pos[num][1] -= 1;
-                                    socket.emit('newPos', {player: num, pos: player_pos[num]})
+                                    socket.emit('newPos', {data: {player: num, pos: player_pos[num]}, room})
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                             }
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]-1])){
@@ -185,7 +186,7 @@ function player_move(num, e){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]]);
                                         glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] = 0;
                                         filled_glasses -= 1;
-                                        socket.emit('newGlasses', {filled_glasses, glasses})
+                                        socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
                                     }
                                 }
                                 else if(player_pos[num][0] == 0 && player_pos[num][1]-1 == 3*num){
@@ -210,7 +211,7 @@ function player_move(num, e){
                                 else if (game_grid[player_pos[num][0]][player_pos[num][1]+1] == null){
                                     game_grid[player_pos[num][0]][player_pos[num][1]] = null;
                                     player_pos[num][1] += 1;
-                                    socket.emit('newPos', {player: num, pos: player_pos[num]})
+                                    socket.emit('newPos', {data: {player: num, pos: player_pos[num]}, room})
                                     //game_grid[player_pos[num][0]][player_pos[num][1]] = 'P';
                                 }
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]+1])){
@@ -218,7 +219,7 @@ function player_move(num, e){
                                     player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]]);
                                     glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] = 0;
                                     filled_glasses -= 1;
-                                    socket.emit('newGlasses', {filled_glasses, glasses})
+                                    socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
                                     }
                                 }
                                 else if(player_pos[num][0] == 0 && player_pos[num][1]+1 == 3*num){
@@ -417,7 +418,7 @@ function add_glass() {
             glasses[glass_pos] = 3;
         }
         filled_glasses += 1;
-        socket.emit('newGlasses', {filled_glasses, glasses})
+        socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
     }
 
 }
@@ -468,7 +469,7 @@ function onCollisions() {
         else {
             beats = beats+1;
         }
-        socket.emit("newEnemies", [x, y, x2, y2, thirdx, third])
+        socket.emit("newEnemies", {data: [x, y, x2, y2, thirdx, third], room})
     }
 }
 
