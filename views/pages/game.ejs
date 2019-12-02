@@ -10,48 +10,45 @@
 	</head>
 
 	<body>
-            <h1>The Club</h1>
+            <h1 style="color:white;">The Club</h1>
             <p id="p" >Now Playing: <%= name %> by <%= artist %></p>
-
-            <<form class= "form" id="formscore" method="post" action='/club/<%= username %>/updatingstats'>
-
-                    <p id="score">Score:</p>
-                    <p id="player score">0</p>
-                    <p id="m">Multiplier:</p>
-                    <p id="player mult">x1.0</p>
-                    <input type="number" class ="bpm" id="bpm" value='<%= tempo %>'/>
-                    <input class="button" type="button" value="change bpm" onclick="change_bpm()" />
-					 <input type="hidden" id="scorenum" name="scorenum" value="0">
-                </form>
-
-
+						<img id="side" style="padding-left:5%" src="/assets/enemy1.gif">
+						<img id="side" style="padding-left: 67%; width: 435px" src="/assets/enemy2.gif">
             <div class= "main" id="gamediv">
-                <div class ="row" id="game_grid">
-                        <div id= "col1"class="top ">############</div><br>
-                        #<div id= "col1">0000000000</div>#<br>
-                        #<div id= "col1">0000000000</div>#<br>
-                        #<div id= "col1">0000000000</div>#<br>
-                        #<div id= "col1">0000000000</div>#<br>
-                        #<div id= "col1">0000000000</div>#<br>
-                        #<div id= "col1">0000000000</div>#<br>
-                        #<div id= "col1">0000000000</div>#<br>
-                        #<div id= "col1">0000000000</div>#<br>
-                        #<div id= "col1">0000000000</div>#<br>
-                        #<div id= "col1">0000000000</div>#<br>
-                        <div id= "col1" class="bottom">############<br>
-												<br id= "col1" ></div>
-                        <div id= "col1" >------------<br></div>
-                        <div id= "col1"> 00000||00000<br></div>
-                        <div id= "col1">------------<br></div>
-                    </div>
-										<div id="gamedata">
-                                            <p style="white-space:nowrap;display:inline; margin-left:5%;" id="playerColour">Your colour is: </p>
-											<p id="hit" style="color:blue; font-size:50px; display:inline; margin-left:5%;">READY</p><br>
-                                            <p style="color:black; white-space:nowrap;display:inline; margin-left:5%;">Current Items:</p><br>
-											<p id="items" style="margin-left: 5%"></p>
-										</div>
-		             </div>
-							 </div>
+							<form class= "form" id="formscore" method="post" action='/club/<%= username %>/updatingstats'>
+									<p id="score" style="color:black;">Score:</p>
+									<p id="player score" style="color:black;">0</p><br>
+									<p id="m" style="color:black;">Multiplier:</p>
+									<p id="player mult" style="color:black;">x1.0</p><br>
+	                <input type="number" class ="bpm" style="color:rgba(255, 0, 0, 0); background-color:rgba(255, 0, 0, 0);" id="bpm" value='<%= tempo %>'/>
+	                <input class="button" type="button" value="change bpm" style="color:rgba(255, 0, 0, 0); background-color:rgba(255, 0, 0, 0);" onclick="change_bpm()" />
+	                <input type="hidden" id="scorenum" name="scorenum" value="0">
+              </form>
+							<span style="padding-bottom: 100px;">
+									<p id="hit" style="color:blue; font-size:50px; margin-left: 35%; display:inline;">READY</p><br>
+									<p style="color:black; white-space:nowrap;display:inline; margin-left: 33%; position: absolute">Current Items:</p>
+									<p id="items" style="display:inline; position:absolute;margin-left: 45%; position: absolute;"></p>
+							</span>
+              <div class ="row" id="game_grid">
+                  <div id= "col1"class="top ">############</div><br>
+                  #<div id= "col1">0000000000</div>#<br>
+                  #<div id= "col1">0000000000</div>#<br>
+                  #<div id= "col1">0000000000</div>#<br>
+                  #<div id= "col1">0000000000</div>#<br>
+                  #<div id= "col1">0000000000</div>#<br>
+                  #<div id= "col1">0000000000</div>#<br>
+                  #<div id= "col1">0000000000</div>#<br>
+                  #<div id= "col1">0000000000</div>#<br>
+                  #<div id= "col1">0000000000</div>#<br>
+                  #<div id= "col1">0000000000</div>#<br>
+                  <div id= "col1" class="bottom">############<br>
+									<br id= "col1" ></div>
+                  <div id= "col1" >------------<br></div>
+                  <div id= "col1"> 00000||00000<br></div>
+                  <div id= "col1">------------<br></div>
+              </div>
+		        </div>
+
 			      <div id="musicdiv" align="center">
 			         <p id = "countTitle">Start music in: </p>
 				       <p id = "countDown"></p>
@@ -102,7 +99,7 @@
                         socket.emit('leave', room)
                     })
                     let colours = ['blue', 'green', 'purple', 'orange']
-                    document.getElementById("playerColour").innerHTML += ` ${colours[player_num]}` 
+                    document.getElementById("playerColour").innerHTML += ` ${colours[player_num]}`
                     document.getElementById("playerColour").style.color = colours[player_num]
                 </script>
 
