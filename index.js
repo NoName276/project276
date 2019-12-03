@@ -37,11 +37,6 @@ var pool = new Pool({
   connectionString: process.env.DATABASE_URL
   // connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
 });
-// var app = express();
-// app.use(express.urlencoded());
-// app.use(express.static(path.join(__dirname, 'public')));
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'ejs');
 app.get('/', (req, res) => res.render("pages/club", { "props": { loginFailed: false } }));
 app.get('/hello', (req, res) => res.send('Hello There!'));
 
@@ -51,37 +46,6 @@ app.get('/play', (req, res) => {
 // app.get('/game', (req,res) => {
 //   res.render("pages/game")
 // })
-
-/*  IN CASE WE WANT TO REVERT BACK TO THESE DELETE VERSIONS
- *
- *
-app.get('/delete', (req, res) => res.render('pages/delete'))
-app.get('/deleted', (req, res) => res.render('pages/admin'))
-app.post('/deleted', (req, res) => {
-    var deleteUserQuery = `DELETE FROM users WHERE username = '${req.body.username}'`;
-    var deleteStatsQuery = `DELETE FROM stats WHERE username = '${req.body.username}'`;
-    console.log(req.body);
-    pool.query(deleteStatsQuery, (error) => {
-        if (error)
-            res.end(error);
-    });
-    pool.query(deleteUserQuery, (error) => {
-        if (error)
-            res.end(error);
-        //res.redirect('pages/admin', results)
-        var getUserQuery = `SELECT * FROM users`;
-        pool.query(getUserQuery, (error, result) => {
-            if (error)
-                res.end(error);
-            var results = { 'rows': result.rows };
-            res.render('pages/admin', results)
-        });
-    });
-});
- *
- *
- */
-
 
 app.get('/delete', (req, res) => res.render('pages/delete'))
 app.get('/:name/delete', (req, res) => {
@@ -96,7 +60,6 @@ app.post('/:name/deleted', (req, res) => {
     let name = req.params.name;
     var deleteUserQuery = `DELETE FROM users WHERE username = '${req.body.username}'`;
     var deleteStatsQuery = `DELETE FROM stats WHERE username = '${req.body.username}'`;
-    //console.log(req.body);
     pool.query(deleteStatsQuery, (error) => {
         if (error)
             res.end(error);
@@ -104,7 +67,6 @@ app.post('/:name/deleted', (req, res) => {
     pool.query(deleteUserQuery, (error) => {
         if (error)
             res.end(error);
-        //res.redirect('pages/admin', results)
         var getUserQuery = `SELECT * FROM users`;
         pool.query(getUserQuery, (error, result) => {
             if (error)
@@ -112,12 +74,7 @@ app.post('/:name/deleted', (req, res) => {
             var results = {};
             results.users = result.rows;
             results.name = name;
-            //console.log(`deleted ${req.body.username}`)
             res.render('pages/admin', { 'rows': results })
-            //var results = { 'rows': result.rows };
-           // console.log("results= " , results);
-           // console.log("res: ", res);
-            //res.render('pages/admin', { 'rows': results })
         });
     });
   });
@@ -345,12 +302,9 @@ app.post('/playing', (req,res) => {
             res.redirect(`/music`)
             res.end('Play a song before playing!');
         } else {
-            //console.log("Now Playing: ",data.body.item.artists[0].name);
-            //console.log("Now Playing: ",data.body.item.name);
             var queryData = {}
             var trackURI = data.body.item.uri;
             var trackURIFormatted = trackURI.replace('spotify:track:', '')
-            // console.log(trackURIFormatted)
             queryData.artist = data.body.item.artists[0].name + '';
             queryData.name = data.body.item.name + '';
             queryData.uri = trackURIFormatted + '';
@@ -384,9 +338,6 @@ app.post('/playing', (req,res) => {
                 // done(err);
                 console.log(err)
             });
-            // console.log(queryData)
-            // res.send(queryData)
-            // res.render('pages/playing', queryData)
         }
     }, function(err) {
     console.log('Something went wrong!', err);
@@ -484,9 +435,6 @@ app.get('/spotify-login', function (req, res) {
 
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
-
-  // your application requests authorization
-  // var scope = 'user-read-private user-read-email';
   var scope = 'user-read-private user-read-email user-read-playback-state';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
@@ -499,9 +447,6 @@ app.get('/spotify-login', function (req, res) {
 });
 
 app.get('/callback', function (req, res) {
-
-  // your application requests refresh and access tokens
-  // after checking the state parameter
 
   var code = req.query.code || null;
   var state = req.query.state || null;
@@ -546,10 +491,6 @@ app.get('/callback', function (req, res) {
           console.log(body);
         });
 
-        // we can also pass the token to the browser to make requests from there
-
-        // res.redirect('/#' +
-        // res.redirect('http://localhost:5000/music/#' +
         res.redirect('./music/#' +
           querystring.stringify({
             access_token: access_token,
@@ -949,7 +890,9 @@ app.post('/club/:name/updatingstats', (req, res) => {
                 if (error) {
                     res.end(error);
                 }
+
                 res.redirect(`/club/${name}/lobby`);
+
             });
         });
     });
@@ -959,7 +902,8 @@ app.post('/club/:name/updatingstats', (req, res) => {
 app.get('/club/:name/:score/gameres', (req, res) => {
    let name = req.params.name;
     var score = req.params.score;
-    res.render("pages/gameres", { name: name, score: score });
+    let scores = JSON.parse(decodeURIComponent(req.query.scores));
+    res.render("pages/gameres", { name: name, score: score, allPlayerScores: scores });
 });
 /*app.get('/club/:name/updatingstats', (req, res) => {
     console.log("get");
@@ -1020,17 +964,6 @@ io.of('chat').on('connection', socket => {
     io.of('chat').to(room).emit('launchGame', {members: rooms[room], song})
   })
 
-  // create a new player and add it to the players object
-  // players[socket.id] = {
-  //   //add position
-  //   colour: "blue",
-  //   playerId: socket.id,
-  //   username: socket.username,
-  // }
-  // io.on('updateColour', function (colourData) {
-  //   players[socket.id].colour = colourData.colour;
-  //   socket.broadcast.emit('updateSprite', players[socket.id]);
-  // });
 })
 
 io.of("lobby").on('connection', socket => {

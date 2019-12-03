@@ -50,8 +50,9 @@ socket.on("updateFilledGlasses", data => {
     filled_glasses = data
 })
 socket.on("updateScores", data => {
-
+    document.getElementById("allPlayerScore").value = JSON.stringify(allPlayerScores)
 })
+
 const playerScores = [0,0,0,0]
 socket.on("updateScore", ({player, score}) => {
     playerScores[player] = score;
