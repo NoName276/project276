@@ -74,13 +74,15 @@
                 <audio id="audio" src="/audio/<%= track %>.mp3" ></audio>
             <%}%>
             <script type="text/javascript" src="/scripts/game.js"></script> 
+            <form>
             <button type="submit" class="button" id="multiplayerexit" value="Exit" form="formscore" style="margin-left:42.5%;">EXIT</>
 
+            </form>
 
             <audio id="audio" src="<%= track %>.mp3" ></audio>
-            
+
             <script>
-                   // document.getElementById('multiplayerexit').style.visibility = 'hidden';
+                   document.getElementById('multiplayerexit').style.visibility = 'hidden';
                     var title = document.getElementById("countTitle");
                     var display = document.getElementById("countDown");
                     var interval = setInterval(countDown,1000);
