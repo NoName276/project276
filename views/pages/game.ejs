@@ -22,7 +22,7 @@
 									<p id="player mult" style="color:black;">x1.0</p><br>
 	                <input type="number" class ="bpm" style="color:rgba(255, 0, 0, 0); background-color:rgba(255, 0, 0, 0);" id="bpm" value='<%= tempo %>'/>
 	                <input class="button" type="button" value="change bpm" style="color:rgba(255, 0, 0, 0); background-color:rgba(255, 0, 0, 0);" onclick="change_bpm()" />
-
+                    <input id="allPlayerScores" name="allPlayerScores" value="[0,0,0,0]" hidden/>
 	                <input type="hidden" id="scorenum" name="scorenum" value="0">
 	            </form>
                   <span style="padding-bottom: 100px;">
@@ -74,12 +74,13 @@
                 <audio id="audio" src="/audio/<%= track %>.mp3" ></audio>
             <%}%>
             <script type="text/javascript" src="/scripts/game.js"></script> 
-            <form>
             <button type="submit" class="button" id="multiplayerexit" value="Exit" form="formscore" style="margin-left:42.5%;">EXIT</>
+
 
             </form>
 
             <audio id="audio" src="<%= track %>.mp3" ></audio>
+
 
             <script>
                    document.getElementById('multiplayerexit').style.visibility = 'hidden';
