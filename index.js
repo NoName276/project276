@@ -11,6 +11,7 @@ server.listen(PORT, () => {
   console.log(`Express App and Socket IO server listing on PORT ${PORT}`)
 });
 
+
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -33,8 +34,8 @@ app.get('/register', async (req, res) => {  //loads registerform
 })
 var pool = new Pool({
   ssl: true,
-  //connectionString: process.env.DATABASE_URL
-  connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
+  connectionString: process.env.DATABASE_URL
+  // connectionString: "postgres://onmhemgydrtawp:44340bfdc255d71d386e984a35a34725a508b67d94cc356653fc8aa407264744@ec2-174-129-252-252.compute-1.amazonaws.com:5432/dad64i7292eb5o"
 });
 app.get('/', (req, res) => res.render("pages/club", { "props": { loginFailed: false } }));
 app.get('/hello', (req, res) => res.send('Hello There!'));
@@ -42,9 +43,9 @@ app.get('/hello', (req, res) => res.send('Hello There!'));
 app.get('/play', (req, res) => {
   res.render("pages/play")
 })
-app.get('/game', (req, res) => {
-  res.render("pages/game")
-})
+// app.get('/game', (req,res) => {
+//   res.render("pages/game")
+// })
 
 app.get('/delete', (req, res) => res.render('pages/delete'))
 app.get('/:name/delete', (req, res) => {
@@ -330,7 +331,7 @@ app.post('/playing', (req,res) => {
                 queryData.duration = data.body.track.duration;
                 queryData.tempo = data.body.track.tempo;
                 // res.send(queryData)
-
+                queryData.track = "silence"
                 // res.render('pages/playing', queryData)
             res.render('pages/game', queryData)
             }, function(err) {

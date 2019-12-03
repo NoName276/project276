@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -79,7 +80,33 @@
     </div>
   </div>
   <button type="button" onclick="launch()">PLAY</button>
-  <button type="button" onclick="window.location.href = '/club/<%=username%>/lobby';">BACK</button>
+  <button id="backButton" type="button" onclick="window.location.href = '/club/<%=username%>/lobby';">BACK</button>
+  <!-- <form action="/getSong" method="post"> 
+    <select name="songs">
+      <option value="slow-dancing-in-the-dark">SLOW DANCING IN THE DARK</option>
+      <option value="breathe">Breathe</option>
+      <option value="bad-guy">bad guy</option>
+      <option value="dont-start-now">Don't Start Now</option>
+      <option value="how-do-you-sleep">How Do You Sleep?</option>
+      <option value="its-you">It's You</option>
+      <option value="dear-evan-hansen">Waving Through a Window</option>
+      <option value="hadestown">Hadestown</option>
+    </select>
+    <input type="submit" value="Submit">
+  </form> -->
+  <!-- <div class="dropdown">
+    <button onclick="getSongs()" class="dropbtn">Dropdown</button>
+    <div id="myDropdown" class="dropdown-content">
+      <a href="#home">SLOW DANCING IN THE DARK</a>
+      <a href="#about">Breathe</a>
+      <a href="#contact">bad guy</a>
+      <a href="#contact">Don't Start Now</a>
+      <a href="#contact">How Do You Sleep?</a>
+      <a href="#contact">It's You</a>
+      <a href="#contact">Waving Through a Window</a>
+      <a href="#contact">Hadestown II</a>
+    </div>
+  </div> -->
 
   <select name="songs" id="songList">
     <option value="slow-dancing-in-the-dark">SLOW DANCING IN THE DARK</option>
@@ -102,7 +129,7 @@
         <ul id="messages">
         </ul>
         <textarea id="userMessage" placeholder="Type message.." name="msg" required></textarea>
-        <button class="button" onclick="sendMessage(event)">Send</button>
+        <button id= "sendButton" class="button" onclick="sendMessage(event)">Send</button>
         <button type="button" class="cancel" onclick="closeForm('chatbox')">Close</button>
       </div>
     </form>
