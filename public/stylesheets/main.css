@@ -21,7 +21,7 @@ h1 {
   color: black;
   background-image: url("/assets/background.gif");
   background-repeat: no-repeat;
-  background-position: 50% 160px;
+  background-position: 50% 170px;
   background-size: 475px;
   padding-bottom: 35px;
 }
@@ -47,8 +47,8 @@ img{
 }
 #side{
   padding-top: 10%;
-  width: 400px;
-  height: 500px;
+  width: 150px;
+  height: 200px;
   object-fit: contain;
   margin-top: auto;
   margin-bottom: auto;
@@ -100,7 +100,7 @@ form {
     flex-flow: row wrap;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 27.5%;
+    padding-left: 22.5%;
     postion: absolute;
   }
 form input {

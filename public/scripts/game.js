@@ -27,14 +27,8 @@ var score = 0;
 var multiplier = 1.0;
 var player_glasses = [[],[],[],[],];
 var last_player_move = [0,0,0,0,];
-// if(player_num == 0){
-//     let x2 = Math.floor(Math.random()* 4) + 2;
-//     let y2 = Math.floor(Math.random()* 10);
-//     let x = Math.floor(Math.random()* 4) + 2;
-//     let y = Math.floor(Math.random()* 10);
-//     let third = Math.floor(Math.random()*1)+7;
-//     let thirdx = Math.floor(Math.random()*7)+2;
-// }
+
+var allscores = [,,,,]
 
 const socket = io('/game')
 socket.emit("join", room)
@@ -55,6 +49,16 @@ socket.on("updateGlasses", (data) => {
 socket.on("updateFilledGlasses", data => {
     filled_glasses = data
 })
+socket.on("updateScores", data => {
+    document.getElementById("allPlayerScore").value = JSON.stringify(allPlayerScores)
+})
+
+const playerScores = [0,0,0,0]
+socket.on("updateScore", ({player, score}) => {
+    playerScores[player] = score;
+})
+
+
 var beats = 0;
 
 function change_bpm(){
@@ -71,11 +75,9 @@ function game_end(){
     if (num_players > 1) { //multiplayer
         document.getElementById('multiplayerexit').style.visibility = 'visible';
     }
-    else {
-       // document.getElementById('singleplayereturn').style.visibility = '';
-    }
     console.log(document.getElementById('player score'));
     document.getElementById('scorenum').value = document.getElementById('player score').innerHTML;
+    socket.emit("newScore", {data: {player: player_num, score: score}, room})
 }
 
 function player_move(num, e){
@@ -89,10 +91,14 @@ function player_move(num, e){
                 //gridEl.style.color = 'green';
                 document.getElementById('hit').innerHTML = "GREAT";
                 document.getElementById('hit').style.color = 'green';
+                var audiohit = new Audio('/assets/hit.wav');
+                var itemhit = new Audio('/assets/item.wav');
+                audiohit.play();
                 if(bonus_flag){
                     //gridEl.style.color = 'orange';
                     document.getElementById('hit').innerHTML = "OKAY";
                     document.getElementById('hit').style.color = 'orange';
+                    audiohit.play();
                     if(multiplier < 2.0){
                         multiplier += 0.1;
                     }
@@ -120,6 +126,7 @@ function player_move(num, e){
                                 else if(!isNaN(game_grid[player_pos[num][0]-1][player_pos[num][1]])){
                                     if(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]]);
+                                        itemhit.play();
                                         glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
                                         socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
@@ -153,6 +160,7 @@ function player_move(num, e){
                                 else if(!isNaN(game_grid[player_pos[num][0]+1][player_pos[num][1]])){
                                     if(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]]);
+                                        itemhit.play();
                                         glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
                                         socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
@@ -186,6 +194,7 @@ function player_move(num, e){
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]-1])){
                                     if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]]);
+                                        itemhit.play();
                                         glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] = 0;
                                         filled_glasses -= 1;
                                         socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
@@ -219,6 +228,7 @@ function player_move(num, e){
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]+1])){
                                     if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] != 0 && player_glasses[num].length < 8){
                                     player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]]);
+                                    itemhit.play();
                                     glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] = 0;
                                     filled_glasses -= 1;
                                     socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
@@ -259,6 +269,8 @@ function player_move(num, e){
                         //gridEl.style.color = 'red';
                         document.getElementById('hit').innerHTML = "MISS";
                         document.getElementById('hit').style.color = 'red';
+                        var missaudio = new Audio('/assets/miss.flac');
+                        missaudio.play();
                         multiplier = 1.0;
                         break;
                     default:
@@ -282,6 +294,7 @@ function display_held_items(){
         displaystring += '<img src="/assets/drink3.png">';
     }
   }
+  if(player_glasses[player_num].length >= 8) displaystring += 'Inventory Full';
   document.getElementById('items').innerHTML = displaystring;
 }
 
@@ -389,8 +402,7 @@ function generate_upcoming_beats(){
 }
 
 function game_loop() {
-    document.getElementById('multiplayerexit').style.visibility = 'hidden';
-    
+
     attack();
     display_game_grid();
     generate_upcoming_beats();
@@ -480,15 +492,21 @@ function attack() {
     for(i=0; i<4; i++){
         if (player_pos[i][0] == x && player_pos[i][1] == y){
             player_pos[i] = [x+1, y];
+            var bumpaudio = new Audio('/assets/bump.wav');
+            bumpaudio.play();
             if(player_glasses[i].length > 0){player_glasses[i].pop();}
         //  console.log('fight me');
         }
         if (player_pos[i][0] == x2 && player_pos[i][1] == y2){
             player_pos[i] = [x2+1,y2];
+            var bumpaudio = new Audio('/assets/bump.wav');
+            bumpaudio.play();
             if(player_glasses[i].length > 0){player_glasses[i].pop();}
         }
         if (player_pos[i][0] == third && player_pos[i][1] == thirdx){
             player_pos[i] = [third+1 ,thirdx];
+            var bumpaudio = new Audio('/assets/bump.wav');
+            bumpaudio.play();
             if(player_glasses[i].length > 0){player_glasses[i].pop();}
         }
     }

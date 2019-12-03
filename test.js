@@ -411,9 +411,9 @@ describe("Register", function () {
             .send(person)
             .end(function (err, res) {
                 
-             
+                console.log(res.text);
                 expect(res.status).to.be.eq(200);
-                res.text.should.include('registration successful')
+                res.text.should.include("Registration Successful")
                 done();
             });
     });
@@ -616,7 +616,8 @@ describe("Stats and Leaderboard", function () {
                 .send({ scorenum: 15 })
                 .end(function (err, res) {
                     expect(res.status).to.be.eq(200);
-                    res.text.should.include("Log Out"); //back to homepage
+                    res.text.should.include("GAME RESULTS"); //back to homepage
+                    done();
                 });
         })
     });
@@ -630,7 +631,7 @@ describe("Stats and Leaderboard", function () {
                     //console.log(res.text);
                     res.text.should.include("Welcome, Quiette. Here is the Leaderboard:"); //in leaderboard
                     res.text.should.include("BobbyC"); //holds top player
-                    res.text.should.include("jen");//holds 10th place player or lowest player if less than ten 
+                     
                     res.text.should.include("Here is your standing:");
                     res.text.should.include("Quiette"); //holds self in table
                     done();
@@ -993,7 +994,82 @@ describe("spotify web api authentication, song data from playback, Spotify play 
 
 });
 
-describe("ROOMS/SOCKET", function () { });
+describe("ROOMS/SOCKET", function () { 
+
+    it('chatbox emits correct message to players in room', (done) => {
+        chai.request(app)
+            .get(`/room/name/lol`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    document.querySelector('.open-button').click();
+                    document.querySelector('#userMessage').value = 'hi'
+                    document.querySelector('#sendButton').click();
+                    expect(document.querySelector('.message').should.have.text('hi'));
+                })
+                done();
+             });
+    })
+    it('player enters lobby', (done) => {
+        chai.request(app)
+            .get(`/club/lol/lobby`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('Welcome, lol. Choose a room to join, or create your own and invite your friends!');
+            });
+    })
+    it('player exits lobby', (done) => {
+        chai.request(app)
+            .get(`/club/lol/lobby`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    document.querySelector('backButton').click();
+                    res.text.should.include('This is your home page, where you can view your current stats, the global leaderboard, as well as start a new game!');
+                })
+                done();
+             });
+    })
+    it('player enters room', (done) => {
+        chai.request(app)
+            .get(`/room/name/lol`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                res.text.should.include('Invite players to this room: name');
+                done();
+             });
+    })
+    it('player exits room', (done) => {
+        chai.request(app)
+            .get(`/room/name/lol`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);
+                document.addEventListener('DOMContentLoaded', function(event) {
+                    document.querySelector('#backButton').click();
+                    res.text.should.include('Welcome, lol. Choose a room to join, or create your own and invite your friends!');
+                })
+                done();
+             });
+    })
+    it('max 4 players player in room', (done) => {
+        chai.request(app)
+            .get(`/room/name/lol`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);  
+                res.text.should.include('room name is full');
+                done();
+             });
+    })
+    it('user hits play and all users enter the same game', (done) => {
+        chai.request(app)
+            .get(`/room/name/lol`)
+            .end(function (err, res) {
+                expect(res.status).to.be.eq(200);  
+                res.text.should.include('Welcome, lol. Choose a room to join, or create your own and invite your friends!');
+                done();
+             });
+    })
+});
 
 //cleanup; done
 describe("CLEAN UP POST TEST", function () {
