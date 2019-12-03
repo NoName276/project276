@@ -890,7 +890,9 @@ app.post('/club/:name/updatingstats', (req, res) => {
                 if (error) {
                     res.end(error);
                 }
-                res.redirect(`/club/${name}/${playerscore}/gameres?scores=${ encodeURIComponent( req.body.allPlayerScores)}`);
+
+                res.redirect(`/club/${name}/lobby`);
+
             });
         });
     });
