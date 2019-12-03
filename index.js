@@ -948,7 +948,7 @@ app.post('/club/:name/updatingstats', (req, res) => {
                 if (error) {
                     res.end(error);
                 }
-                res.redirect(`/club/${name}/${playerscore}/gameres`);
+                res.redirect(`/club/${name}/lobby`);
             });
         });
     });
