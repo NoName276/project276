@@ -1076,41 +1076,150 @@ describe("Game Functions", function () {
                 assert.equal(10, filled_glasses)
             })
         })
-        for(num=1; num<4; num++)
-            describe("player_num == " + num, function(){
-                player_num = num;
-                filled_glasses = 0;
-                glasses = [0,0,0,0,0,0,0,0,0,0];
-                add_glass()
+    })
+
+    describe("player_move()", function(){
+        var game_running = false;
+        var valid_flag = false;
+        var bonus_flag =false;
+        var key_flag = false;
+        var upcoming_beats = [];
+        var game_grid = [
+            ['T',,,'T',,,'T',,,'T',],
+            [,,,,,,,,,,],
+            [,,,,,,,,,,],
+            [,,,,,,,,,,],
+            [,,,,,,,,,,],
+            [,,,,,,,,,,],
+            [,,,,,,,,,,],
+            ['0',,,,,,,,,'9',],
+            ['1',,,,,,,,,'8',],
+            ['O','2','3','O','4','5','O','6','7','O',]
+        ];
+        var player_pos = [[1,0],[1,3],[1,6],[1,9],];
+        var glasses = [0,0,0,0,0,0,0,0,0,0];
+        var filled_glasses = 0;
+        var next_glass_counter = 0;
+        var score = 0;
+        var multiplier = 1.0;
+        var player_glasses = [[],[],[],[],];
+        var last_player_move = [0,0,0,0,];
+
+        describe('check player can move using each valid key', function(){
+            it('Right', function(){
+                valid_flag = true;
+                game_running = true
+                var e = Object();
+                e.which = 68;
+                player_move(0, e)
+                assert.equal(player_pos[0][0], 1)
+                assert.equal(player_pos[0][1], 1)
+                assert.equal(key_flag, true)
                 
-                it("adds glass somewhere in glasses", function(){
-                    var glass_added = false
-                    for(i=0; i<10; i++){
-                        if (glasses[i] != 0) {glass_added = true}
-                    }
-                    assert.equal(false, glass_added)
-                    assert.equal(0, filled_glasses)
-                })
 
-                it("fills available spaces", function(){
-                    for(i=0; i<10; i++){add_glass()}                
-                    var all_added = true
-                    for(i=0; i<10; i++){
-                        if (glasses[i] == 0) {all_added = false}
-                    }
-                    assert.equal(false, all_added)
-                    assert.equal(0, filled_glasses)
-                })
-
-                it("does not change once full", function(){
-                    for(i=0; i<10; i++){add_glass()}                
-                    var all_added = true
-                    for(i=0; i<10; i++){
-                        if (glasses[i] == 0) {all_added = false}
-                    }
-                    assert.equal(false, all_added)
-                    assert.equal(0, filled_glasses)
-                })
+                key_flag = false;
+                var e = Object();
+                e.which = 39;
+                player_move(0, e)
+                assert.equal(player_pos[0][0], 1)
+                assert.equal(player_pos[0][1], 2)
+                assert.equal(key_flag, true)
             })
+            
+            it('Down', function(){
+                valid_flag = true;
+                game_running = true
+                var e = Object();
+                e.which = 83;
+                player_move(0, e)
+                assert.equal(player_pos[0][0], 2)
+                assert.equal(player_pos[0][1], 2)
+                assert.equal(key_flag, true)
+                
+
+                key_flag = false;
+                var e = Object();
+                e.which = 40;
+                player_move(0, e)
+                assert.equal(player_pos[0][0], 3)
+                assert.equal(player_pos[0][1], 2)
+                assert.equal(key_flag, true)
+            })
+            it('Left', function(){
+                valid_flag = true;
+                game_running = true
+                var e = Object();
+                e.which = 65;
+                player_move(0, e)
+                assert.equal(player_pos[0][0], 3)
+                assert.equal(player_pos[0][1], 1)
+                assert.equal(key_flag, true)
+                
+
+                key_flag = false;
+                var e = Object();
+                e.which = 37;
+                player_move(0, e)
+                assert.equal(player_pos[0][0], 3)
+                assert.equal(player_pos[0][1], 0)
+                assert.equal(key_flag, true)
+            })
+            it('Up', function(){
+                valid_flag = true;
+                game_running = true
+                var e = Object();
+                e.which = 87;
+                player_move(0, e)
+                assert.equal(player_pos[0][0], 1)
+                assert.equal(player_pos[0][1], 1)
+                assert.equal(key_flag, true)
+                
+
+                key_flag = false;
+                var e = Object();
+                e.which = 38;
+                player_move(0, e)
+                assert.equal(player_pos[0][0], 1)
+                assert.equal(player_pos[0][1], 2)
+                assert.equal(key_flag, true)
+            })
+        })
+
+        describe("will not move when:", function(){
+            player_pos = [[1,0],[1,3],[1,6],[1,9],];
+            game_running = true
+            valid_flag = false
+            key_flag = false
+            it('valid_flag == false', function () {
+                var e = Object()
+                e.which = 83
+                player_move(0, e)
+                assert.equal(key_flag, true)
+                assert.equal(player_pos[0][0], 1)
+                assert.equal(player_pos[0][1], 0)
+            })
+            it('key_flag == true', function(){
+                valid_flag = true
+                key_flag = true
+                var e = Object()
+                e.which = 83
+                player_move(0, e)
+                assert.equal(key_flag, true)
+                assert.equal(player_pos[0][0], 1)
+                assert.equal(player_pos[0][1], 0)
+            })
+            it('game_running == false', function(){
+                game_running = false
+                key_flag = false
+                var e = Object()
+                e.which = 83
+                player_move(0, e)
+                assert.equal(key_flag, false)
+                assert.equal(player_pos[0][0], 1)
+                assert.equal(player_pos[0][1], 0)
+
+            })
+        })
+        
     })
 });
