@@ -92,7 +92,7 @@ function player_move(num, e){
                 document.getElementById('hit').innerHTML = "GREAT";
                 document.getElementById('hit').style.color = 'green';
                 var audiohit = new Audio('/assets/hit.wav');
-                var bumphit = new Audio('/assets/bump.wav');
+                var itemhit = new Audio('/assets/item.wav');
                 audiohit.play();
                 if(bonus_flag){
                     //gridEl.style.color = 'orange';
@@ -126,7 +126,7 @@ function player_move(num, e){
                                 else if(!isNaN(game_grid[player_pos[num][0]-1][player_pos[num][1]])){
                                     if(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]]);
-                                        bumphit.play();
+                                        itemhit.play();
                                         glasses[game_grid[player_pos[num][0]-1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
                                         socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
@@ -160,7 +160,7 @@ function player_move(num, e){
                                 else if(!isNaN(game_grid[player_pos[num][0]+1][player_pos[num][1]])){
                                     if(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]]);
-                                        bumphit.play();
+                                        itemhit.play();
                                         glasses[game_grid[player_pos[num][0]+1][player_pos[num][1]]] = 0;
                                         filled_glasses -= 1;
                                         socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
@@ -194,7 +194,7 @@ function player_move(num, e){
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]-1])){
                                     if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] != 0 && player_glasses[num].length < 8){
                                         player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]]);
-                                        bumphit.play();
+                                        itemhit.play();
                                         glasses[game_grid[player_pos[num][0]][player_pos[num][1]-1]] = 0;
                                         filled_glasses -= 1;
                                         socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
@@ -228,7 +228,7 @@ function player_move(num, e){
                                 else if(!isNaN(game_grid[player_pos[num][0]][player_pos[num][1]+1])){
                                     if(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] != 0 && player_glasses[num].length < 8){
                                     player_glasses[num].push(glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]]);
-                                    bumphit.play();
+                                    itemhit.play();
                                     glasses[game_grid[player_pos[num][0]][player_pos[num][1]+1]] = 0;
                                     filled_glasses -= 1;
                                     socket.emit('newGlasses', {data: {filled_glasses, glasses}, room})
@@ -269,7 +269,7 @@ function player_move(num, e){
                         //gridEl.style.color = 'red';
                         document.getElementById('hit').innerHTML = "MISS";
                         document.getElementById('hit').style.color = 'red';
-                        var missaudio = new Audio('/assets/miss.wav');
+                        var missaudio = new Audio('/assets/miss.flac');
                         missaudio.play();
                         multiplier = 1.0;
                         break;
@@ -294,7 +294,7 @@ function display_held_items(){
         displaystring += '<img src="/assets/drink3.png">';
     }
   }
-  if(player_glasses[player_num].length == 8) displaystring += 'Inventory Full';
+  if(player_glasses[player_num].length >= 8) displaystring += 'Inventory Full';
   document.getElementById('items').innerHTML = displaystring;
 }
 
@@ -492,15 +492,21 @@ function attack() {
     for(i=0; i<4; i++){
         if (player_pos[i][0] == x && player_pos[i][1] == y){
             player_pos[i] = [x+1, y];
+            var bumpaudio = new Audio('/assets/bump.wav');
+            bumpaudio.play();
             if(player_glasses[i].length > 0){player_glasses[i].pop();}
         //  console.log('fight me');
         }
         if (player_pos[i][0] == x2 && player_pos[i][1] == y2){
             player_pos[i] = [x2+1,y2];
+            var bumpaudio = new Audio('/assets/bump.wav');
+            bumpaudio.play();
             if(player_glasses[i].length > 0){player_glasses[i].pop();}
         }
         if (player_pos[i][0] == third && player_pos[i][1] == thirdx){
             player_pos[i] = [third+1 ,thirdx];
+            var bumpaudio = new Audio('/assets/bump.wav');
+            bumpaudio.play();
             if(player_glasses[i].length > 0){player_glasses[i].pop();}
         }
     }
