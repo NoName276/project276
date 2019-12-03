@@ -889,7 +889,7 @@ app.post('/club/:name/updatingstats', (req, res) => {
                 if (error) {
                     res.end(error);
                 }
-                res.redirect(`/club/${name}/${playerscore}/gameres`);
+                res.redirect(`/club/${name}/${playerscore}/gameres?scores=${ encodeURIComponent( req.body.allPlayerScores)}`);
             });
         });
     });
@@ -899,7 +899,8 @@ app.post('/club/:name/updatingstats', (req, res) => {
 app.get('/club/:name/:score/gameres', (req, res) => {
    let name = req.params.name;
     var score = req.params.score;
-    res.render("pages/gameres", { name: name, score: score });
+    let scores = JSON.parse(decodeURIComponent(req.query.scores));
+    res.render("pages/gameres", { name: name, score: score, allPlayerScores: scores });
 });
 /*app.get('/club/:name/updatingstats', (req, res) => {
     console.log("get");
